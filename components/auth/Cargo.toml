@@ -12,7 +12,7 @@ readme = "README.md"
 
 [dependencies]
 anyhow = { version = "1.0.71", features = ["backtrace"] }
-async-trait = "0.1.66"
+async-trait = "0.1.71"
 axum = { version = "0.6.11", features = ["headers", "macros"] }
 base64 = "0.21.0"
 chir-rs-auth-model = { path = "../auth-model" }
