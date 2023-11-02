@@ -145,6 +145,9 @@ library
     Crypto.FidoMetadataManager
     Crypto.KeyStore
     Data.Queue
+    Data.RelType
+    Data.RelType.TH
+    Data.Webfinger
     Foundation
     Handler.FinishRegistration
     Handler.Home
@@ -206,8 +209,10 @@ test-suite unit-test
     relude
 
   build-depends:
+    , aeson
     , base              >=4.13.0.0 && <4.18.0.0.0
     , chir-rs
+    , generic-random
     , relude
     , tasty
     , tasty-quickcheck
@@ -218,5 +223,7 @@ test-suite unit-test
     Test.Codec
     Test.Codec.CBOR
     Test.Codec.CBOR.Class
+    Test.Data
+    Test.Data.RelType
 
   default-language: GHC2021
