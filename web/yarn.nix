@@ -568,11 +568,11 @@
       };
     }
     {
-      name = "caniuse_lite___caniuse_lite_1.0.30001559.tgz";
+      name = "caniuse_lite___caniuse_lite_1.0.30001561.tgz";
       path = fetchurl {
-        name = "caniuse_lite___caniuse_lite_1.0.30001559.tgz";
-        url = "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001559.tgz";
-        sha512 = "cPiMKZgqgkg5LY3/ntGeLFUpi6tzddBNS58A4tnTgQw1zON7u2sZMU7SzOeVH4tj20++9ggL+V6FDOFMTaFFYA==";
+        name = "caniuse_lite___caniuse_lite_1.0.30001561.tgz";
+        url = "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001561.tgz";
+        sha512 = "NTt0DNoKe958Q0BE0j0c1V9jbUzhBxHIEJy7asmGrpE0yG63KTV7PLHPnK2E1O9RsQrQ081I3NLuXGS6zht3cw==";
       };
     }
     {
@@ -888,11 +888,11 @@
       };
     }
     {
-      name = "electron_to_chromium___electron_to_chromium_1.4.574.tgz";
+      name = "electron_to_chromium___electron_to_chromium_1.4.576.tgz";
       path = fetchurl {
-        name = "electron_to_chromium___electron_to_chromium_1.4.574.tgz";
-        url = "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.574.tgz";
-        sha512 = "bg1m8L0n02xRzx4LsTTMbBPiUd9yIR+74iPtS/Ao65CuXvhVZHP0ym1kSdDG3yHFDXqHQQBKujlN1AQ8qZnyFg==";
+        name = "electron_to_chromium___electron_to_chromium_1.4.576.tgz";
+        url = "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.576.tgz";
+        sha512 = "yXsZyXJfAqzWk1WKryr0Wl0MN2D47xodPvEEwlVePBnhU5E7raevLQR+E6b9JAD3GfL/7MbAL9ZtWQQPcLx7wA==";
       };
     }
     {
@@ -1400,11 +1400,11 @@
       };
     }
     {
-      name = "nanoid___nanoid_3.3.6.tgz";
+      name = "nanoid___nanoid_3.3.7.tgz";
       path = fetchurl {
-        name = "nanoid___nanoid_3.3.6.tgz";
-        url = "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.6.tgz";
-        sha512 = "BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==";
+        name = "nanoid___nanoid_3.3.7.tgz";
+        url = "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.7.tgz";
+        sha512 = "eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==";
       };
     }
     {
