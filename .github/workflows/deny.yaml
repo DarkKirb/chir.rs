@@ -1,0 +1,13 @@
+name: Security audit
+on:
+  push:
+  pull_request:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "16 19 * * *"
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: EmbarkStudios/cargo-deny-action@v1
