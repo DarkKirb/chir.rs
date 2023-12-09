@@ -1,0 +1,71 @@
+[package]
+name = "chir-rs-protos"
+version = "0.1.0"
+edition = "2021"
+authors = ["Charlotte 🦝 Delenk <lotte@chir.rs>"]
+rust-version = "1.74.0"
+description = "Protocol headers library for chir.rs"
+readme = "README.md"
+homepage = "https://lotte.chir.rs/"
+repository = "https://github.com/DarkKirb/chir.rs"
+license = "Parity-7.0.0"
+keywords = ["website"]
+categories = ["web-programming"]
+publish = false
+
+[lints.rust]
+unsafe-code = "forbid"
+future-incompatible = "forbid"
+missing-copy-implementations = "warn"
+missing-debug-implementations = "deny"
+missing-docs = "warn"
+trivial-casts = "warn"
+unreachable-pub = "warn"
+unused-crate-dependencies = "warn"
+unused-qualifications = "warn"
+unused-tuple-struct-fields = "warn"
+variant-size-differences = "warn"
+
+[lints.clippy]
+cargo = "warn"
+nursery = "warn"
+pedantic = "warn"
+assertions-on-result-states = "deny"
+clone-on-ref-ptr = "deny"
+create-dir = "deny"
+dbg-macro = "warn"
+decimal-literal-representation = "warn"
+empty-drop = "deny"
+empty-structs-with-brackets = "warn"
+error-impl-error = "deny"
+exit = "forbid"
+expect_used = "forbid"
+float-cmp-const = "warn"
+fn-to-numeric-cast-any = "forbid"
+format-push-string = "warn"
+get-unwrap = "deny"
+if-then-some-else-none = "warn"
+indexing-slicing = "warn"
+integer-division = "warn"
+lossy-float-literal = "deny"
+map-err-ignore = "warn"
+mem-forget = "deny"
+missing-docs-in-private-items = "warn"
+mutex-atomic = "warn"
+needless-raw-strings = "warn"
+panic = "forbid"
+rc-buffer = "warn"
+rc-mutex = "forbid"
+redundant-type-annotations = "warn"
+string-lit-chars-any = "warn"
+string-slice = "deny"
+string-to-string = "warn"
+todo = "warn"
+unseparated_literal_suffix = "warn"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rkyv = { version = "0.7.42", features = ["archive_le", "validation"] }
+serde = { version = "1.0.193", features = ["derive"] }
+tarpc = { git = "https://github.com/darkkirb/tarpc", features = ["rkyv"] }

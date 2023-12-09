@@ -60,9 +60,15 @@
           clang
           cargo-deny
           cargo-crev
+          alejandra
+          rnix-lsp
+          cargo-expand
+          llvm
         ];
         formatter = pkgs.alejandra;
-        packages.chir-rs = rustPkgs.workspace.chir-rs {};
+        packages = {
+          chir-rs-protos = rustPkgs.workspace.chir-rs-protos {};
+        };
       };
       flake = {
         hydraJobs = {
