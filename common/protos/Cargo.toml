@@ -66,6 +66,6 @@ unseparated_literal_suffix = "warn"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rkyv = { version = "0.7.42", features = ["archive_le", "validation"] }
+rkyv = { version = "0.7.43", features = ["archive_le", "validation"] }
 serde = { version = "1.0.193", features = ["derive"] }
 tarpc = { git = "https://github.com/darkkirb/tarpc", features = ["rkyv"] }
