@@ -15,7 +15,7 @@ jobs:
           - stable
           - beta
           - nightly
-          - 1.74.0
+          - 1.75.0
         os:
           - ubuntu-latest
           - windows-latest
