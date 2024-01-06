@@ -49,6 +49,7 @@
             inputs.cargo2nix.overlays.default
             inputs.self.overlays.default
           ];
+          config.contentAddressedByDefault = true;
         };
         devshells.default.devshell.packages = with pkgs; [
           (rust-bin.nightly.latest.default.override {
