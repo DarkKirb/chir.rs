@@ -23,8 +23,6 @@
       inputs.flake-utils.follows = "flake-utils";
     };
     nixpkgs.url = "github:NixOS/nixpkgs";
-    nixtoo.url = "github:DarkKirb/nixtoo";
-    nixtoo.flake = false;
   };
 
   outputs = inputs @ {flake-parts, ...}:
@@ -40,14 +38,18 @@
         pkgs,
         system,
         ...
-      }: {
+      } @ args: let
+        rustPkgs = pkgs.rustBuilder.makePackageSet {
+          packageFun = import ./Cargo.nix;
+          rustChannel = "1.74.0";
+          packageOverrides = pkgs: pkgs.rustBuilder.overrides.all;
+        };
+      in {
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
           overlays = [
-            (import "${inputs.nixtoo}/overlay.nix")
             inputs.rust-overlay.overlays.default
             inputs.cargo2nix.overlays.default
-            inputs.self.overlays.default
           ];
         };
         devshells.default.devshell.packages = with pkgs; [
@@ -65,21 +67,12 @@
         ];
         formatter = pkgs.alejandra;
         packages = {
-          inherit (pkgs) chir-rs-protos;
+          chir-rs-protos = rustPkgs.workspace.chir-rs-protos {};
         };
       };
       flake = {
         hydraJobs = {
           inherit (inputs.self) devShells packages formatter;
-        };
-        overlays.default = self: super: let
-          rustPkgs = self.rustBuilder.makePackageSet {
-            packageFun = import ./Cargo.nix;
-            rustChannel = "1.75.0";
-            packageOverrides = pkgs: pkgs.rustBuilder.overrides.all;
-          };
-        in {
-          chir-rs-protos = rustPkgs.workspace.chir-rs-protos {};
         };
       };
     };
