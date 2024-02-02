@@ -67,5 +67,5 @@ unseparated_literal_suffix = "warn"
 
 [dependencies]
 rkyv = { version = "0.7.43", features = ["archive_le", "validation"] }
-serde = { version = "1.0.194", features = ["derive"] }
+serde = { version = "1.0.196", features = ["derive"] }
 tarpc = { git = "https://github.com/darkkirb/tarpc", features = ["rkyv"] }
