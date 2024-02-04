@@ -647,7 +647,7 @@ checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 [[package]]
 name = "tarpc"
 version = "0.34.0"
-source = "git+https://github.com/darkkirb/tarpc#8adfe87c7bb038e930d98f8adb68068bb80e5205"
+source = "git+https://github.com/darkkirb/tarpc#ea3cf7ba807fb93a7d46d35d6d5f80569cd4b4ea"
 dependencies = [
  "anyhow",
  "fnv",
@@ -668,8 +668,8 @@ dependencies = [
 
 [[package]]
 name = "tarpc-plugins"
-version = "0.13.0"
-source = "git+https://github.com/darkkirb/tarpc#8adfe87c7bb038e930d98f8adb68068bb80e5205"
+version = "0.13.1"
+source = "git+https://github.com/darkkirb/tarpc#ea3cf7ba807fb93a7d46d35d6d5f80569cd4b4ea"
 dependencies = [
  "proc-macro2",
  "quote",
