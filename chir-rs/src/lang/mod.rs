@@ -41,6 +41,7 @@ static LANGUAGE_IDS: Map<&'static str, LanguageIdentifier> = phf_map! {
     "tok" => langid!("tok-Latn-XX"),
     "tok-XX" => langid!("tok-Latn-XX"),
     "tok-Emsi-XX" => langid!("tok-Emsi-XX"),
+    "tok-Hani-XX" => langid!("tok-Hani-XX"),
     "tok-Latn-XX" => langid!("tok-Latn-XX"),
     "tok-Stln-XX" => langid!("tok-Stln-XX"),
 };
