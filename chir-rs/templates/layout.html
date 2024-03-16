@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="{{ locale.preferred_language() }}">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>
+    {{ locale.trans("site-title") }}
+  </title>
+  <link href="{{ crate::static_file::ASSETS_STYLE_CSS.get_url() }}" rel="stylesheet" media="all">
+  <link href="{{ crate::static_file::ASSETS_WHITE_CSS.get_url() }}" rel="stylesheet" media="print">
+  <link href="{{ crate::static_file::ASSETS_COMMON_LIGHT_CSS.get_url() }}" rel="stylesheet" media="print">
+  {% if theme == crate::homepage::Theme::Auto %}
+  <link href="{{ crate::static_file::ASSETS_TRANS_RIGHTS_CSS.get_url() }}" rel="stylesheet" media="screen and (prefers-contrast: no-preference) and (prefers-color-scheme: light)">
+  <link href="{{ crate::static_file::ASSETS_SUNSET_CSS.get_url() }}" rel="stylesheet" media="screen and (prefers-contrast: no-preference) and (prefers-color-scheme: dark)">
+  <link href="{{ crate::static_file::ASSETS_WHITE_CSS.get_url() }}" rel="stylesheet" media="screen and (prefers-contrast: more) and (prefers-color-scheme: light)">
+  <link href="{{ crate::static_file::ASSETS_BLACK_CSS.get_url() }}" rel="stylesheet" media="screen and (prefers-contrast: more) and (prefers-color-scheme: dark)">
+  <link href="{{ crate::static_file::ASSETS_COMMON_LIGHT_CSS.get_url() }}" rel="stylesheet" media="screen and (prefers-color-scheme: light)">
+  <link href="{{ crate::static_file::ASSETS_COMMON_DARK_CSS.get_url() }}" rel="stylesheet" media="screen and (prefers-color-scheme: dark)">
+  {% else if theme == crate::homepage::Theme::Sunset %}
+  <link href="{{ crate::static_file::ASSETS_SUNSET_CSS.get_url() }}" rel="stylesheet" media="screen">
+  <link href="{{ crate::static_file::ASSETS_COMMON_DARK_CSS.get_url() }}" rel="stylesheet" media="screen">
+  {% else if theme == crate::homepage::Theme::Black %}
+  <link href="{{ crate::static_file::ASSETS_BLACK_CSS.get_url() }}" rel="stylesheet" media="screen">
+  <link href="{{ crate::static_file::ASSETS_COMMON_DARK_CSS.get_url() }}" rel="stylesheet" media="screen">
+  {% else if theme == crate::homepage::Theme::TransRights %}
+  <link href="{{ crate::static_file::ASSETS_TRANS_RIGHTS_CSS.get_url() }}" rel="stylesheet" media="screen">
+  <link href="{{ crate::static_file::ASSETS_COMMON_LIGHT_CSS.get_url() }}" rel="stylesheet" media="screen">
+  {% else if theme == crate::homepage::Theme::White %}
+  <link href="{{ crate::static_file::ASSETS_WHITE_CSS.get_url() }}" rel="stylesheet" media="screen">
+  <link href="{{ crate::static_file::ASSETS_COMMON_LIGHT_CSS.get_url() }}" rel="stylesheet" media="screen">
+  {% endif %}
+</head>
+
+<body>
+  <div class="container">
+    <a class="visually-hidden-focusable" href="#main">
+      {{ locale.trans("jump-to-content") }}</a>
+    <header>
+      <hgroup>
+        <h1>
+          {{ locale.trans("site-title") }}
+        </h1>
+        <p>
+          {{ locale.trans("site-subtitle") }}
+        </p>
+      </hgroup>
+    </header>
+  </div>
+</body>
+
+</html>
