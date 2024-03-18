@@ -41,7 +41,7 @@
       } @ args: let
         rustPkgs = pkgs.rustBuilder.makePackageSet {
           packageFun = import ./Cargo.nix;
-          rustChannel = "1.74.0";
+          rustChannel = "1.76.0";
           packageOverrides = pkgs: pkgs.rustBuilder.overrides.all;
         };
       in {
@@ -57,12 +57,36 @@
             extensions = ["rust-src"];
           })
           inputs.cargo2nix.packages.${system}.cargo2nix
-          clang
           cargo-deny
           cargo-crev
+          nodejs yarn yarn2nix
+          gnumake gcc
         ];
         formatter = pkgs.alejandra;
-        packages.chir-rs = rustPkgs.workspace.chir-rs {};
+        packages = rec {
+          chir-rs-fe = with pkgs;
+            mkYarnPackage {
+              name = "chir-rs-fe";
+              src = ./.;
+              packageJSON = ./web/package.json;
+              yarnLock = ./web/yarn.lock;
+              yarnNix = ./web/yarn.nix;
+              nativeBuildInputs = [fixup_yarn_lock jq];
+              configurePhase = ''
+                cd web
+                cp -r $node_modules node_modules
+              '';
+              buildPhase = "yarn build";
+              installPhase = "cp -rv dist $out; cp entrypoints $out";
+              distPhase = "true";
+            };
+          chir-rs = (rustPkgs.workspace.chir-rs {}).overrideAttrs (super: {
+            configurePhase = super.configurePhase + ''
+              cp -rv ${chir-rs-fe} web/dist
+              cp web/dist/entrypoints web
+            '';
+          });
+        };
       };
       flake = {
         hydraJobs = {

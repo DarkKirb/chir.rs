@@ -20,16 +20,6 @@ pub enum StaticFileContent<'a> {
     External(&'a str),
 }
 
-static MIME_TO_EXT: Map<&'static str, &'static str> = phf_map! {
-    "text/css" => "css",
-    "font/woff2" => "woff2",
-};
-
-static EXT_TO_MIME: Map<&'static str, &'static str> = phf_map! {
-    "css" => "text/css",
-    "woff2" => "font/woff2",
-};
-
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct StaticFile<'a> {
     mime_type: &'a str,
@@ -48,14 +38,6 @@ impl StaticFile<'static> {
 
     pub fn file_hash(&self) -> &'static str {
         self.file_hash
-    }
-
-    pub fn get_url(&self) -> String {
-        format!(
-            "/static/{}.{}",
-            self.file_hash(),
-            MIME_TO_EXT[self.mime_type()]
-        )
     }
 
     #[instrument]
@@ -81,46 +63,15 @@ impl StaticFile<'static> {
     }
 }
 
-static_embeds! {
-    "assets/style.css" = "text/css";
-    "assets/sunset.css" = "text/css";
-    "assets/trans-rights.css" = "text/css";
-    "assets/black.css" = "text/css";
-    "assets/white.css" = "text/css";
-    "assets/common-dark.css" = "text/css";
-    "assets/common-light.css" = "text/css";
-    "assets/crisa-light.woff2" = "font/woff2";
-    "assets/crisa-regular.woff2" = "font/woff2";
-    "assets/fairfax-hd-min.woff2" = "font/woff2";
-    "assets/steno-runes.woff2" = "font/woff2";
-    "assets/Stenodisplay-ClassicLarge.woff2" = "font/woff2";
-}
+static_embeds!();
 
 #[instrument]
 pub async fn static_file(Path(file): Path<String>) -> RespResult<impl IntoResponse> {
     debug!("Received request for static file {}", file);
     async fn static_file(file: String) -> Result<StaticFile<'static>> {
-        let (file_hash, file_ext) = match file.rsplit_once('.') {
-            Some((file_hash, file_ext)) => (file_hash, file_ext),
-            None => {
-                return Err(anyhow!("Invalid file path: {}", file).into());
-            }
-        };
-        let mime_type = EXT_TO_MIME
-            .get(file_ext)
-            .ok_or_else(|| anyhow!("Invalid file extension: {}", file_ext))?;
         let static_file = STATIC_FILES
-            .get(file_hash)
-            .ok_or_else(|| anyhow!("Static file not found: {}", file_hash))?;
-        if *mime_type != static_file.mime_type() {
-            return Err(anyhow!(
-                "Invalid mime type: {} for file {} (expected {})",
-                mime_type,
-                file,
-                static_file.file_hash()
-            )
-            .into());
-        }
+            .get(&file)
+            .ok_or_else(|| anyhow!("Static file not found: {}", file))?;
         Ok(*static_file)
     }
 

@@ -1,6 +1,9 @@
 //! Error Handling
 
-use axum::{http::StatusCode, response::{IntoResponse, Response}};
+use axum::{
+    http::StatusCode,
+    response::{IntoResponse, Response},
+};
 use tracing::error;
 
 #[repr(transparent)]
@@ -13,10 +16,10 @@ impl IntoResponse for Error {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
             format!("Internal server error: {:?}", self.0),
-        ).into_response()
+        )
+            .into_response()
     }
 }
-
 
 impl<E> From<E> for Error
 where

@@ -4,49 +4,58 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>
+  <title data-l10n-id="site-title">
     {{ locale.trans("site-title") }}
   </title>
-  <link href="{{ crate::static_file::ASSETS_STYLE_CSS.get_url() }}" rel="stylesheet" media="all">
-  <link href="{{ crate::static_file::ASSETS_WHITE_CSS.get_url() }}" rel="stylesheet" media="print">
-  <link href="{{ crate::static_file::ASSETS_COMMON_LIGHT_CSS.get_url() }}" rel="stylesheet" media="print">
-  {% if theme == crate::homepage::Theme::Auto %}
-  <link href="{{ crate::static_file::ASSETS_TRANS_RIGHTS_CSS.get_url() }}" rel="stylesheet" media="screen and (prefers-contrast: no-preference) and (prefers-color-scheme: light)">
-  <link href="{{ crate::static_file::ASSETS_SUNSET_CSS.get_url() }}" rel="stylesheet" media="screen and (prefers-contrast: no-preference) and (prefers-color-scheme: dark)">
-  <link href="{{ crate::static_file::ASSETS_WHITE_CSS.get_url() }}" rel="stylesheet" media="screen and (prefers-contrast: more) and (prefers-color-scheme: light)">
-  <link href="{{ crate::static_file::ASSETS_BLACK_CSS.get_url() }}" rel="stylesheet" media="screen and (prefers-contrast: more) and (prefers-color-scheme: dark)">
-  <link href="{{ crate::static_file::ASSETS_COMMON_LIGHT_CSS.get_url() }}" rel="stylesheet" media="screen and (prefers-color-scheme: light)">
-  <link href="{{ crate::static_file::ASSETS_COMMON_DARK_CSS.get_url() }}" rel="stylesheet" media="screen and (prefers-color-scheme: dark)">
-  {% else if theme == crate::homepage::Theme::Sunset %}
-  <link href="{{ crate::static_file::ASSETS_SUNSET_CSS.get_url() }}" rel="stylesheet" media="screen">
-  <link href="{{ crate::static_file::ASSETS_COMMON_DARK_CSS.get_url() }}" rel="stylesheet" media="screen">
-  {% else if theme == crate::homepage::Theme::Black %}
-  <link href="{{ crate::static_file::ASSETS_BLACK_CSS.get_url() }}" rel="stylesheet" media="screen">
-  <link href="{{ crate::static_file::ASSETS_COMMON_DARK_CSS.get_url() }}" rel="stylesheet" media="screen">
-  {% else if theme == crate::homepage::Theme::TransRights %}
-  <link href="{{ crate::static_file::ASSETS_TRANS_RIGHTS_CSS.get_url() }}" rel="stylesheet" media="screen">
-  <link href="{{ crate::static_file::ASSETS_COMMON_LIGHT_CSS.get_url() }}" rel="stylesheet" media="screen">
-  {% else if theme == crate::homepage::Theme::White %}
-  <link href="{{ crate::static_file::ASSETS_WHITE_CSS.get_url() }}" rel="stylesheet" media="screen">
-  <link href="{{ crate::static_file::ASSETS_COMMON_LIGHT_CSS.get_url() }}" rel="stylesheet" media="screen">
-  {% endif %}
+  {{ entrypoints|safe }}
 </head>
 
 <body>
   <div class="container">
-    <a class="visually-hidden-focusable" href="#main">
+    <a class="visually-hidden-focusable" href="#main" data-l10n-id="jump-to-content">
       {{ locale.trans("jump-to-content") }}</a>
     <header>
       <hgroup>
-        <h1>
+        <h1 data-l10n-id="site-title">
           {{ locale.trans("site-title") }}
         </h1>
-        <p>
+        <p data-l10n-id="site-subtitle">
           {{ locale.trans("site-subtitle") }}
         </p>
       </hgroup>
     </header>
+    <nav id="top-nav">
+      <input class="visually-hidden" type="checkbox" id="settings-menu-checkbox" aria-hidden="true" tabindex="-1">
+      <label class="hamburger" for="settings-menu-checkbox" data-l10n-id="settings-button-label" data-l10n-property="title" title="{{ locale.trans("settings-button-label") }}" aria-hidden="true">
+        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cog" class="svg-inline--fa fa-cog" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"></path></svg>
+      </label>
+      <ul style="display: flex">
+        <li><a href="/" data-l10n-id="top-nav-homepage-link">{{ locale.trans("top-nav-homepage-link") }}</a></li>
+        <li><a href="/blog" data-l10n-id="top-nav-blog-link">{{ locale.trans("top-nav-blog-link") }}</a></li>
+        <li><a href="top-nav-chat-link">{{ locale.trans("top-nav-chat-link") }}</a></li>
+      </ul>
+      <div id="settings-menu">
+        <p data-l10n-id="settings-cookie-notice">{{ locale.trans("settings-cookie-notice") }}</p>
+        <label for="change-language" data-l10n-id="settings-language-label">{{ locale.trans("settings-language-label") }}</label>
+        <select id="change-language">
+          <option value="auto" data-l10n-id="settings-language-automatic">{{ locale.trans("settings-language-automatic") }}</option>
+          <option value="de-DE">Deutsch (Deutschland)</option>
+          <option value="en-GB">English (Traditional)</option>
+          <option value="en-Sten-US">TKPWHREURB</option>
+          <option value="en-Sten-US-display">TKPWHREURB/SKWHAFPL/SRAOEURB/WAL/AOEUZ/-D/SKWHORBG</option>
+          <option value="en-Sten-US-runes">TKPWHREURB/SKWHAFPL/RAO*UPB/SKWHORBG</option>
+          <option value="en-US">English (Simplified)</option>
+          <option value="fr-FR">Français (France)</option>
+          <option value="jbo-Latn-XX">la .lojban.</option>
+          <option value="jbo-Zblr-XX">  (la .lojban., zbalermorna)</option>"
+          <option value="nl-NL">Nederlands</option>
+          <option value="tok-Emsi-XX">🗣️👍</option>
+          <option value="tok-Hani-XX">言善</option>
+          <option value="tok-Latn-XX">toki pona</option>
+          <option value="tok-Stln-XX">󱥬󱦖󱥔 (toki pona, sitelen pona)</option>
+        </select>
+      </div>
+    </nav>
   </div>
 </body>
-
 </html>

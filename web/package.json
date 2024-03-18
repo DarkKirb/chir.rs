@@ -1,0 +1,32 @@
+{
+  "name": "chir-rs",
+  "version": "0.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/darkkirb/chir.rs",
+  "author": "Charlotte 🦝 Delenk",
+  "license": "none",
+  "private": true,
+  "scripts": {
+    "build": "webpack; webpack -j | jq -r '.chunks[] | select(.initial) | .files[]' > entrypoints"
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
+    "css-loader": "^6.10.0",
+    "css-minimizer-webpack-plugin": "^6.0.0",
+    "file-loader": "^6.2.0",
+    "mini-css-extract-plugin": "^2.8.1",
+    "sass": "^1.72.0",
+    "sass-loader": "^14.1.1",
+    "terser-webpack-plugin": "^5.3.10",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.2",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "@fluent/bundle": "^0.18.0",
+    "@picocss/pico": "^2.0.6",
+    "js-cookie": "^3.0.5",
+    "tslib": "^2.6.2"
+  }
+}

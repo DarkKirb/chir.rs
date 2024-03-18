@@ -6,3 +6,6 @@
 /target
 /result
 /result-bin
+node_modules/
+dist/
+entrypoints

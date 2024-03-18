@@ -1,5 +1,6 @@
 //! Internationalization support
 
+use std::borrow::Cow;
 use std::ops::Deref;
 
 use anyhow::{anyhow, bail};
@@ -12,8 +13,9 @@ use axum::{async_trait, extract::FromRequestParts};
 use fluent_templates::{static_loader, LanguageIdentifier, Loader};
 use phf::{phf_map, Map};
 use tower_cookies::Cookies;
-use tracing::{instrument, warn};
+use tracing::{debug, instrument, trace, warn};
 use unic_langid::langid;
+
 
 static_loader! {
     static LOCALES = {
@@ -47,23 +49,61 @@ static LANGUAGE_IDS: Map<&'static str, LanguageIdentifier> = phf_map! {
 };
 static FALLBACK_LANG: LanguageIdentifier = langid!("en");
 
+#[derive(Clone, Debug)]
+struct LocaleID {
+    language_id: &'static LanguageIdentifier,
+    display_language_id: Option<String>
+}
+
+impl LocaleID {
+    fn language_code(&self) -> String {
+        match self.display_language_id {
+            Some(ref lang) => lang.clone(),
+            None => self.language_id.to_string()
+        }
+    }
+}
+
+impl From<&'static LanguageIdentifier> for LocaleID {
+    fn from(language_id: &'static LanguageIdentifier) -> Self {
+        Self {
+            language_id,
+            display_language_id: None
+        }
+    }
+}
+
+impl PartialEq for LocaleID {
+    fn eq(&self, other: &Self) -> bool {
+        self.language_code() == other.language_code()
+    }
+}
+
+impl Eq for LocaleID {}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub struct Locale(Vec<&'static LanguageIdentifier>);
+pub struct Locale(Vec<LocaleID>);
 
 impl Locale {
-    fn determine_known_locale(locale: impl AsRef<str>) -> Result<&'static LanguageIdentifier> {
+    fn determine_known_locale(locale: impl AsRef<str>) -> Result<LocaleID> {
         let locale = locale.as_ref();
+        trace!("Determining known locale for {locale}");
 
         // See if we know about the locale directly
         if let Some(lang) = LANGUAGE_IDS.get(locale) {
-            return Ok(lang);
+            trace!("We know about the locale {locale} directly");
+            return Ok(lang.into());
         }
 
         let locale: LanguageIdentifier = locale
             .parse()
             .with_context(|| format!("Parsing locale: {locale}"))?;
 
+        trace!("Parsed locale {locale}");
+
         let (language, script, region, mut variants) = locale.clone().into_parts();
+
+        trace!("{locale} has language: {language}, script: {script:?}, region: {region:?}, variants: {variants:?}");
 
         // Remove variants one-by-one until we find a match
         while !variants.is_empty() {
@@ -77,7 +117,10 @@ impl Locale {
             .to_string();
 
             if let Some(lang) = LANGUAGE_IDS.get(&lang_id) {
-                return Ok(lang);
+                return Ok(LocaleID {
+                    language_id: lang,
+                    display_language_id: Some(locale.to_string())
+                });
             }
         }
 
@@ -86,14 +129,20 @@ impl Locale {
             LanguageIdentifier::from_parts(language.clone(), None, region.clone(), &[]).to_string();
 
         if let Some(lang) = LANGUAGE_IDS.get(&lang_id) {
-            return Ok(lang);
+            return Ok(LocaleID {
+                language_id: lang,
+                display_language_id: Some(locale.to_string())
+            });
         }
 
         // Remove region tag
         let lang_id = LanguageIdentifier::from_parts(language.clone(), None, None, &[]).to_string();
 
         if let Some(lang) = LANGUAGE_IDS.get(&lang_id) {
-            return Ok(lang);
+            return Ok(LocaleID {
+                language_id: lang,
+                display_language_id: Some(locale.to_string())
+            });
         }
 
         bail!("Unknown locale: {locale}");
@@ -109,16 +158,15 @@ impl Locale {
                 }
             })
             .collect::<Vec<_>>();
-        if !langs.contains(&&FALLBACK_LANG) {
-            langs.push(&FALLBACK_LANG);
-        }
         Self(langs)
     }
 
     pub fn prepend_language(&mut self, lang: impl AsRef<str>) {
-        let lang_id = match LANGUAGE_IDS.get(lang.as_ref()) {
-            Some(lang_id) => lang_id,
-            None => {
+        let lang = lang.as_ref();
+        let lang_id = match Self::determine_known_locale(lang) {
+            Ok(lang_id) => lang_id,
+            Err(e) => {
+                warn!("Failed to parse locale {lang}: {e:?}");
                 return;
             }
         };
@@ -126,9 +174,11 @@ impl Locale {
         self.0.dedup();
     }
     pub fn append_language(&mut self, lang: impl AsRef<str>) {
-        let lang_id = match LANGUAGE_IDS.get(lang.as_ref()) {
-            Some(lang_id) => lang_id,
-            None => {
+        let lang = lang.as_ref();
+        let lang_id = match Self::determine_known_locale(lang) {
+            Ok(lang_id) => lang_id,
+            Err(e) => {
+                warn!("Failed to parse locale {lang}: {e:?}");
                 return;
             }
         };
@@ -139,7 +189,7 @@ impl Locale {
     pub fn trans(&self, key: impl AsRef<str>) -> String {
         let text_id = key.as_ref();
         for lang in &self.0 {
-            if let Some(translation) = LOCALES.try_lookup(lang, text_id) {
+            if let Some(translation) = LOCALES.try_lookup(lang.language_id, text_id) {
                 return translation;
             }
         }
@@ -152,9 +202,8 @@ impl Locale {
     pub fn preferred_language(&self) -> String {
         self.0
             .get(0)
-            .map(Deref::deref)
-            .unwrap_or(&FALLBACK_LANG)
-            .to_string()
+            .map(LocaleID::language_code)
+            .unwrap_or_else(|| FALLBACK_LANG.to_string())
     }
 }
 
