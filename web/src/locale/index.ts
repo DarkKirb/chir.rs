@@ -1,4 +1,6 @@
-import type { FluentBundle, FluentResource } from "@fluent/bundle";
+import { FluentBundle, FluentResource } from "@fluent/bundle";
+import Cookies from "js-cookie";
+import "tslib";
 
 const LANGUAGE_IDS: Record<string, string> = {
     'de': 'de-DE',
@@ -62,9 +64,7 @@ async function loadLanguage(lang: string): Promise<FluentBundle> {
         return loadedLanguages[lang];
     }
 
-    const { FluentBundle, FluentResource } = await import("@fluent/bundle");
-    const fluentUrl = await pickBundle(lang);
-    const fluentFile = await fetch(fluentUrl).then(res => res.text());
+    const fluentFile = await pickBundle(lang);
     const fluentResource = new FluentResource(fluentFile);
     loadedLanguages[lang] = new FluentBundle(lang);
     loadedLanguages[lang].addResource(fluentResource);
@@ -129,7 +129,6 @@ async function localizeAll(): Promise<void> {
 }
 
 export async function handleLanguageChange(event: Event) {
-    const Cookies = (await import('js-cookie')).default;
     let target = event.target as HTMLSelectElement;
     if (target.value === 'auto') {
         Cookies.remove('locale');

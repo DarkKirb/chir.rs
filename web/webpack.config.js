@@ -29,14 +29,20 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
       },
       {
-        test: /\.tsx?$/,
-        use: "ts-loader",
+        test: /\.(?:js|mjs|cjs|tsx?)$/,
         exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        }
       },
       {
-        test: /\.(png|jpe?g|gif|ftl)$/i,
+        test: /\.(png|jpe?g|gif)$/i,
         type: 'asset/resource'
       },
+      {
+        test: /\.(ftl)$/i,
+        type: 'asset/source',
+      }
     ],
   },
   resolve: {
@@ -45,9 +51,7 @@ module.exports = {
   optimization: {
     moduleIds: "deterministic",
     splitChunks: {
-      chunks: "all",
-      minSize: 0,
-      minSizeReduction: 0
+      chunks: "all"
     },
     minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
   },
