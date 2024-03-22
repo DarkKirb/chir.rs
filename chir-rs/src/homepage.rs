@@ -15,7 +15,7 @@ fn format_embed(embed_filename: String) -> String {
     if embed_filename.ends_with(".css") {
         format!("<link rel=\"stylesheet\" href=\"/static/{embed_filename}\">")
     } else if embed_filename.ends_with(".js") {
-        format!("<script src=\"/static/{embed_filename}\"></script>")
+        format!("<script defer src=\"/static/{embed_filename}\"></script>")
     } else {
         panic!("don’t know how to handle this");
     }

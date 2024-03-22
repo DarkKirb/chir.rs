@@ -1,14 +1,30 @@
-@use "@picocss/pico/scss/pico" with (
+@use "../style/pico" with (
+  $css-var-prefix: "--",
   $modules: (
-    "themes/default": false
+    // Theme
+    "themes/default": true,
+
+    // Layout
+    "layout/document": true,
+    "layout/landmarks": true,
+    "layout/container": true,
+
+    // Content
+    "content/typography": true,
+
+    // Forms
+    "forms/basics": true,
+
+    // Components
+    //"components/dropdown": true,
+    "components/nav": true,
   )
 );
-@use "themes/_default.scss";
 
 body {
   background-attachment: fixed;
   background-repeat: no-repeat;
-  background-image: var(--pico-background-image);
+  background-image: var(--background-image);
 }
 
 // Config
@@ -114,24 +130,25 @@ article {
   padding: 1rem;
 }
 
-@media (prefers-contrast: no-preference) {
+// For syntax highlighting
+/*@media (prefers-contrast: no-preference) {
   [data-theme="light"],
   :root:not([data-theme="sunset"]):not([data-theme="black"]):not(
       [data-theme="white"]
     ) {
-    @import "_prism.scss";
+    @import "../style/_prism.scss";
   }
   @media screen and (prefers-color-scheme: dark) {
     :root:not([data-theme]):not([data-theme]):not([data-theme]):not(
         [data-theme]
       ) {
-      @import "_prism-dark.scss";
+      @import "../style/_prism-dark.scss";
     }
     [data-theme="sunset"] {
-      @import "_prism-dark.scss";
+      @import "../style/_prism-dark.scss";
     }
   }
-}
+}*/
 
 img {
   display: block;
@@ -172,15 +189,15 @@ img {
 }
 
 html[lang="en-Sten-US-display"] {
-  --pico-font-family-sans-serif: "stenodisplay", sans-serif, var(--pico-font-family-emoji), 'fairfax-hd', 'crisa';
-  --pico-font-family-monospace: "stenodisplay", monospace, var(--pico-font-family-emoji), 'fairfax-hd', 'crisa';
-  --pico-font-family: var(--pico-font-family-sans-serif);
-  --pico-font-size: 250%;
+  --font-family-sans-serif: "stenodisplay", sans-serif, var(--font-family-emoji), 'fairfax-hd', 'crisa';
+  --font-family-monospace: "stenodisplay", monospace, var(--font-family-emoji), 'fairfax-hd', 'crisa';
+  --font-family: var(--font-family-sans-serif);
+  --font-size: 250%;
 }
 
 html[lang="en-Sten-US-runes"] {
-  --pico-font-family-sans-serif: "stenorunes", sans-serif, var(--pico-font-family-emoji), 'fairfax-hd', 'crisa';
-  --pico-font-family-monospace: "stenorunes", monospace, var(--pico-font-family-emoji), 'fairfax-hd', 'crisa';
-  --pico-font-family: var(--pico-font-family-sans-serif);
-  --pico-font-size: 150%;
+  --font-family-sans-serif: "stenorunes", sans-serif, var(--font-family-emoji), 'fairfax-hd', 'crisa';
+  --font-family-monospace: "stenorunes", monospace, var(--font-family-emoji), 'fairfax-hd', 'crisa';
+  --font-family: var(--font-family-sans-serif);
+  --font-size: 150%;
 }
