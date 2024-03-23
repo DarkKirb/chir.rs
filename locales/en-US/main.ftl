@@ -1,6 +1,6 @@
 ## Common UI elements
 
-# Invisible link at the top of thk page to skip past the top navigation
+# Invisible link at the top of the page to skip past the top navigation
 jump-to-content = Jump to content…
 
 # The title of the website
@@ -17,6 +17,18 @@ settings-cookie-notice = Changing the settings will set and transmit cookies to 
 settings-language-label = Language:
 # Language option: Automatic
 settings-language-automatic = Automatic
+# Theme selection label
+settings-theme-label = Theme:
+# Theme option: Automatic
+settings-theme-automatic = Automatic
+# Theme option: Sunset
+settings-theme-sunset = Sunset
+# Theme option: Black (high contrast)
+settings-theme-black = Black (high contrast)
+# Theme option: Trans Rights
+settings-theme-trans-rights = Trans Rights (light theme)
+# Theme option: White (high contrast)
+settings-theme-white = White (high contrast)
 
 ## Top navigation
 # Link to the home page

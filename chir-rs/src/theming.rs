@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, fmt::Display};
 
 use anyhow::{anyhow, Context, Result};
 use axum::{
@@ -27,6 +27,18 @@ pub enum Theme {
 impl Default for Theme {
     fn default() -> Self {
         Self::Auto
+    }
+}
+
+impl Display for Theme {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Auto => write!(f, "auto"),
+            Self::Sunset => write!(f, "sunset"),
+            Self::TransRights => write!(f, "trans-rights"),
+            Self::Black => write!(f, "black"),
+            Self::White => write!(f, "white"),
+        }
     }
 }
 

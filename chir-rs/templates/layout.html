@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ locale.preferred_language() }}">
+<html lang="{{ locale.preferred_language() }}"
+{% if theme != Theme::Auto %}
+data-theme="{{theme}}"
+{% endif %}
+>
 
 <head>
   <meta charset="utf-8">
@@ -53,6 +57,14 @@
           <option value="tok-Hani-XX">言善</option>
           <option value="tok-Latn-XX">toki pona</option>
           <option value="tok-Stln-XX">󱥬󱦖󱥔 (toki pona, sitelen pona)</option>
+        </select>
+        <label for="change-theme" data-l10n-id="settings-theme-label">{{ locale.trans("settings-theme-label") }}</label>
+        <select id="change-theme">
+          <option value="auto" data-l10n-id="settings-theme-automatic">{{ locale.trans("settings-theme-automatic") }}</option>
+          <option value="sunset" data-l10n-id="settings-theme-sunset">{{ locale.trans("settings-theme-sunset") }}</option>
+          <option value="black" data-l10n-id="settings-theme-black">{{ locale.trans("settings-theme-black") }}</option>
+          <option value="trans-rights" data-l10n-id="settings-theme-trans-rights">{{ locale.trans("settings-theme-trans-rights") }}</option>
+          <option value="white" data-l10n-id="settings-theme-white">{{ locale.trans("settings-theme-white") }}</option>
         </select>
       </div>
     </nav>

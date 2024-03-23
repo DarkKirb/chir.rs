@@ -16,7 +16,6 @@ use tower_cookies::Cookies;
 use tracing::{debug, instrument, trace, warn};
 use unic_langid::langid;
 
-
 static_loader! {
     static LOCALES = {
         locales: "../locales",
@@ -52,14 +51,14 @@ static FALLBACK_LANG: LanguageIdentifier = langid!("en");
 #[derive(Clone, Debug)]
 struct LocaleID {
     language_id: &'static LanguageIdentifier,
-    display_language_id: Option<String>
+    display_language_id: Option<String>,
 }
 
 impl LocaleID {
     fn language_code(&self) -> String {
         match self.display_language_id {
             Some(ref lang) => lang.clone(),
-            None => self.language_id.to_string()
+            None => self.language_id.to_string(),
         }
     }
 }
@@ -68,7 +67,7 @@ impl From<&'static LanguageIdentifier> for LocaleID {
     fn from(language_id: &'static LanguageIdentifier) -> Self {
         Self {
             language_id,
-            display_language_id: None
+            display_language_id: None,
         }
     }
 }
@@ -119,7 +118,7 @@ impl Locale {
             if let Some(lang) = LANGUAGE_IDS.get(&lang_id) {
                 return Ok(LocaleID {
                     language_id: lang,
-                    display_language_id: Some(locale.to_string())
+                    display_language_id: Some(locale.to_string()),
                 });
             }
         }
@@ -131,7 +130,7 @@ impl Locale {
         if let Some(lang) = LANGUAGE_IDS.get(&lang_id) {
             return Ok(LocaleID {
                 language_id: lang,
-                display_language_id: Some(locale.to_string())
+                display_language_id: Some(locale.to_string()),
             });
         }
 
@@ -141,7 +140,7 @@ impl Locale {
         if let Some(lang) = LANGUAGE_IDS.get(&lang_id) {
             return Ok(LocaleID {
                 language_id: lang,
-                display_language_id: Some(locale.to_string())
+                display_language_id: Some(locale.to_string()),
             });
         }
 

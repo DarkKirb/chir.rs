@@ -28,7 +28,7 @@ pub async fn homepage(theme: Theme, locale: Locale) -> RespResult<impl IntoRespo
         entrypoints: include_str!("../../web/entrypoints")
             .split('\n')
             .map(ToString::to_string)
-            .filter(|s|!s.is_empty())
+            .filter(|s| !s.is_empty())
             .map(format_embed)
             .fold(String::new(), |mut acc, x| {
                 acc += &x;
