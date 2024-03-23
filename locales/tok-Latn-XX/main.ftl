@@ -8,7 +8,7 @@ site-title = tomo sewi pi kije Lote
 site-subtitle = kijetesantakalu li kepeken ala kepeken e linluwi? toki insa sina li toki e ni: ni li ala. taso ni mute!
 # Settings menu
 # Label for the image button that opens and closes the settings menu. Not shown to screenreader users
-settings-button-label = o open/pini e lawa
+settings-button-label = o open anu pini e lawa
 # Settings menu
 # Language selection label
 settings-language-label = toki:
