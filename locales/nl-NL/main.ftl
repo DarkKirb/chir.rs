@@ -27,3 +27,18 @@ top-nav-chat-link = Chat
 # Settings menu
 # Cookie notice shown above the settings list
 settings-cookie-notice = Het aanpassen van instellingen wordt opgeslagen in de cookies, die naar de server worden verzonden. Je kan deze verwĳderen door de instellingen op “Automatisch” te zetten.
+# Settings menu
+# Theme option: Automatic
+settings-theme-automatic = Automatisch
+# Settings menu
+# Theme selection label
+settings-theme-label = Thema:
+# Settings menu
+# Theme option: Sunset
+settings-theme-sunset = Zonsondergang
+# Settings menu
+# Theme option: Black (high contrast)
+settings-theme-black = zvart (hoog contrast)
+# Settings menu
+# Theme option: White (high contrast)
+settings-theme-white = wit (hoog contrast)
