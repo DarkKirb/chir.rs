@@ -81,7 +81,10 @@ impl PartialEq for LocaleID {
 impl Eq for LocaleID {}
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub struct Locale(Vec<LocaleID>);
+pub struct Locale {
+    locale_preference: Vec<LocaleID>,
+    set_locale: Option<String>,
+}
 
 impl Locale {
     fn determine_known_locale(locale: impl AsRef<str>) -> Result<LocaleID> {
@@ -157,7 +160,10 @@ impl Locale {
                 }
             })
             .collect::<Vec<_>>();
-        Self(langs)
+        Self {
+            locale_preference: langs,
+            set_locale: None,
+        }
     }
 
     pub fn prepend_language(&mut self, lang: impl AsRef<str>) {
@@ -169,8 +175,9 @@ impl Locale {
                 return;
             }
         };
-        self.0.insert(0, lang_id);
-        self.0.dedup();
+        self.locale_preference.insert(0, lang_id);
+        self.locale_preference.dedup();
+        self.set_locale = Some(lang.to_string());
     }
     pub fn append_language(&mut self, lang: impl AsRef<str>) {
         let lang = lang.as_ref();
@@ -181,13 +188,13 @@ impl Locale {
                 return;
             }
         };
-        if !self.0.contains(&lang_id) {
-            self.0.push(lang_id);
+        if !self.locale_preference.contains(&lang_id) {
+            self.locale_preference.push(lang_id);
         }
     }
     pub fn trans(&self, key: impl AsRef<str>) -> String {
         let text_id = key.as_ref();
-        for lang in &self.0 {
+        for lang in &self.locale_preference {
             if let Some(translation) = LOCALES.try_lookup(lang.language_id, text_id) {
                 return translation;
             }
@@ -199,10 +206,20 @@ impl Locale {
     }
 
     pub fn preferred_language(&self) -> String {
-        self.0
+        self.locale_preference
             .get(0)
             .map(LocaleID::language_code)
             .unwrap_or_else(|| FALLBACK_LANG.to_string())
+    }
+
+    pub fn is_selected_language(&self, lang: impl AsRef<str>) -> &'static str {
+        let lang = lang.as_ref();
+
+        if self.set_locale.as_ref().map(String::as_str).unwrap_or("auto") == lang {
+            "selected"
+        } else {
+            ""
+        }
     }
 }
 

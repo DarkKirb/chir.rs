@@ -42,29 +42,29 @@ data-theme="{{theme}}"
         <p data-l10n-id="settings-cookie-notice">{{ locale.trans("settings-cookie-notice") }}</p>
         <label for="change-language" data-l10n-id="settings-language-label">{{ locale.trans("settings-language-label") }}</label>
         <select id="change-language">
-          <option value="auto" data-l10n-id="settings-language-automatic">{{ locale.trans("settings-language-automatic") }}</option>
-          <option value="de-DE">Deutsch (Deutschland)</option>
-          <option value="en-GB">English (Traditional)</option>
-          <option value="en-Sten-US">TKPWHREURB</option>
-          <option value="en-Sten-US-display">TKPWHREURB/SKWHAFPL/SRAOEURB/WAL/AOEUZ/-D/SKWHORBG</option>
-          <option value="en-Sten-US-runes">TKPWHREURB/SKWHAFPL/RAO*UPB/SKWHORBG</option>
-          <option value="en-US">English (Simplified)</option>
-          <option value="fr-FR">Français (France)</option>
-          <option value="jbo-Latn-XX">la .lojban.</option>
-          <option value="jbo-Zblr-XX">  (la .lojban., zbalermorna)</option>"
-          <option value="nl-NL">Nederlands</option>
-          <option value="tok-Emsi-XX">🗣️👍</option>
-          <option value="tok-Hani-XX">言善</option>
-          <option value="tok-Latn-XX">toki pona</option>
-          <option value="tok-Stln-XX">󱥬󱦖󱥔 (toki pona, sitelen pona)</option>
+          <option value="auto" data-l10n-id="settings-language-automatic" {{ locale.is_selected_language("auto") }}>{{ locale.trans("settings-language-automatic") }}</option>
+          <option value="de-DE" {{ locale.is_selected_language("de-DE") }}>Deutsch (Deutschland)</option>
+          <option value="en-GB" {{ locale.is_selected_language("en-GB") }}>English (Traditional)</option>
+          <option value="en-Sten-US" {{ locale.is_selected_language("en-Sten-US") }}>TKPWHREURB</option>
+          <option value="en-Sten-US-display" {{ locale.is_selected_language("en-Sten-US-display") }}>TKPWHREURB/SKWHAFPL/SRAOEURB/WAL/AOEUZ/-D/SKWHORBG</option>
+          <option value="en-Sten-US-runes" {{ locale.is_selected_language("en-Sten-US-runes") }}>TKPWHREURB/SKWHAFPL/RAO*UPB/SKWHORBG</option>
+          <option value="en-US" {{ locale.is_selected_language("en-US") }}>English (Simplified)</option>
+          <option value="fr-FR" {{ locale.is_selected_language("fr-FR") }}>Français (France)</option>
+          <option value="jbo-Latn-XX" {{ locale.is_selected_language("jbo-Latn-XX") }}>la .lojban.</option>
+          <option value="jbo-Zblr-XX" {{ locale.is_selected_language("jbo-Zblr-XX") }}>  (la .lojban., zbalermorna)</option>"
+          <option value="nl-NL" {{ locale.is_selected_language("nl-NL") }}>Nederlands</option>
+          <option value="tok-Emsi-XX" {{ locale.is_selected_language("tok-Emsi-XX") }}>🗣️👍</option>
+          <option value="tok-Hani-XX" {{ locale.is_selected_language("tok-Hani-XX") }}>言善</option>
+          <option value="tok-Latn-XX" {{ locale.is_selected_language("tok-Latn-XX") }}>toki pona</option>
+          <option value="tok-Stln-XX" {{ locale.is_selected_language("tok-Stln-XX") }}>󱥬󱦖󱥔 (toki pona, sitelen pona)</option>
         </select>
         <label for="change-theme" data-l10n-id="settings-theme-label">{{ locale.trans("settings-theme-label") }}</label>
         <select id="change-theme">
-          <option value="auto" data-l10n-id="settings-theme-automatic">{{ locale.trans("settings-theme-automatic") }}</option>
-          <option value="sunset" data-l10n-id="settings-theme-sunset">{{ locale.trans("settings-theme-sunset") }}</option>
-          <option value="black" data-l10n-id="settings-theme-black">{{ locale.trans("settings-theme-black") }}</option>
-          <option value="trans-rights" data-l10n-id="settings-theme-trans-rights">{{ locale.trans("settings-theme-trans-rights") }}</option>
-          <option value="white" data-l10n-id="settings-theme-white">{{ locale.trans("settings-theme-white") }}</option>
+          <option value="auto" data-l10n-id="settings-theme-automatic" {{ theme.is_selected(Theme::Auto) }}>{{ locale.trans("settings-theme-automatic") }}</option>
+          <option value="sunset" data-l10n-id="settings-theme-sunset" {{ theme.is_selected(Theme::Sunset) }}>{{ locale.trans("settings-theme-sunset") }}</option>
+          <option value="black" data-l10n-id="settings-theme-black" {{ theme.is_selected(Theme::Black) }}>{{ locale.trans("settings-theme-black") }}</option>
+          <option value="trans-rights" data-l10n-id="settings-theme-trans-rights" {{ theme.is_selected(Theme::TransRights) }}>{{ locale.trans("settings-theme-trans-rights") }}</option>
+          <option value="white" data-l10n-id="settings-theme-white" {{ theme.is_selected(Theme::White) }}>{{ locale.trans("settings-theme-white") }}</option>
         </select>
       </div>
     </nav>
