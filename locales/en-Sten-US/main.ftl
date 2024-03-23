@@ -27,3 +27,21 @@ top-nav-chat-link = KHAT
 # Settings menu
 # Cookie notice shown above the settings list
 settings-cookie-notice = KHAPBG/-G/-T/SEGTS/HR/SET/SKP/TREUT/KAOBG/EUS/TO/OUR/SEFRB/*ER/TP-PL/UBG/RE/PHOF/THEPL/PWEU/SEGT/-T/SEGTS/TO/A*E/KPA*/AUPL/EUBG/AE/TP-PL
+# Settings menu
+# Theme selection label
+settings-theme-label = THAOEPL/STPH-FPLT
+# Settings menu
+# Theme option: Trans Rights
+settings-theme-trans-rights = TRAPBS/RAOEUTS/PREPB/HRAOEUT/THAOEPL/PRE*PB
+# Settings menu
+# Theme option: Automatic
+settings-theme-automatic = AUPL/EUBG
+# Settings menu
+# Theme option: Sunset
+settings-theme-sunset = SAUPB/SET
+# Settings menu
+# Theme option: Black (high contrast)
+settings-theme-black = PWHRABG/PREPB/HAOEU/KRAEFT/PRE*PB
+# Settings menu
+# Theme option: White (high contrast)
+settings-theme-white = WHAOEUT/PREPB/HAOEU/KRAEFT/PRE*PB
