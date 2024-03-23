@@ -27,3 +27,21 @@ top-nav-chat-link = Chat
 # Settings menu
 # Cookie notice shown above the settings list
 settings-cookie-notice = Changing the settings will set and transmit cookies to our server. You can remove them by setting the settings to “Automatic”.
+# Settings menu
+# Theme selection label
+settings-theme-label = Theme:
+# Settings menu
+# Theme option: Automatic
+settings-theme-automatic = Automatic
+# Settings menu
+# Theme option: Sunset
+settings-theme-sunset = Sunset
+# Settings menu
+# Theme option: Black (high contrast)
+settings-theme-black = Black (high contrast)
+# Settings menu
+# Theme option: Trans Rights
+settings-theme-trans-rights = Trans Rights (light theme)
+# Settings menu
+# Theme option: White (high contrast)
+settings-theme-white = White (high contrast)
