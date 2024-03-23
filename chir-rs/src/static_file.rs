@@ -8,7 +8,6 @@ use axum::{
     response::IntoResponse,
 };
 use chir_rs_macros::static_embeds;
-use phf::{phf_map, Map};
 use tokio_util::io::ReaderStream;
 use tracing::{debug, error, instrument};
 

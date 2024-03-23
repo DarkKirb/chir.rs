@@ -12,7 +12,9 @@ async function onThemeChange(event: Event) {
 
 async function main() {
     document.getElementById('change-language')?.addEventListener('change', onLanguageChange);
-    document.getElementById('change-theme')?.addEventListener('change', onThemeChange)
+    document.getElementById('change-theme')?.addEventListener('change', onThemeChange);
+    // Following this we no longer need the submit settings button
+    //document.getElementById("settings-submit-button")?.remove();
 }
 
 

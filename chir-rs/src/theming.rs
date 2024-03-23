@@ -63,12 +63,11 @@ impl TryFrom<&str> for Theme {
 
 impl Theme {
     pub fn is_selected(&self, theme: Theme) -> &'static str {
-            if *self == theme {
-                "selected"
-            } else {
-                ""
-            }
-        
+        if *self == theme {
+            "selected"
+        } else {
+            ""
+        }
     }
 }
 

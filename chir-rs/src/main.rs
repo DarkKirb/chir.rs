@@ -24,6 +24,7 @@ async fn main() {
         let app = Router::new()
             .route("/", get(homepage::homepage))
             .route("/static/:path", get(static_file::static_file))
+            .route("/update_settings", get(homepage::update_settings))
             .layer(CookieManagerLayer::new());
         let listener = TcpListener::bind(
             env::var("BIND_ADDR").context("Failed to read environment variable BIND_ADDR")?,

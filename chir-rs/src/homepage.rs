@@ -1,5 +1,13 @@
+use anyhow::Result;
 use askama_axum::Template;
-use axum::response::{Html, IntoResponse};
+use axum::{
+    extract::Query,
+    http::{HeaderMap, StatusCode},
+    response::{AppendHeaders, Html, IntoResponse},
+};
+use tower_cookies::{Cookie, Cookies};
+use tracing::instrument;
+use serde::Deserialize;
 
 use crate::{err::RespResult, lang::Locale, theming::Theme};
 
@@ -36,4 +44,47 @@ pub async fn homepage(theme: Theme, locale: Locale) -> RespResult<impl IntoRespo
             }),
     };
     Ok(Html(homepage.render()?))
+}
+
+#[derive(Clone, Deserialize, Debug, PartialEq, Eq)]
+pub struct Settings {
+    theme: String,
+    lang: String,
+}
+
+#[instrument]
+pub async fn update_settings(
+    cookies: Cookies,
+    Query(settings): Query<Settings>,
+    headers: HeaderMap,
+) -> RespResult<impl IntoResponse> {
+    async fn update_settings(
+        cookies: Cookies,
+        settings: Settings,
+        headers: HeaderMap,
+    ) -> Result<impl IntoResponse> {
+        let referrer = match headers.get("referer") {
+            Some(v) => v.to_str()?,
+            None => return Err(anyhow::anyhow!("Missing referer header")),
+        };
+
+        if settings.theme == "auto" {
+            cookies.remove(Cookie::new("theme", ""));
+        } else {
+            let mut theme_cookie = Cookie::new("theme", settings.theme);
+            theme_cookie.make_permanent();
+            cookies.add(theme_cookie);
+        }
+
+        if settings.lang == "auto" {
+            cookies.remove(Cookie::new("locale", ""));
+        } else {
+            let mut locale_cookie = Cookie::new("locale", settings.lang);
+            locale_cookie.make_permanent();
+            cookies.add(locale_cookie);
+        }
+    
+        Ok((StatusCode::FOUND, AppendHeaders([("Location", referrer.to_string())])))
+    }
+    Ok(update_settings(cookies, settings, headers).await?)
 }

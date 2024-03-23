@@ -38,10 +38,10 @@ data-theme="{{theme}}"
         <li><a href="/blog" data-l10n-id="top-nav-blog-link">{{ locale.trans("top-nav-blog-link") }}</a></li>
         <li><a href="top-nav-chat-link">{{ locale.trans("top-nav-chat-link") }}</a></li>
       </ul>
-      <div id="settings-menu">
+      <form id="settings-menu" action="/update_settings" method="get">
         <p data-l10n-id="settings-cookie-notice">{{ locale.trans("settings-cookie-notice") }}</p>
         <label for="change-language" data-l10n-id="settings-language-label">{{ locale.trans("settings-language-label") }}</label>
-        <select id="change-language">
+        <select id="change-language" name="lang">
           <option value="auto" data-l10n-id="settings-language-automatic" {{ locale.is_selected_language("auto") }}>{{ locale.trans("settings-language-automatic") }}</option>
           <option value="de-DE" {{ locale.is_selected_language("de-DE") }}>Deutsch (Deutschland)</option>
           <option value="en-GB" {{ locale.is_selected_language("en-GB") }}>English (Traditional)</option>
@@ -59,14 +59,15 @@ data-theme="{{theme}}"
           <option value="tok-Stln-XX" {{ locale.is_selected_language("tok-Stln-XX") }}>󱥬󱦖󱥔 (toki pona, sitelen pona)</option>
         </select>
         <label for="change-theme" data-l10n-id="settings-theme-label">{{ locale.trans("settings-theme-label") }}</label>
-        <select id="change-theme">
+        <select id="change-theme" name="theme">
           <option value="auto" data-l10n-id="settings-theme-automatic" {{ theme.is_selected(Theme::Auto) }}>{{ locale.trans("settings-theme-automatic") }}</option>
           <option value="sunset" data-l10n-id="settings-theme-sunset" {{ theme.is_selected(Theme::Sunset) }}>{{ locale.trans("settings-theme-sunset") }}</option>
           <option value="black" data-l10n-id="settings-theme-black" {{ theme.is_selected(Theme::Black) }}>{{ locale.trans("settings-theme-black") }}</option>
           <option value="trans-rights" data-l10n-id="settings-theme-trans-rights" {{ theme.is_selected(Theme::TransRights) }}>{{ locale.trans("settings-theme-trans-rights") }}</option>
           <option value="white" data-l10n-id="settings-theme-white" {{ theme.is_selected(Theme::White) }}>{{ locale.trans("settings-theme-white") }}</option>
         </select>
-      </div>
+        <input id="settings-submit-button" type="submit" data-l10n-id="setting-submit-update" data-l10n-property="value" value="{{  locale.trans("setting-submit-update") }}">
+      </form>
     </nav>
   </div>
 </body>

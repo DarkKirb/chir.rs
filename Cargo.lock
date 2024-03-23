@@ -277,6 +277,7 @@ dependencies = [
  "dotenv",
  "fluent-templates",
  "phf",
+ "serde",
  "tokio",
  "tokio-util",
  "tower-cookies",

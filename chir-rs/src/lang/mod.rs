@@ -1,8 +1,5 @@
 //! Internationalization support
 
-use std::borrow::Cow;
-use std::ops::Deref;
-
 use anyhow::{anyhow, bail};
 use anyhow::{Context, Result};
 use askama_axum::IntoResponse;
@@ -13,7 +10,7 @@ use axum::{async_trait, extract::FromRequestParts};
 use fluent_templates::{static_loader, LanguageIdentifier, Loader};
 use phf::{phf_map, Map};
 use tower_cookies::Cookies;
-use tracing::{debug, instrument, trace, warn};
+use tracing::{instrument, trace, warn};
 use unic_langid::langid;
 
 static_loader! {
@@ -150,7 +147,7 @@ impl Locale {
         bail!("Unknown locale: {locale}");
     }
     pub fn new(http_header: impl AsRef<str>) -> Self {
-        let mut langs = accept_language::parse(http_header.as_ref())
+        let langs = accept_language::parse(http_header.as_ref())
             .iter()
             .filter_map(|v| match Locale::determine_known_locale(v) {
                 Ok(lang) => Some(lang),
@@ -215,7 +212,13 @@ impl Locale {
     pub fn is_selected_language(&self, lang: impl AsRef<str>) -> &'static str {
         let lang = lang.as_ref();
 
-        if self.set_locale.as_ref().map(String::as_str).unwrap_or("auto") == lang {
+        if self
+            .set_locale
+            .as_ref()
+            .map(String::as_str)
+            .unwrap_or("auto")
+            == lang
+        {
             "selected"
         } else {
             ""
