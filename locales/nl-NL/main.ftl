@@ -24,3 +24,6 @@ top-nav-blog-link = Blog
 # Top navigation
 # Link to the chat room
 top-nav-chat-link = Chat
+# Settings menu
+# Cookie notice shown above the settings list
+settings-cookie-notice = Het aanpassen van instellingen wordt opgeslagen in de cookies, die naar de server worden verzonden. Je kan deze verwĳderen door de instellingen op “Automatisch” te zetten.
