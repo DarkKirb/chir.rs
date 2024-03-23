@@ -59,8 +59,11 @@
           inputs.cargo2nix.packages.${system}.cargo2nix
           cargo-deny
           cargo-crev
-          nodejs yarn yarn2nix
-          gnumake gcc
+          nodejs
+          yarn
+          yarn2nix
+          gnumake
+          gcc
         ];
         formatter = pkgs.alejandra;
         packages = rec {
@@ -81,10 +84,12 @@
               distPhase = "true";
             };
           chir-rs = (rustPkgs.workspace.chir-rs {}).overrideAttrs (super: {
-            configurePhase = super.configurePhase + ''
-              cp -rv ${chir-rs-fe} web/dist
-              cp web/dist/entrypoints web
-            '';
+            configurePhase =
+              super.configurePhase
+              + ''
+                cp -rv ${chir-rs-fe} web/dist
+                cp web/dist/entrypoints web
+              '';
           });
         };
       };
