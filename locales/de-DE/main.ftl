@@ -18,3 +18,12 @@ settings-language-label = Sprache:
 # Settings menu
 # Language option: Automatic
 settings-language-automatic = Automatisch
+# Top navigation
+# Link to the home page
+top-nav-homepage-link = Homepage
+# Top navigation
+# Link to the blog
+top-nav-blog-link = Blog
+# Top navigation
+# Link to the chat room
+top-nav-chat-link = Chat
