@@ -45,3 +45,6 @@ settings-theme-trans-rights = Trans Rights (light theme)
 # Settings menu
 # Theme option: White (high contrast)
 settings-theme-white = White (high contrast)
+# Settings menu
+# Update settings without javascript
+settings-submit-button = Update Settings…
