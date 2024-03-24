@@ -27,3 +27,24 @@ top-nav-chat-link = tomo toki
 # Settings menu
 # Cookie notice shown above the settings list
 settings-cookie-notice = sina ante e lawa la, ilo sina li sona li tawa e lipu tawa ilo mi. sina wile weka e ni la, o ante e lawa tawa “lawa nasin”.
+# Settings menu
+# Update settings without javascript
+settings-submit-button = o sona e lawa…
+# Settings menu
+# Theme selection label
+settings-theme-label = lukin:
+# Settings menu
+# Theme option: Automatic
+settings-theme-automatic = lawa nasin
+# Settings menu
+# Theme option: Sunset
+settings-theme-sunset = suno li weka
+# Settings menu
+# Theme option: Black (high contrast)
+settings-theme-black = pimeja (lukin pona)
+# Settings menu
+# Theme option: Trans Rights
+settings-theme-trans-rights = kule li pona (lukin suno)
+# Settings menu
+# Theme option: White (high contrast)
+settings-theme-white = walo (lukin pona)
