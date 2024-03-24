@@ -28,3 +28,24 @@ top-nav-blog-link = 葉多
 # Top navigation
 # Link to the chat room
 top-nav-chat-link = 家言
+# Settings menu
+# Update settings without javascript
+settings-submit-button = 於知乎主…
+# Settings menu
+# Theme selection label
+settings-theme-label = 見：
+# Settings menu
+# Theme option: Automatic
+settings-theme-automatic = 主道
+# Settings menu
+# Theme option: Sunset
+settings-theme-sunset = 日者去
+# Settings menu
+# Theme option: Black (high contrast)
+settings-theme-black = 黑(見善)
+# Settings menu
+# Theme option: Trans Rights
+settings-theme-trans-rights = 色者善(見日)
+# Settings menu
+# Theme option: White (high contrast)
+settings-theme-white = 白(見善)
