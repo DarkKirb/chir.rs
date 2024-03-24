@@ -27,3 +27,24 @@ top-nav-blog-link = 📄👐
 # Top navigation
 # Link to the chat room
 top-nav-chat-link = 🏠🗣️
+# Settings menu
+# Theme selection label
+settings-theme-label = 👀:
+# Settings menu
+# Theme option: Automatic
+settings-theme-automatic = 😶🛣️
+# Settings menu
+# Theme option: Sunset
+settings-theme-sunset = ☀️▶️🛫
+# Settings menu
+# Theme option: Black (high contrast)
+settings-theme-black = ⚫(👀👍)
+# Settings menu
+# Theme option: Trans Rights
+settings-theme-trans-rights = 🌈▶️👍(👀☀️)
+# Settings menu
+# Theme option: White (high contrast)
+settings-theme-white = ⚪(👀👍)
+# Settings menu
+# Update settings without javascript
+settings-submit-button = 👋🧠⏩😶…
