@@ -27,3 +27,24 @@ top-nav-blog-link = Blog
 # Top navigation
 # Link to the chat room
 top-nav-chat-link = Chat
+# Settings menu
+# Theme selection label
+settings-theme-label = Stil:
+# Settings menu
+# Theme option: Automatic
+settings-theme-automatic = Automatisch
+# Settings menu
+# Theme option: Sunset
+settings-theme-sunset = Sonnenuntergang
+# Settings menu
+# Theme option: Black (high contrast)
+settings-theme-black = Schwarz (hoher Kontrast)
+# Settings menu
+# Theme option: Trans Rights
+settings-theme-trans-rights = Trans-Rechte (heller Stil)
+# Settings menu
+# Theme option: White (high contrast)
+settings-theme-white = Weiß (hoher Kontrast)
+# Settings menu
+# Update settings without javascript
+settings-submit-button = Einstellungen speichern…
