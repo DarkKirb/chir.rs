@@ -5,9 +5,9 @@ use axum::{
     http::{HeaderMap, StatusCode},
     response::{AppendHeaders, Html, IntoResponse},
 };
+use serde::Deserialize;
 use tower_cookies::{Cookie, Cookies};
 use tracing::instrument;
-use serde::Deserialize;
 
 use crate::{err::RespResult, lang::Locale, theming::Theme};
 
@@ -83,8 +83,11 @@ pub async fn update_settings(
             locale_cookie.make_permanent();
             cookies.add(locale_cookie);
         }
-    
-        Ok((StatusCode::FOUND, AppendHeaders([("Location", referrer.to_string())])))
+
+        Ok((
+            StatusCode::FOUND,
+            AppendHeaders([("Location", referrer.to_string())]),
+        ))
     }
     Ok(update_settings(cookies, settings, headers).await?)
 }

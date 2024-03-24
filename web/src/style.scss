@@ -156,23 +156,20 @@ img {
 
 @font-face {
   font-family: "fairfax-hd";
-  src: local("Fairfax HD"),
-    url("../fonts/fairfax-hd-min.woff2");
+  src: local("Fairfax HD"), url("../fonts/fairfax-hd-min.woff2");
   unicode-range: U+F1900-F19FF, U+FF900-FFABF, U+FFAC0-FFBFF, U+FFD00-FFDFF;
 }
 
 @font-face {
   font-family: "crisa";
-  src: local("Crisa Regular"),
-    url("../fonts/crisa-regular.woff2");
+  src: local("Crisa Regular"), url("../fonts/crisa-regular.woff2");
   font-weight: 400;
   unicode-range: U+ED80-EDBF;
 }
 
 @font-face {
   font-family: "crisa";
-  src: local("Crisa Light"),
-    url("../fonts/crisa-light.woff2");
+  src: local("Crisa Light"), url("../fonts/crisa-light.woff2");
   font-weight: 200;
   unicode-range: U+ED80-EDBF;
 }
@@ -189,15 +186,19 @@ img {
 }
 
 html[lang="en-Sten-US-display"] {
-  --font-family-sans-serif: "stenodisplay", sans-serif, var(--font-family-emoji), 'fairfax-hd', 'crisa';
-  --font-family-monospace: "stenodisplay", monospace, var(--font-family-emoji), 'fairfax-hd', 'crisa';
+  --font-family-sans-serif: "stenodisplay", sans-serif, var(--font-family-emoji),
+    "fairfax-hd", "crisa";
+  --font-family-monospace: "stenodisplay", monospace, var(--font-family-emoji),
+    "fairfax-hd", "crisa";
   --font-family: var(--font-family-sans-serif);
   --font-size: 250%;
 }
 
 html[lang="en-Sten-US-runes"] {
-  --font-family-sans-serif: "stenorunes", sans-serif, var(--font-family-emoji), 'fairfax-hd', 'crisa';
-  --font-family-monospace: "stenorunes", monospace, var(--font-family-emoji), 'fairfax-hd', 'crisa';
+  --font-family-sans-serif: "stenorunes", sans-serif, var(--font-family-emoji),
+    "fairfax-hd", "crisa";
+  --font-family-monospace: "stenorunes", monospace, var(--font-family-emoji),
+    "fairfax-hd", "crisa";
   --font-family: var(--font-family-sans-serif);
   --font-size: 150%;
 }

@@ -13,7 +13,10 @@
   #{$css-var-prefix}color: #000;
 
   // Text selection color
-  #{$css-var-prefix}text-selection-color: theme-colors.get("text-selection-color", "light");
+  #{$css-var-prefix}text-selection-color: theme-colors.get(
+    "text-selection-color",
+    "light"
+  );
 
   // Muted colors
   #{$css-var-prefix}muted-color: #000;
@@ -77,8 +80,12 @@
     #{$css-var-prefix}del-color: #{mix($red-500, $zinc-750)};
 
     // Blockquote
-    #{$css-var-prefix}blockquote-border-color: var(#{$css-var-prefix}muted-border-color);
-    #{$css-var-prefix}blockquote-footer-color: var(#{$css-var-prefix}muted-color);
+    #{$css-var-prefix}blockquote-border-color: var(
+      #{$css-var-prefix}muted-border-color
+    );
+    #{$css-var-prefix}blockquote-footer-color: var(
+      #{$css-var-prefix}muted-color
+    );
   }
 
   // Button
@@ -91,8 +98,13 @@
 
   // Table
   @if map.get($modules, "content/table") {
-    #{$css-var-prefix}table-border-color: var(#{$css-var-prefix}muted-border-color);
-    #{$css-var-prefix}table-row-stripped-background-color: #{rgba($zinc-500, 0.0375)};
+    #{$css-var-prefix}table-border-color: var(
+      #{$css-var-prefix}muted-border-color
+    );
+    #{$css-var-prefix}table-row-stripped-background-color: #{rgba(
+        $zinc-500,
+        0.0375
+      )};
   }
 
   // Code
@@ -105,22 +117,46 @@
 
   // Form elements
   @if map.get($modules, "forms/basics") {
-    #{$css-var-prefix}form-element-background-color: #{mix($slate-50, $white, 25%)};
+    #{$css-var-prefix}form-element-background-color: #{mix(
+        $slate-50,
+        $white,
+        25%
+      )};
     #{$css-var-prefix}form-element-selected-background-color: #{$slate-100};
     #{$css-var-prefix}form-element-border-color: #{$slate-150};
     #{$css-var-prefix}form-element-color: #{$zinc-850};
-    #{$css-var-prefix}form-element-placeholder-color: var(#{$css-var-prefix}muted-color);
+    #{$css-var-prefix}form-element-placeholder-color: var(
+      #{$css-var-prefix}muted-color
+    );
     #{$css-var-prefix}form-element-active-background-color: #{$white};
-    #{$css-var-prefix}form-element-active-border-color: var(#{$css-var-prefix}primary-border);
-    #{$css-var-prefix}form-element-focus-color: var(#{$css-var-prefix}primary-border);
+    #{$css-var-prefix}form-element-active-border-color: var(
+      #{$css-var-prefix}primary-border
+    );
+    #{$css-var-prefix}form-element-focus-color: var(
+      #{$css-var-prefix}primary-border
+    );
     #{$css-var-prefix}form-element-disabled-opacity: 0.5;
-    #{$css-var-prefix}form-element-invalid-border-color: #{mix($red-500, $zinc-350)};
-    #{$css-var-prefix}form-element-invalid-active-border-color: #{mix($red-500, $zinc-350, 75%)};
+    #{$css-var-prefix}form-element-invalid-border-color: #{mix(
+        $red-500,
+        $zinc-350
+      )};
+    #{$css-var-prefix}form-element-invalid-active-border-color: #{mix(
+        $red-500,
+        $zinc-350,
+        75%
+      )};
     #{$css-var-prefix}form-element-invalid-focus-color: var(
       #{$css-var-prefix}form-element-invalid-active-border-color
     );
-    #{$css-var-prefix}form-element-valid-border-color: #{mix($jade-450, $zinc-350)};
-    #{$css-var-prefix}form-element-valid-active-border-color: #{mix($jade-450, $zinc-350, 75%)};
+    #{$css-var-prefix}form-element-valid-border-color: #{mix(
+        $jade-450,
+        $zinc-350
+      )};
+    #{$css-var-prefix}form-element-valid-active-border-color: #{mix(
+        $jade-450,
+        $zinc-350,
+        75%
+      )};
     #{$css-var-prefix}form-element-valid-focus-color: var(
       #{$css-var-prefix}form-element-valid-active-border-color
     );
@@ -134,41 +170,70 @@
         [type="radio"],
         [type="file"]
       ) {
-      #{$css-var-prefix}form-element-focus-color: var(#{$css-var-prefix}primary-focus);
+      #{$css-var-prefix}form-element-focus-color: var(
+        #{$css-var-prefix}primary-focus
+      );
     }
   }
 
   // Switch (input[type="checkbox"][role="switch"])
   @if map.get($modules, "forms/checkbox-radio-switch") {
     #{$css-var-prefix}switch-background-color: #{$slate-200};
-    #{$css-var-prefix}switch-checked-background-color: var(#{$css-var-prefix}primary-background);
+    #{$css-var-prefix}switch-checked-background-color: var(
+      #{$css-var-prefix}primary-background
+    );
     #{$css-var-prefix}switch-color: #{$white};
-    #{$css-var-prefix}switch-thumb-box-shadow: theme-colors.get("switch-thumb-box-shadow", "light");
+    #{$css-var-prefix}switch-thumb-box-shadow: theme-colors.get(
+      "switch-thumb-box-shadow",
+      "light"
+    );
   }
 
   // Range (input[type="range"])
   @if map.get($modules, "forms/input-range") {
     #{$css-var-prefix}range-border-color: #{$slate-100};
     #{$css-var-prefix}range-active-border-color: #{$slate-200};
-    #{$css-var-prefix}range-thumb-border-color: var(#{$css-var-prefix}background-color);
-    #{$css-var-prefix}range-thumb-color: var(#{$css-var-prefix}secondary-background);
-    #{$css-var-prefix}range-thumb-active-color: var(#{$css-var-prefix}primary-background);
+    #{$css-var-prefix}range-thumb-border-color: var(
+      #{$css-var-prefix}background-color
+    );
+    #{$css-var-prefix}range-thumb-color: var(
+      #{$css-var-prefix}secondary-background
+    );
+    #{$css-var-prefix}range-thumb-active-color: var(
+      #{$css-var-prefix}primary-background
+    );
   }
 
   // Accordion (<details>)
   @if map.get($modules, "components/accordion") {
-    #{$css-var-prefix}accordion-border-color: var(#{$css-var-prefix}muted-border-color);
-    #{$css-var-prefix}accordion-active-summary-color: var(#{$css-var-prefix}primary-hover);
-    #{$css-var-prefix}accordion-close-summary-color: var(#{$css-var-prefix}color);
-    #{$css-var-prefix}accordion-open-summary-color: var(#{$css-var-prefix}muted-color);
+    #{$css-var-prefix}accordion-border-color: var(
+      #{$css-var-prefix}muted-border-color
+    );
+    #{$css-var-prefix}accordion-active-summary-color: var(
+      #{$css-var-prefix}primary-hover
+    );
+    #{$css-var-prefix}accordion-close-summary-color: var(
+      #{$css-var-prefix}color
+    );
+    #{$css-var-prefix}accordion-open-summary-color: var(
+      #{$css-var-prefix}muted-color
+    );
   }
 
   // Card (<article>)
   @if map.get($modules, "components/card") {
-    #{$css-var-prefix}card-background-color: var(#{$css-var-prefix}background-color);
-    #{$css-var-prefix}card-border-color: var(#{$css-var-prefix}muted-border-color);
+    #{$css-var-prefix}card-background-color: var(
+      #{$css-var-prefix}background-color
+    );
+    #{$css-var-prefix}card-border-color: var(
+      #{$css-var-prefix}muted-border-color
+    );
     #{$css-var-prefix}card-box-shadow: var(#{$css-var-prefix}box-shadow);
-    #{$css-var-prefix}card-sectioning-background-color: #{mix($slate-50, $white, 25%)};
+    #{$css-var-prefix}card-sectioning-background-color: #{mix(
+        $slate-50,
+        $white,
+        25%
+      )};
   }
 
   // Dropdown (details.dropdown)
@@ -187,7 +252,10 @@
 
   // Modal (<dialog>)
   @if map.get($modules, "components/modal") {
-    #{$css-var-prefix}modal-overlay-background-color: #{rgba(mix($zinc-100, $zinc-50), 0.75)};
+    #{$css-var-prefix}modal-overlay-background-color: #{rgba(
+        mix($zinc-100, $zinc-50),
+        0.75
+      )};
   }
 
   // Progress
@@ -198,7 +266,9 @@
 
   // Tooltip ([data-tooltip])
   @if map.get($modules, "components/tooltip") {
-    #{$css-var-prefix}tooltip-background-color: var(#{$css-var-prefix}contrast-background);
+    #{$css-var-prefix}tooltip-background-color: var(
+      #{$css-var-prefix}contrast-background
+    );
     #{$css-var-prefix}tooltip-color: var(#{$css-var-prefix}contrast-inverse);
   }
 

@@ -35,10 +35,14 @@
       list-style: none;
 
       &:first-of-type {
-        margin-left: calc(var(#{$css-var-prefix}nav-element-spacing-horizontal) * -1);
+        margin-left: calc(
+          var(#{$css-var-prefix}nav-element-spacing-horizontal) * -1
+        );
       }
       &:last-of-type {
-        margin-right: calc(var(#{$css-var-prefix}nav-element-spacing-horizontal) * -1);
+        margin-right: calc(
+          var(#{$css-var-prefix}nav-element-spacing-horizontal) * -1
+        );
       }
     }
 
@@ -65,7 +69,12 @@
       button,
       [role="button"],
       [type="button"],
-      input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"]),
+      input:not(
+          [type="checkbox"],
+          [type="radio"],
+          [type="range"],
+          [type="file"]
+        ),
       select {
         height: auto;
         margin-right: inherit;
@@ -86,12 +95,16 @@
 
       & ul li {
         &:not(:first-child) {
-          margin-inline-start: var(#{$css-var-prefix}nav-link-spacing-horizontal);
+          margin-inline-start: var(
+            #{$css-var-prefix}nav-link-spacing-horizontal
+          );
         }
 
         a {
           margin: calc(var(#{$css-var-prefix}nav-link-spacing-vertical) * -1) 0;
-          margin-inline-start: calc(var(#{$css-var-prefix}nav-link-spacing-horizontal) * -1);
+          margin-inline-start: calc(
+            var(#{$css-var-prefix}nav-link-spacing-horizontal) * -1
+          );
         }
 
         &:not(:last-child) {
@@ -99,7 +112,8 @@
             display: inline-block;
             position: absolute;
             width: calc(var(#{$css-var-prefix}nav-link-spacing-horizontal) * 4);
-            margin: 0 calc(var(#{$css-var-prefix}nav-link-spacing-horizontal) * -1);
+            margin: 0
+              calc(var(#{$css-var-prefix}nav-link-spacing-horizontal) * -1);
             content: var(#{$css-var-prefix}nav-breadcrumb-divider);
             color: var(#{$css-var-prefix}muted-color);
             text-align: center;

@@ -26,7 +26,8 @@
   // Cells
   #{$parent-selector} th,
   #{$parent-selector} td {
-    padding: calc(var(#{$css-var-prefix}spacing) / 2) var(#{$css-var-prefix}spacing);
+    padding: calc(var(#{$css-var-prefix}spacing) / 2)
+      var(#{$css-var-prefix}spacing);
     border-bottom: var(#{$css-var-prefix}border-width)
       solid
       var(#{$css-var-prefix}table-border-color);
@@ -54,7 +55,9 @@
       &.striped {
         tbody tr:nth-child(odd) th,
         tbody tr:nth-child(odd) td {
-          background-color: var(#{$css-var-prefix}table-row-stripped-background-color);
+          background-color: var(
+            #{$css-var-prefix}table-row-stripped-background-color
+          );
         }
       }
     }

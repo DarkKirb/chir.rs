@@ -26,23 +26,28 @@ module.exports = {
       },
       {
         test: /\.s[ac]ss$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader", "sass-loader"],
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          "postcss-loader",
+          "sass-loader",
+        ],
       },
       {
         test: /\.(?:js|mjs|cjs|tsx?)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
-        }
+          loader: "babel-loader",
+        },
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
-        type: 'asset/resource'
+        type: "asset/resource",
       },
       {
         test: /\.(ftl)$/i,
-        type: 'asset/source',
-      }
+        type: "asset/source",
+      },
     ],
   },
   resolve: {
@@ -51,7 +56,7 @@ module.exports = {
   optimization: {
     moduleIds: "deterministic",
     splitChunks: {
-      chunks: "all"
+      chunks: "all",
     },
     minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
   },

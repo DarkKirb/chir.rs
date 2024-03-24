@@ -148,7 +148,10 @@
             }
 
             &::after {
-              #{$css-var-prefix}tooltip-caret-slide-to: translate(-50%, -0.3rem);
+              #{$css-var-prefix}tooltip-caret-slide-to: translate(
+                -50%,
+                -0.3rem
+              );
               transform: translate(-50%, -0.5rem);
               animation-name: tooltip-caret-slide;
             }
@@ -186,7 +189,10 @@
             }
 
             &::after {
-              #{$css-var-prefix}tooltip-caret-slide-to: translate(-0.3rem, -50%);
+              #{$css-var-prefix}tooltip-caret-slide-to: translate(
+                -0.3rem,
+                -50%
+              );
               transform: translate(-0.05rem, -50%);
               animation-name: tooltip-caret-slide;
             }

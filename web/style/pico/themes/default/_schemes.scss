@@ -13,20 +13,22 @@
 // Light color scheme (Default)
 // Can be forced with data-theme="light"
 [data-theme="light"],
-:root:not([data-theme="black"]):not([data-theme="sunset"]):not([data-theme="white"]) {
-@include light.theme;
+:root:not([data-theme="black"]):not([data-theme="sunset"]):not(
+    [data-theme="white"]
+  ) {
+  @include light.theme;
 }
 
 [data-theme="white"] {
-@include white.theme;
+  @include white.theme;
 }
 
 // Dark color scheme (Auto)
 // Automatically enabled if user has Dark mode enabled
 @media only screen and (prefers-color-scheme: dark) {
-:root:not([data-theme]):not([data-theme]):not([data-theme]) {
+  :root:not([data-theme]):not([data-theme]):not([data-theme]) {
     @include sunset.theme;
-}
+  }
 }
 
 @media only screen and (prefers-contrast: more) {
@@ -43,7 +45,7 @@
 // Dark color scheme (Forced)
 // Enabled if forced with data-theme="dark"
 [data-theme="sunset"] {
-@include sunset.theme;
+  @include sunset.theme;
 }
 [data-theme="black"] {
   @include black.theme;
@@ -53,5 +55,5 @@
 #{$parent-selector} [type="checkbox"],
 #{$parent-selector} [type="radio"],
 #{$parent-selector} [type="range"] {
-accent-color: var(#{$css-var-prefix}primary);
-  }
+  accent-color: var(#{$css-var-prefix}primary);
+}

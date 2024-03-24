@@ -78,8 +78,12 @@ $border-thumb: 2px;
 
     &:active,
     &:focus-within {
-      #{$css-var-prefix}range-border-color: var(#{$css-var-prefix}range-active-border-color);
-      #{$css-var-prefix}range-thumb-color: var(#{$css-var-prefix}range-thumb-active-color);
+      #{$css-var-prefix}range-border-color: var(
+        #{$css-var-prefix}range-active-border-color
+      );
+      #{$css-var-prefix}range-thumb-color: var(
+        #{$css-var-prefix}range-thumb-active-color
+      );
     }
 
     &:active {

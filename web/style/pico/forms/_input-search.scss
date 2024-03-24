@@ -7,9 +7,17 @@
    */
 
   // :not() are needed to add Specificity and avoid !important on padding
-  #{$parent-selector} input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"]) {
+  #{$parent-selector}
+    input:not(
+      [type="checkbox"],
+      [type="radio"],
+      [type="range"],
+      [type="file"]
+    ) {
     &[type="search"] {
-      padding-inline-start: calc(var(#{$css-var-prefix}form-element-spacing-horizontal) + 1.75rem);
+      padding-inline-start: calc(
+        var(#{$css-var-prefix}form-element-spacing-horizontal) + 1.75rem
+      );
       background-image: var(#{$css-var-prefix}icon-search);
       background-position: center
         left
@@ -33,11 +41,13 @@
       }
 
       &[aria-invalid="false"] {
-        background-image: var(#{$css-var-prefix}icon-search), var(#{$css-var-prefix}icon-valid);
+        background-image: var(#{$css-var-prefix}icon-search),
+          var(#{$css-var-prefix}icon-valid);
       }
 
       &[aria-invalid="true"] {
-        background-image: var(#{$css-var-prefix}icon-search), var(#{$css-var-prefix}icon-invalid);
+        background-image: var(#{$css-var-prefix}icon-search),
+          var(#{$css-var-prefix}icon-invalid);
       }
     }
   }

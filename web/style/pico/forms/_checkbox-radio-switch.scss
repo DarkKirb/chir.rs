@@ -35,7 +35,9 @@
     &:checked,
     &:checked:active,
     &:checked:focus {
-      #{$css-var-prefix}background-color: var(#{$css-var-prefix}primary-background);
+      #{$css-var-prefix}background-color: var(
+        #{$css-var-prefix}primary-background
+      );
       #{$css-var-prefix}border-color: var(#{$css-var-prefix}primary-border);
       background-image: var(#{$css-var-prefix}icon-checkbox);
       background-position: center;
@@ -57,7 +59,9 @@
   // Checkboxes
   #{$parent-selector} [type="checkbox"] {
     &:indeterminate {
-      #{$css-var-prefix}background-color: var(#{$css-var-prefix}primary-background);
+      #{$css-var-prefix}background-color: var(
+        #{$css-var-prefix}primary-background
+      );
       #{$css-var-prefix}border-color: var(#{$css-var-prefix}primary-border);
       background-image: var(#{$css-var-prefix}icon-minus);
       background-position: center;
@@ -73,7 +77,9 @@
     &:checked,
     &:checked:active,
     &:checked:focus {
-      #{$css-var-prefix}background-color: var(#{$css-var-prefix}primary-inverse);
+      #{$css-var-prefix}background-color: var(
+        #{$css-var-prefix}primary-inverse
+      );
       border-width: 0.35em;
       background-image: none;
     }
@@ -81,7 +87,9 @@
 
   // Switchs
   #{$parent-selector} [type="checkbox"][role="switch"] {
-    #{$css-var-prefix}background-color: var(#{$css-var-prefix}switch-background-color);
+    #{$css-var-prefix}background-color: var(
+      #{$css-var-prefix}switch-background-color
+    );
     #{$css-var-prefix}color: var(#{$css-var-prefix}switch-color);
 
     // Config
@@ -92,13 +100,17 @@
     // Styles
     width: $switch-width;
     height: $switch-height;
-    border: var(#{$css-var-prefix}border-width) solid var(#{$css-var-prefix}border-color);
+    border: var(#{$css-var-prefix}border-width)
+      solid
+      var(#{$css-var-prefix}border-color);
     border-radius: $switch-height;
     background-color: var(#{$css-var-prefix}background-color);
     line-height: $switch-height;
 
     &:not([aria-invalid]) {
-      #{$css-var-prefix}border-color: var(#{$css-var-prefix}switch-background-color);
+      #{$css-var-prefix}border-color: var(
+        #{$css-var-prefix}switch-background-color
+      );
     }
 
     &:before {
@@ -116,13 +128,21 @@
     }
 
     &:focus {
-      #{$css-var-prefix}background-color: var(#{$css-var-prefix}switch-background-color);
-      #{$css-var-prefix}border-color: var(#{$css-var-prefix}switch-background-color);
+      #{$css-var-prefix}background-color: var(
+        #{$css-var-prefix}switch-background-color
+      );
+      #{$css-var-prefix}border-color: var(
+        #{$css-var-prefix}switch-background-color
+      );
     }
 
     &:checked {
-      #{$css-var-prefix}background-color: var(#{$css-var-prefix}switch-checked-background-color);
-      #{$css-var-prefix}border-color: var(#{$css-var-prefix}switch-checked-background-color);
+      #{$css-var-prefix}background-color: var(
+        #{$css-var-prefix}switch-checked-background-color
+      );
+      #{$css-var-prefix}border-color: var(
+        #{$css-var-prefix}switch-checked-background-color
+      );
       background-image: none;
 
       &::before {
@@ -142,7 +162,9 @@
       &:checked,
       &:checked:active,
       &:checked:focus {
-        #{$css-var-prefix}background-color: var(#{$css-var-prefix}form-element-valid-border-color);
+        #{$css-var-prefix}background-color: var(
+          #{$css-var-prefix}form-element-valid-border-color
+        );
       }
     }
     &:checked,
@@ -163,14 +185,18 @@
       &:checked,
       &:checked:active,
       &:checked:focus {
-        #{$css-var-prefix}border-color: var(#{$css-var-prefix}form-element-valid-border-color);
+        #{$css-var-prefix}border-color: var(
+          #{$css-var-prefix}form-element-valid-border-color
+        );
       }
     }
     &:checked,
     &:checked:active,
     &:checked:focus {
       &[aria-invalid="true"] {
-        #{$css-var-prefix}border-color: var(#{$css-var-prefix}form-element-invalid-border-color);
+        #{$css-var-prefix}border-color: var(
+          #{$css-var-prefix}form-element-invalid-border-color
+        );
       }
     }
   }

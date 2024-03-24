@@ -87,7 +87,19 @@
 
   // Margin-top for headings after a block
   #{$parent-selector}
-    :where(article, address, blockquote, dl, figure, form, ol, p, pre, table, ul) {
+    :where(
+      article,
+      address,
+      blockquote,
+      dl,
+      figure,
+      form,
+      ol,
+      p,
+      pre,
+      table,
+      ul
+    ) {
     ~ :is(h1, h2, h3, h4, h5, h6) {
       margin-top: var(#{$css-var-prefix}typography-spacing-top);
     }
@@ -117,7 +129,9 @@
   // Lists
   #{$parent-selector} :where(ol, ul) {
     li {
-      margin-bottom: calc(var(#{$css-var-prefix}typography-spacing-vertical) * 0.25);
+      margin-bottom: calc(
+        var(#{$css-var-prefix}typography-spacing-vertical) * 0.25
+      );
     }
   }
 
@@ -147,11 +161,15 @@
     padding: var(#{$css-var-prefix}spacing);
     border-right: none;
     border-left: 0.25rem solid var(#{$css-var-prefix}blockquote-border-color);
-    border-inline-start: 0.25rem solid var(#{$css-var-prefix}blockquote-border-color);
+    border-inline-start: 0.25rem
+      solid
+      var(#{$css-var-prefix}blockquote-border-color);
     border-inline-end: none;
 
     footer {
-      margin-top: calc(var(#{$css-var-prefix}typography-spacing-vertical) * 0.5);
+      margin-top: calc(
+        var(#{$css-var-prefix}typography-spacing-vertical) * 0.5
+      );
       color: var(#{$css-var-prefix}blockquote-footer-color);
     }
   }

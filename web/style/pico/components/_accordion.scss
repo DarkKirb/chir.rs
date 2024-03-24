@@ -65,7 +65,9 @@
 
       &:focus-visible {
         &:not([role]) {
-          outline: var(#{$css-var-prefix}outline-width) solid var(#{$css-var-prefix}primary-focus);
+          outline: var(#{$css-var-prefix}outline-width)
+            solid
+            var(#{$css-var-prefix}primary-focus);
           outline-offset: calc(var(#{$css-var-prefix}spacing, 1rem) * 0.5);
           color: var(#{$css-var-prefix}primary);
         }

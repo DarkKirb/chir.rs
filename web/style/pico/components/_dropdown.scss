@@ -78,7 +78,9 @@
     &:active,
     &:focus {
       border-color: var(#{$css-var-prefix}form-element-active-border-color);
-      background-color: var(#{$css-var-prefix}form-element-active-background-color);
+      background-color: var(
+        #{$css-var-prefix}form-element-active-background-color
+      );
     }
 
     &:focus {
@@ -167,7 +169,9 @@
     margin: 0;
     margin-top: var(#{$css-var-prefix}outline-width);
     padding: 0;
-    border: var(#{$css-var-prefix}border-width) solid var(#{$css-var-prefix}dropdown-border-color);
+    border: var(#{$css-var-prefix}border-width)
+      solid
+      var(#{$css-var-prefix}dropdown-border-color);
     border-radius: var(#{$css-var-prefix}border-radius);
     background-color: var(#{$css-var-prefix}dropdown-background-color);
     box-shadow: var(#{$css-var-prefix}dropdown-box-shadow);
@@ -194,18 +198,26 @@
       list-style: none;
 
       &:first-of-type {
-        margin-top: calc(var(#{$css-var-prefix}form-element-spacing-vertical) * 0.5);
+        margin-top: calc(
+          var(#{$css-var-prefix}form-element-spacing-vertical) * 0.5
+        );
       }
 
       &:last-of-type {
-        margin-bottom: calc(var(#{$css-var-prefix}form-element-spacing-vertical) * 0.5);
+        margin-bottom: calc(
+          var(#{$css-var-prefix}form-element-spacing-vertical) * 0.5
+        );
       }
 
       a {
         display: block;
-        margin: calc(var(#{$css-var-prefix}form-element-spacing-vertical) * -0.5)
+        margin: calc(
+            var(#{$css-var-prefix}form-element-spacing-vertical) * -0.5
+          )
           calc(var(#{$css-var-prefix}form-element-spacing-horizontal) * -1);
-        padding: calc(var(#{$css-var-prefix}form-element-spacing-vertical) * 0.5)
+        padding: calc(
+            var(#{$css-var-prefix}form-element-spacing-vertical) * 0.5
+          )
           var(#{$css-var-prefix}form-element-spacing-horizontal);
         overflow: hidden;
         border-radius: 0;
@@ -218,7 +230,9 @@
         &:active,
         &:focus-visible,
         &[aria-current]:not([aria-current="false"]) {
-          background-color: var(#{$css-var-prefix}dropdown-hover-background-color);
+          background-color: var(
+            #{$css-var-prefix}dropdown-hover-background-color
+          );
         }
       }
 
@@ -228,7 +242,9 @@
 
       // Not working in Firefox, which doesn't support the `:has()` pseudo-class
       &:has(label):hover {
-        background-color: var(#{$css-var-prefix}dropdown-hover-background-color);
+        background-color: var(
+          #{$css-var-prefix}dropdown-hover-background-color
+        );
       }
     }
   }

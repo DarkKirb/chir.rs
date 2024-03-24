@@ -1,6 +1,8 @@
 // Display color as RGB
 @function display-rgb($color) {
-  @return unquote("rgb(" + red($color) + ", " + green($color) + ", " + blue($color) + ")");
+  @return unquote(
+    "rgb(" + red($color) + ", " + green($color) + ", " + blue($color) + ")"
+  );
 }
 
 // Generate a shadow layer
@@ -44,6 +46,11 @@
       $box-shadow-opacity * 0.717,
       $color
     ),
-    shadow-layer($box-shadow-elevation, $box-shadow-blur-strengh, $box-shadow-opacity, $color),
+    shadow-layer(
+      $box-shadow-elevation,
+      $box-shadow-blur-strengh,
+      $box-shadow-opacity,
+      $color
+    ),
     0 0 0 0.0625rem #{rgba($color, ($box-shadow-opacity * 0.25))};
 }
