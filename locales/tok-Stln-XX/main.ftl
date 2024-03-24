@@ -27,3 +27,24 @@ top-nav-chat-link = 󱥭󱥬
 # Settings menu
 # Label for the image button that opens and closes the settings menu. Not shown to screenreader users
 settings-button-label = 󱥄󱥇󱤇󱥐󱤉󱤤
+# Settings menu
+# Update settings without javascript
+settings-submit-button = 󱥄󱥡󱤉󱤤…
+# Settings menu
+# Theme selection label
+settings-theme-label = 󱤮:
+# Settings menu
+# Theme option: Automatic
+settings-theme-automatic = 󱤤��
+# Settings menu
+# Theme option: Sunset
+settings-theme-sunset = 󱥤󱤧󱥶
+# Settings menu
+# Theme option: Black (high contrast)
+settings-theme-black = 󱥏(󱤮󱥔)
+# Settings menu
+# Theme option: Trans Rights
+settings-theme-trans-rights = 󱤞󱤧󱥔(󱤮󱥤)
+# Settings menu
+# Theme option: White (high contrast)
+settings-theme-white = 󱥲(󱤮󱥔)
