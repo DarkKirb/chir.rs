@@ -45,3 +45,6 @@ settings-theme-black = PWHRABG/PREPB/HAOEU/KRAEFT/PRE*PB
 # Settings menu
 # Theme option: White (high contrast)
 settings-theme-white = WHAOEUT/PREPB/HAOEU/KRAEFT/PRE*PB
+# Settings menu
+# Update settings without javascript
+settings-submit-button = AUP/TKAEUT/SEGTS/HR-PS
