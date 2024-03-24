@@ -39,6 +39,9 @@ async fn main() {
 
     if let Err(e) = main().await.context("Failed to run the server") {
         error!("{:?}", e);
-        std::process::exit(1);
+        #[allow(clippy::exit)]
+        {
+            std::process::exit(1);
+        }
     }
 }

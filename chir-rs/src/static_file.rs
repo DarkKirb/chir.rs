@@ -14,31 +14,46 @@ use tracing::{debug, error, instrument};
 use crate::err::RespResult;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
+#[allow(clippy::module_name_repetitions)]
+/// Content of a static file
 pub enum StaticFileContent<'a> {
+    /// Content of static file embedded into the binary
     Embedded(&'a [u8]),
+    /// External static file content
     External(&'a str),
 }
 
+/// Static file info
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct StaticFile<'a> {
+    /// MIME type of the file
     mime_type: &'a str,
+    /// Content of the file
     content: StaticFileContent<'a>,
+    /// Blake3 hash of the file
     file_hash: &'a str,
 }
 
 impl StaticFile<'static> {
-    pub fn mime_type(&self) -> &'static str {
+    /// Return the mime type
+    #[must_use]
+    pub const fn mime_type(&self) -> &'static str {
         self.mime_type
     }
 
-    pub fn content(&self) -> StaticFileContent<'static> {
+    /// Return the content of the file
+    #[must_use]
+    pub const fn content(&self) -> StaticFileContent<'static> {
         self.content
     }
 
-    pub fn file_hash(&self) -> &'static str {
+    /// Return the file hash of the file
+    #[must_use]
+    pub const fn file_hash(&self) -> &'static str {
         self.file_hash
     }
 
+    /// Serve the static file
     #[instrument]
     pub async fn serve_file(&self) -> Result<impl IntoResponse> {
         let builder = Response::builder()
@@ -57,25 +72,26 @@ impl StaticFile<'static> {
                 builder.body(Body::from_stream(ReaderStream::new(file)))
             }
         };
-        Ok(builder
-            .with_context(|| format!("Constructing response for static file {}", self.file_hash))?)
+        builder.with_context(|| format!("Constructing response for static file {}", self.file_hash))
     }
 }
 
 static_embeds!();
 
+/// Static file handler
 #[instrument]
 pub async fn static_file(Path(file): Path<String>) -> RespResult<impl IntoResponse> {
-    debug!("Received request for static file {}", file);
-    async fn static_file(file: String) -> Result<StaticFile<'static>> {
+    #[allow(clippy::missing_docs_in_private_items)]
+    fn static_file(file: &str) -> Result<StaticFile<'static>> {
         let static_file = STATIC_FILES
-            .get(&file)
+            .get(file)
             .ok_or_else(|| anyhow!("Static file not found: {}", file))?;
         Ok(*static_file)
     }
 
-    match static_file(file.clone())
-        .await
+    debug!("Received request for static file {}", file);
+
+    match static_file(&file)
         .with_context(|| format!("Could not handle request for static file {file}"))
     {
         Ok(response) => Ok(Ok(response.serve_file().await?)),
@@ -84,8 +100,7 @@ pub async fn static_file(Path(file): Path<String>) -> RespResult<impl IntoRespon
             Ok(Err((
                 StatusCode::NOT_FOUND,
                 format!("Could not find static file {file}"),
-            ))
-            .into())
+            )))
         }
     }
 }

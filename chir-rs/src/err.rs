@@ -8,6 +8,7 @@ use tracing::error;
 
 #[repr(transparent)]
 #[derive(Debug)]
+/// Wrapped error type for using anyhow errors in axum
 pub struct Error(anyhow::Error);
 
 impl IntoResponse for Error {
@@ -30,4 +31,5 @@ where
     }
 }
 
+/// Wrapped result type for using anyhow errors in axum
 pub type RespResult<T> = Result<T, Error>;

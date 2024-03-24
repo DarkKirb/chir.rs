@@ -30,6 +30,7 @@ pub fn static_embeds(_: TokenStream) -> TokenStream {
         let ident = quote::format_ident!("{}", get_static_name(&file_name));
         let file_name = format!("../../web/dist/{file_name}");
         statics.push(quote::quote! {
+            #[allow(missing_docs)]
             pub static #ident: StaticFile<'static> = StaticFile {
                 mime_type: #mime_type,
                 content: StaticFileContent::Embedded(include_bytes!(#file_name)),
@@ -44,6 +45,7 @@ pub fn static_embeds(_: TokenStream) -> TokenStream {
     let expanded = quote::quote! {
         #(#statics)*
 
+        #[allow(clippy::missing_docs_in_private_items)]
         static STATIC_FILES: phf::Map<&'static str, StaticFile<'static>> = #phf_map;
     };
 

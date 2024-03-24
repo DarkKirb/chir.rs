@@ -2,7 +2,16 @@
 name = "chir-rs-macros"
 version = "0.1.0"
 edition = "2021"
+authors = ["Charlotte 🦝 Delenk <lotte@chir.rs>"]
+rust-version = "1.74.0"
+description = "lotte.chir.rs website proc macros"
+readme = "README.md"
+homepage = "https://lotte.chir.rs/"
+repository = "https://github.com/DarkKirb/chir.rs"
 license = "Parity-7.0.0"
+keywords = ["website"]
+categories = ["web-programming"]
+publish = false
 
 [lib]
 proc-macro = true

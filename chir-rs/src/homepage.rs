@@ -1,3 +1,7 @@
+//! Code for the homepage site
+
+use std::path::Path;
+
 use anyhow::Result;
 use askama_axum::Template;
 use axum::{
@@ -13,22 +17,39 @@ use crate::{err::RespResult, lang::Locale, theming::Theme};
 
 #[derive(Clone, Debug, PartialEq, Eq, Template)]
 #[template(path = "layout.html")]
+/// Homepage template variables
 struct HomepageTemplate {
+    /// Theme used by the homepage
     theme: Theme,
+    /// Homepage locale
     locale: Locale,
+    /// List of files that need to be loaded on startup according to webpack
     entrypoints: String,
 }
 
-fn format_embed(embed_filename: String) -> String {
-    if embed_filename.ends_with(".css") {
+/// Format program entrypoint as HTML
+fn format_entrypoint(embed_filename: impl AsRef<str>) -> String {
+    let embed_filename = embed_filename.as_ref();
+    if Path::new(embed_filename)
+        .extension()
+        .map_or(false, |ext| ext.eq_ignore_ascii_case("css"))
+    {
         format!("<link rel=\"stylesheet\" href=\"/static/{embed_filename}\">")
-    } else if embed_filename.ends_with(".js") {
+    } else if Path::new(embed_filename)
+        .extension()
+        .map_or(false, |ext| ext.eq_ignore_ascii_case("js"))
+    {
         format!("<script defer src=\"/static/{embed_filename}\"></script>")
     } else {
-        panic!("don’t know how to handle this");
+        unreachable!();
     }
 }
 
+/// Render the homepage
+///
+/// # Errors
+/// Returns an error if rendering the homepage fails
+#[allow(clippy::unused_async)]
 pub async fn homepage(theme: Theme, locale: Locale) -> RespResult<impl IntoResponse> {
     let homepage = HomepageTemplate {
         theme,
@@ -37,7 +58,7 @@ pub async fn homepage(theme: Theme, locale: Locale) -> RespResult<impl IntoRespo
             .split('\n')
             .map(ToString::to_string)
             .filter(|s| !s.is_empty())
-            .map(format_embed)
+            .map(format_entrypoint)
             .fold(String::new(), |mut acc, x| {
                 acc += &x;
                 acc
@@ -47,21 +68,26 @@ pub async fn homepage(theme: Theme, locale: Locale) -> RespResult<impl IntoRespo
 }
 
 #[derive(Clone, Deserialize, Debug, PartialEq, Eq)]
+/// Settings for the `update_settings` endpoint
 pub struct Settings {
+    /// Theme to use
     theme: String,
+    /// Language to use
     lang: String,
 }
 
 #[instrument]
+/// Updates the user’s setting cookies
 pub async fn update_settings(
     cookies: Cookies,
     Query(settings): Query<Settings>,
     headers: HeaderMap,
 ) -> RespResult<impl IntoResponse> {
-    async fn update_settings(
-        cookies: Cookies,
+    #[allow(clippy::missing_docs_in_private_items)]
+    fn update_settings(
+        cookies: &Cookies,
         settings: Settings,
-        headers: HeaderMap,
+        headers: &HeaderMap,
     ) -> Result<impl IntoResponse> {
         let referrer = match headers.get("referer") {
             Some(v) => v.to_str()?,
@@ -89,5 +115,5 @@ pub async fn update_settings(
             AppendHeaders([("Location", referrer.to_string())]),
         ))
     }
-    Ok(update_settings(cookies, settings, headers).await?)
+    Ok(update_settings(&cookies, settings, &headers)?)
 }

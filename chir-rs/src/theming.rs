@@ -1,3 +1,5 @@
+//! Theming management
+
 use std::{borrow::Cow, fmt::Display};
 
 use anyhow::{anyhow, Context, Result};
@@ -46,6 +48,7 @@ impl TryFrom<&str> for Theme {
     type Error = anyhow::Error;
 
     fn try_from(value: &str) -> Result<Self> {
+        /// List of known themes
         static THEMES: Map<&'static str, Theme> = phf_map! {
             "auto" => Theme::Auto,
             "sunset" => Theme::Sunset,
@@ -53,16 +56,17 @@ impl TryFrom<&str> for Theme {
             "black" => Theme::Black,
             "white" => Theme::White,
         };
-        if let Some(value) = THEMES.get(value) {
-            return Ok(*value);
-        } else {
-            return Err(anyhow!("Invalid theme value: {}", value));
-        }
+        THEMES.get(value).map_or_else(
+            || Err(anyhow!("Invalid theme value: {}", value)),
+            |value| Ok(*value),
+        )
     }
 }
 
 impl Theme {
-    pub fn is_selected(&self, theme: Theme) -> &'static str {
+    /// Returns `"selected"` if the current theme is the same as the given one
+    #[must_use]
+    pub fn is_selected(&self, theme: Self) -> &'static str {
         if *self == theme {
             "selected"
         } else {
@@ -83,19 +87,18 @@ where
             Ok(cookies) => cookies,
             Err(e) => {
                 warn!("Could not extract cookies from request: {e:?}");
-                return Ok(Theme::Auto);
+                return Ok(Self::Auto);
             }
         };
         let theme_cookie = cookies
             .get("theme")
-            .map(|v| Cow::Owned(v.value().to_owned()))
-            .unwrap_or(Cow::Borrowed("auto"));
-        Theme::try_from(theme_cookie.as_ref())
+            .map_or(Cow::Borrowed("auto"), |v| Cow::Owned(v.value().to_owned()));
+        Self::try_from(theme_cookie.as_ref())
             .context("While reading theme cookie")
             .or_else(|e| {
                 warn!("Invalid theme cookie value: {e:?}. Resetting.");
                 cookies.remove(Cookie::new("theme", ""));
-                Ok(Theme::Auto)
+                Ok(Self::Auto)
             })
     }
 }
