@@ -41,7 +41,7 @@
       } @ args: let
         rustPkgs = pkgs.rustBuilder.makePackageSet {
           packageFun = import ./Cargo.nix;
-          rustChannel = "1.76.0";
+          rustChannel = "1.77.0";
           packageOverrides = pkgs: pkgs.rustBuilder.overrides.all;
         };
       in {
@@ -53,7 +53,7 @@
           ];
         };
         devshells.default.devshell.packages = with pkgs; [
-          (rust-bin.nightly.latest.default.override {
+          (rust-bin.stable.latest.default.override {
             extensions = ["rust-src"];
           })
           inputs.cargo2nix.packages.${system}.cargo2nix
