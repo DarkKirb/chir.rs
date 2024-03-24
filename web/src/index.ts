@@ -1,22 +1,30 @@
 import "./style.scss";
 
 async function onLanguageChange(event: Event) {
-  let internationalizationHandler = await import("./locale");
+  const internationalizationHandler = await import("./locale");
   await internationalizationHandler.handleLanguageChange(event);
 }
 
 async function onThemeChange(event: Event) {
-  let themeHandler = await import("./theme");
+  const themeHandler = await import("./theme");
   themeHandler.handleThemeChange(event);
 }
 
-async function main() {
+function main() {
   document
     .getElementById("change-language")
-    ?.addEventListener("change", onLanguageChange);
+    ?.addEventListener("change", (event: Event) => {
+      onLanguageChange(event).catch((error: unknown) => {
+        console.error(error);
+      });
+    });
   document
     .getElementById("change-theme")
-    ?.addEventListener("change", onThemeChange);
+    ?.addEventListener("change", (event: Event) => {
+      onThemeChange(event).catch((error: unknown) => {
+        console.error(error);
+      });
+    });
   // Following this we no longer need the submit settings button
   //document.getElementById("settings-submit-button")?.remove();
 }

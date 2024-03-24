@@ -11,6 +11,6 @@ function setTheme(theme: string) {
 }
 
 export function handleThemeChange(event: Event) {
-  let target = event.target as HTMLSelectElement;
+  const target = event.target as HTMLSelectElement;
   setTheme(target.value);
 }

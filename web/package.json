@@ -6,7 +6,6 @@
   "author": "Charlotte 🦝 Delenk",
   "license": "Parity-7.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "webpack; webpack -j | jq -r '.chunks[] | select(.initial) | .files[]' > entrypoints"
   },

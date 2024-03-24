@@ -1,0 +1,12 @@
+.direnv/
+
+
+# Added by cargo
+
+target/
+result
+result-bin
+node_modules/
+dist/
+entrypoints
+.git

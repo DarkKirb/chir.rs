@@ -1,4 +1,4 @@
-import { FluentBundle, FluentResource } from "@fluent/bundle";
+import { FluentBundle, FluentResource, FluentVariable } from "@fluent/bundle";
 import Cookies from "js-cookie";
 import "tslib";
 
@@ -28,7 +28,7 @@ const LANGUAGE_IDS: Record<string, string> = {
   "tok-Stln-XX": "tok-Stln-XX",
 };
 
-let loadedLanguages: Record<string, FluentBundle> = {};
+const loadedLanguages: Record<string, FluentBundle> = {};
 
 async function pickBundle(languageId: string): Promise<string> {
   switch (languageId) {
@@ -83,7 +83,7 @@ async function pickBundle(languageId: string): Promise<string> {
 }
 
 async function loadLanguage(lang: string): Promise<FluentBundle> {
-  if (loadedLanguages[lang]) {
+  if (lang in loadedLanguages) {
     return loadedLanguages[lang];
   }
 
@@ -98,26 +98,58 @@ function setRootLanguage(lang: string) {
   document.documentElement.lang = lang;
 }
 
+function validateFluentArgs(
+  json: string,
+): Record<string, FluentVariable> | null {
+  const args: unknown = JSON.parse(json);
+  if (args === null || args === undefined) {
+    return null;
+  }
+  if (typeof args !== "object") {
+    throw new Error("Fluent arguments must be an object.");
+  }
+  const result: Record<string, FluentVariable> = {};
+  for (const key in args) {
+    if (Object.prototype.hasOwnProperty.call(args, key)) {
+      const value: unknown = args[key];
+      if (typeof value === "number") {
+        result[key] = value;
+      } else if (typeof value === "string") {
+        // It could be a date
+        const date = new Date(value);
+        if (!isNaN(date.getTime())) {
+          result[key] = date;
+        } else {
+          result[key] = value;
+        }
+      }
+      // TODO: support FluentValue
+    }
+  }
+  return result;
+}
+
 async function localize(langs: string[]) {
-  let bundles: FluentBundle[] = [];
+  const bundles: FluentBundle[] = [];
   for (const lang of langs) {
     bundles.push(await loadLanguage(LANGUAGE_IDS[lang]));
   }
 
   document.querySelectorAll("[data-l10n-id]").forEach((element) => {
-    let l10nId = element.getAttribute("data-l10n-id") ?? "undefined";
+    const l10nId = element.getAttribute("data-l10n-id") ?? "undefined";
     for (const bundle of bundles) {
-      let message = bundle.getMessage(l10nId);
+      const message = bundle.getMessage(l10nId);
       if (message?.value) {
-        let content = bundle.formatPattern(
-          message.value,
-          JSON.parse(element.getAttribute("data-l10n-args") ?? "{}"),
+        let fluentVariable = validateFluentArgs(
+          element.getAttribute("data-l10n-args") ?? "{}",
         );
-        if (element.hasAttribute("data-l10n-property")) {
-          element.setAttribute(
-            element.getAttribute("data-l10n-property")!,
-            content,
-          );
+        if (fluentVariable === null) {
+          fluentVariable = {};
+        }
+        const content = bundle.formatPattern(message.value, fluentVariable);
+        const propertyAttribute = element.getAttribute("data-l10n-property");
+        if (propertyAttribute !== null) {
+          element.setAttribute(propertyAttribute, content);
         } else {
           element.textContent = content;
         }
@@ -157,7 +189,7 @@ async function localizeAll(): Promise<void> {
 }
 
 export async function handleLanguageChange(event: Event) {
-  let target = event.target as HTMLSelectElement;
+  const target = event.target as HTMLSelectElement;
   if (target.value === "auto") {
     Cookies.remove("locale");
   } else {
