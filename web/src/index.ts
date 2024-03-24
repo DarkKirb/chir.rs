@@ -26,7 +26,7 @@ function main() {
       });
     });
   // Following this we no longer need the submit settings button
-  //document.getElementById("settings-submit-button")?.remove();
+  document.getElementById("settings-submit-button")?.remove();
 }
 
 addEventListener("DOMContentLoaded", main);

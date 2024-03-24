@@ -29,6 +29,8 @@ settings-theme-black = Black (high contrast)
 settings-theme-trans-rights = Trans Rights (light theme)
 # Theme option: White (high contrast)
 settings-theme-white = White (high contrast)
+# Update settings without javascript
+settings-submit-button = Update Settings…
 
 ## Top navigation
 # Link to the home page
