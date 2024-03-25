@@ -1,32 +1,39 @@
 import { FluentBundle, FluentResource, FluentVariable } from "@fluent/bundle";
 import Cookies from "js-cookie";
 import "tslib";
+import { LanguageId } from "./LanguageId";
 
 const LANGUAGE_IDS: Record<string, string> = {
   de: "de-DE",
-  "de-DE": "de-DE",
   en: "en-US",
-  "en-US": "en-US",
   "en-IE": "en-GB",
   "en-Sten-US": "en-Sten-US",
-  "en-Sten-US-display": "en-Sten-US",
-  "en-Sten-US-runes": "en-Sten-US",
   "en-GB": "en-GB",
   fr: "fr-FR",
-  "fr-FR": "fr-FR",
   jbo: "jbo-Latn-XX",
-  "jbo-XX": "jbo-Latn-XX",
-  "jbo-Latn-XX": "jbo-Latn-XX",
   "jbo-Zblr-XX": "jbo-Zblr-XX",
   nl: "nl-NL",
-  "nl-NL": "nl-NL",
   tok: "tok-Latn-XX",
-  "tok-XX": "tok-Latn-XX",
   "tok-Emsi-XX": "tok-Emsi-XX",
   "tok-Hani-XX": "tok-Hani-XX",
-  "tok-Latn-XX": "tok-Latn-XX",
   "tok-Stln-XX": "tok-Stln-XX",
 };
+
+function lookupLanguage(langId: string): string | null {
+  let lang: LanguageId;
+  try {
+    lang = new LanguageId(langId);
+  } catch (e) {
+    return null;
+  }
+  do {
+    const id = LANGUAGE_IDS[lang.toString()];
+    if (id) {
+      return id;
+    }
+  } while (lang.removeLeastSignificantComponent());
+  return null;
+}
 
 const loadedLanguages: Record<string, FluentBundle> = {};
 
@@ -132,7 +139,9 @@ function validateFluentArgs(
 async function localize(langs: string[]) {
   const bundles: FluentBundle[] = [];
   for (const lang of langs) {
-    bundles.push(await loadLanguage(LANGUAGE_IDS[lang]));
+    const parsedLang = lookupLanguage(lang);
+    if (parsedLang === null) continue;
+    bundles.push(await loadLanguage(parsedLang));
   }
 
   document.querySelectorAll("[data-l10n-id]").forEach((element) => {
