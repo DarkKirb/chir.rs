@@ -7,5 +7,9 @@ module.exports = {
       order: "smacss",
     }),
     require("postcss-prune-var")(),
+    require("postcss-variable-compress")(),
+    require("cssnano")({
+      preset: "advanced",
+    }),
   ],
 };
