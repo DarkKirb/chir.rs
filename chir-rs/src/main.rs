@@ -6,6 +6,7 @@ use anyhow::{Context, Result};
 use axum::{routing::get, Router};
 use tokio::net::TcpListener;
 use tower_cookies::CookieManagerLayer;
+use tower_http::compression::CompressionLayer;
 use tracing::{error, instrument};
 
 pub mod err;
@@ -25,7 +26,14 @@ async fn main() {
             .route("/", get(homepage::homepage))
             .route("/static/:path", get(static_file::static_file))
             .route("/update_settings", get(homepage::update_settings))
-            .layer(CookieManagerLayer::new());
+            .layer(CookieManagerLayer::new())
+            .layer(
+                CompressionLayer::new()
+                    .br(true)
+                    .deflate(true)
+                    .gzip(true)
+                    .zstd(true),
+            );
         let listener = TcpListener::bind(
             env::var("BIND_ADDR").context("Failed to read environment variable BIND_ADDR")?,
         )

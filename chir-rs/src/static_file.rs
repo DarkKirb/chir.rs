@@ -80,7 +80,10 @@ static_embeds!();
 
 /// Static file handler
 #[instrument]
-pub async fn static_file(Path(file): Path<String>, headers: HeaderMap) -> RespResult<impl IntoResponse> {
+pub async fn static_file(
+    Path(file): Path<String>,
+    headers: HeaderMap,
+) -> RespResult<impl IntoResponse> {
     #[allow(clippy::missing_docs_in_private_items)]
     fn static_file(file: &str) -> Result<StaticFile<'static>> {
         let static_file = STATIC_FILES
@@ -101,9 +104,9 @@ pub async fn static_file(Path(file): Path<String>, headers: HeaderMap) -> RespRe
                     for etag in etag.split(',') {
                         if etag.trim() == expected_etag {
                             return Ok(Err(Response::builder()
-                               .status(StatusCode::NOT_MODIFIED)
-                               .body(Body::empty())
-                               .context("Building not modified body")?));
+                                .status(StatusCode::NOT_MODIFIED)
+                                .body(Body::empty())
+                                .context("Building not modified body")?));
                         }
                     }
                 }
