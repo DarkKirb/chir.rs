@@ -4,7 +4,7 @@ use anyhow::{anyhow, Context, Result};
 use axum::{
     body::Body,
     extract::Path,
-    http::{Response, StatusCode},
+    http::{HeaderMap, Response, StatusCode},
     response::IntoResponse,
 };
 use chir_rs_macros::static_embeds;
@@ -80,7 +80,7 @@ static_embeds!();
 
 /// Static file handler
 #[instrument]
-pub async fn static_file(Path(file): Path<String>) -> RespResult<impl IntoResponse> {
+pub async fn static_file(Path(file): Path<String>, headers: HeaderMap) -> RespResult<impl IntoResponse> {
     #[allow(clippy::missing_docs_in_private_items)]
     fn static_file(file: &str) -> Result<StaticFile<'static>> {
         let static_file = STATIC_FILES
@@ -94,13 +94,28 @@ pub async fn static_file(Path(file): Path<String>) -> RespResult<impl IntoRespon
     match static_file(&file)
         .with_context(|| format!("Could not handle request for static file {file}"))
     {
-        Ok(response) => Ok(Ok(response.serve_file().await?)),
+        Ok(response) => {
+            let expected_etag = format!("\"{}\"", response.file_hash());
+            for header in headers.get_all("If-None-Match") {
+                if let Ok(etag) = header.to_str() {
+                    for etag in etag.split(',') {
+                        if etag.trim() == expected_etag {
+                            return Ok(Err(Response::builder()
+                               .status(StatusCode::NOT_MODIFIED)
+                               .body(Body::empty())
+                               .context("Building not modified body")?));
+                        }
+                    }
+                }
+            }
+            Ok(Ok(response.serve_file().await?))
+        }
         Err(e) => {
             error!("{:?}", e);
-            Ok(Err((
-                StatusCode::NOT_FOUND,
-                format!("Could not find static file {file}"),
-            )))
+            Ok(Err(Response::builder()
+                .status(StatusCode::NOT_FOUND)
+                .body(Body::empty())
+                .context("Building not found body")?))
         }
     }
 }
