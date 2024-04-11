@@ -63,7 +63,7 @@ unseparated_literal_suffix = "warn"
 
 [dependencies]
 accept-language = "3.1.0"
-anyhow = { version = "1.0.81", features = ["backtrace"] }
+anyhow = { version = "1.0.82", features = ["backtrace"] }
 askama = "0.12.1"
 askama_axum = "0.4.0"
 axum = "0.7.4"
