@@ -69,7 +69,7 @@ askama_axum = "0.4.0"
 axum = "0.7.4"
 chir-rs-macros = { version = "0.1.0", path = "../chir-rs-macros" }
 dotenvy = "0.15.7"
-fluent-templates = "0.9.1"
+fluent-templates = "0.9.3"
 phf = { version = "0.11.2", features = ["macros"] }
 serde = { version = "1.0.197", features = ["derive"] }
 tokio = { version = "1.36.0", features = ["rt-multi-thread", "macros", "fs"] }
