@@ -19,9 +19,9 @@ packages:
   original:
     hackage: webauthn-0.7.0.0
 - completed:
-    hackage: validation-1.1.3@sha256:e2496d01639d5b8ab1dcf4b1dcf93e3d1380b6f793c4eef18ffc082eead17cf0,3573
+    hackage: validation-1.1.3@sha256:3fdc553ee28ec1c954e5658cf0476b4c0b0fcff408c79343a2e580953dd2b952,3699
     pantry-tree:
-      sha256: 5568b8f135d2c0a3d28813d48f254fca228b4cdec2996ff409717b6a40022164
+      sha256: ac30e134d7b6737a935853b5a52658321dfff2126fba500483c92812d721ab5a
       size: 343
   original:
     hackage: validation-1.1.3

@@ -41,6 +41,7 @@ extra-deps:
   - validation-1.1.3
   - git: https://github.com/DarkKirb/microformats2-parser
     commit: 4e6b3aac8f5af3306261ef2782f7df990e96f429
+
 # - acme-missiles-0.3
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
@@ -72,6 +73,13 @@ system-ghc: true
 # compiler-check: newer-minor
 
 nix:
-  enable: false
+  enable: true
+  packages:
+    - zlib.dev
+    - zlib.out
+    - pcre.out
+    - pcre.dev
+    - postgresql.dev
+    - postgresql.out
 
 allow-newer: true

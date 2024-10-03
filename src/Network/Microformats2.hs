@@ -71,7 +71,7 @@ parseLink = (parseLinkInfo <$>) . fromMaybe [] . parseLinkHeaderBS
 parseLinkHeaders :: [Header] -> [LinkInfo]
 parseLinkHeaders = concatMap (parseLink . snd) . filter ((== "Link") . fst)
 
-(.=?) :: (Data.Aeson.KeyValue kv, Data.Aeson.ToJSON a) => Data.Aeson.Key -> [a] -> Maybe kv
+(.=?) :: (KeyValue kv, Data.Aeson.ToJSON a) => Data.Aeson.Key -> [a] -> Maybe kv
 _ .=? [] = Nothing
 k .=? v = Just (k Data.Aeson..= v)
 

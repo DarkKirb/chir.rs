@@ -33,7 +33,8 @@
         # See https://github.com/srid/haskell-flake/blob/master/example/flake.nix
         haskellProjects.default = {
           # The base package set (this value is the default)
-          # basePackages = pkgs.haskellPackages;
+          #basePackages = pkgs.haskellPackages.extend (self: super: {
+          #});
 
           # Packages to add on top of `basePackages`
           packages = {
@@ -124,13 +125,13 @@
           ];
           nativeBuildInputs = with pkgs; [
             just
-            rnix-lsp
             stack
             nodejs
             yarn
             yarn2nix
             pcre
             zlib
+            postgresql.dev
           ];
         };
         formatter = pkgs.alejandra;
