@@ -83,7 +83,7 @@ library
     , conduit
     , conduit-extra
     , containers
-    , cryptonite
+    , crypton
     , data-default
     , dhall
     , directory

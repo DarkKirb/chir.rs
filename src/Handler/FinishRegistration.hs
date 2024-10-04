@@ -78,7 +78,7 @@ postFinishRegistrationR = do
         , WA.ceTransports = transports
         }
     } <-
-    pure (WA.verifyRegistrationResponse (WA.Origin ("https://" <> origin)) rpIdHash registry (timeGetDateTimeOfDay now) options cred)
+    pure (WA.verifyRegistrationResponse (WA.Origin ("https://" <> origin) :| []) rpIdHash registry (timeGetDateTimeOfDay now) options cred)
       ? \errs -> do
         $(logError) $ "Failed to verify registration: " <> show errs
         permissionDenied "Failed to verify registration"
