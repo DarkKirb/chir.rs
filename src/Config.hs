@@ -85,12 +85,11 @@ loadConfigAuto :: (MonadLoggerIO m) => m ConfigFile
 loadConfigAuto = do
   optionEnv <- lookupEnv "CHIR_RS_CONFIG"
   let configFiles = case optionEnv of
-        Just config -> [config]
-        _ -> []
+        Just config -> [config, "./config.dhall"]
+        _ -> ["./config.dhall"]
   args <- getArgs
-  let configFiles' = tailOrEmpty args ++ configFiles
-  let configFiles'' = map toText configFiles'
-  result <- foldr ((???!) . loadConfig) (liftIO $ try $ fail "Can’t find valid config file") configFiles''
+  let configFiles' = map toText $ tailOrEmpty args ++ configFiles
+  result <- foldr ((???!) . loadConfig) (liftIO $ try $ fail "Can’t find valid config file") configFiles'
   case result of
     Right config -> return config
     Left e -> liftIO $ fail $ displayException e

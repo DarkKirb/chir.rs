@@ -17,3 +17,5 @@ database.db*
 node_modules
 yesod-devel
 static
+
+config.dhall
