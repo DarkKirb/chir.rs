@@ -17,78 +17,6 @@ async function getTheme(): Promise<string> {
   }
 }
 
-let styleSheets: any = undefined;
-
-function appendStylesheet(url: string, media?: string): void {
-  let link = document.createElement("link");
-  link.setAttribute("rel", "stylesheet");
-  link.setAttribute("href", url);
-  if (media !== undefined) {
-    link.setAttribute("media", media);
-  }
-  document.head.appendChild(link);
-}
-
-async function applyTheme(theme: string | undefined): Promise<void> {
-  if (styleSheets === undefined) {
-    const response = await fetch("/api/style-files", {
-      headers: {
-        Accept: "application/cbor",
-      },
-    });
-
-    const styleSheetsCbor = await response.arrayBuffer();
-    const cbor = await import("cbor-x");
-    const styleSheetsData = cbor.decode(new Uint8Array(styleSheetsCbor));
-    styleSheets = styleSheetsData;
-  }
-
-  if (styleSheets !== undefined) {
-    document.querySelectorAll("link[rel=stylesheet]").forEach;
-    Array.from(document.getElementsByTagName("link"))
-      .filter((e) => e.getAttribute("rel") === "stylesheet")
-      .forEach((e) => {
-        e.remove();
-      });
-
-    // Now add the new styles back
-    let head = document.head;
-    appendStylesheet(styleSheets[0]);
-    switch (theme) {
-      case "sunset":
-        appendStylesheet(styleSheets[1]);
-        break;
-      case "trans-rights":
-        appendStylesheet(styleSheets[2]);
-        break;
-      case "black":
-        appendStylesheet(styleSheets[3]);
-        break;
-      case "white":
-        appendStylesheet(styleSheets[4]);
-        break;
-      default:
-        appendStylesheet(
-          styleSheets[1],
-          "(prefers-color-scheme: dark) and (prefers-contrast: no-preference)",
-        );
-        appendStylesheet(
-          styleSheets[3],
-          "(prefers-color-scheme: dark) and not (prefers-contrast: no-preference)",
-        );
-        appendStylesheet(
-          styleSheets[2],
-          "(prefers-color-scheme: light) and (prefers-contrast: no-preference)",
-        );
-        appendStylesheet(
-          styleSheets[4],
-          "((prefers-color-scheme: light) and not (prefers-contrast: no-preference)), print",
-        );
-        break;
-    }
-  }
-}
-
 function getLanguageQueryParam(): string | undefined {
   const url = new URL(window.location.href);
   let lang: string | null | undefined = url.searchParams.get("_LANG");
@@ -146,6 +74,7 @@ async function updateTheme(e: Event): Promise<void> {
   e.preventDefault();
   const theme = (e.target as HTMLSelectElement).value;
   await setThemeCookie(theme);
+  let { applyTheme } = await import("./theme");
   await applyTheme(theme);
 }
 

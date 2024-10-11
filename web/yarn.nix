@@ -2208,6 +2208,14 @@
       };
     }
     {
+      name = "valibot___valibot_0.42.1.tgz";
+      path = fetchurl {
+        name = "valibot___valibot_0.42.1.tgz";
+        url = "https://registry.yarnpkg.com/valibot/-/valibot-0.42.1.tgz";
+        sha512 = "3keXV29Ar5b//Hqi4MbSdV7lfVp6zuYLZuA9V1PvQUsXqogr+u5lvLPLk3A4f74VUXDnf/JfWMN6sB+koJ/FFw==";
+      };
+    }
+    {
       name = "watchpack___watchpack_2.4.2.tgz";
       path = fetchurl {
         name = "watchpack___watchpack_2.4.2.tgz";

@@ -51,6 +51,7 @@ module.exports = {
       chunks: "async",
     },
     minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
+    usedExports: true,
   },
   devtool: "source-map",
 };
