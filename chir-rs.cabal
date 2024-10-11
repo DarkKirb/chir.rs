@@ -73,7 +73,7 @@ library
     ViewPatterns
 
   build-depends:
-    , aeson
+    , aeson                  >=2.1.0.0  && <2.2.0.0
     , async
     , base                   >=4.13.0.0 && <4.20.0.0.0
     , base64-bytestring
@@ -155,6 +155,7 @@ library
     Handler.OauthMetadata
     Handler.Register
     Handler.StartRegistration
+    Handler.StyleFiles
     Handler.WebauthnChallenge
     Handler.Webfinger
     Model

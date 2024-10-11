@@ -132,6 +132,7 @@
             pcre
             zlib
             postgresql.dev
+            haskellPackages.yesod-bin
           ];
         };
         formatter = pkgs.alejandra;

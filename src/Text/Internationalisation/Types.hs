@@ -80,12 +80,16 @@ data Message
     MsgSelfIntroPart3
   | -- | Self intro part 4
     MsgSelfIntroPart4
-  | -- | Settings option dark theme
-    MsgSettingDarkTheme
+  | -- | Settings option sunset theme
+    MsgSettingSunsetTheme
+  | -- | Settings option trans rights theme
+    MsgSettingTransRightsTheme
+  | -- | Settings option black theme
+    MsgSettingBlackTheme
+  | -- | Settings option white theme
+    MsgSettingWhiteTheme
   | -- | Settings label for language
     MsgSettingLanguage
-  | -- | Setting option for light theme
-    MsgSettingLightTheme
   | -- | Cookie notice in settings menu
     MsgSettingsCookieNotice
   | -- | Settings menu label

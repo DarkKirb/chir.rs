@@ -15,9 +15,11 @@ module Foundation (
   QueueCommands (..),
   newRequest,
   returnJSON,
+  returnJSON',
   requireJSONBody,
 ) where
 
+import Codec.CBOR.Class qualified as CBOR
 import Codec.CBOR.JSON (decodeValue, encodeValue)
 import Codec.CBOR.Read (deserialiseFromBytes)
 import Codec.CBOR.Write (toLazyByteString)
@@ -27,7 +29,7 @@ import Codec.Serialise.Decoding (Decoder, decodeInt, decodeListLen, decodeWord, 
 import Codec.Serialise.Encoding (Encoding, encodeInt, encodeListLen, encodeString, encodeWord, encodeWord8)
 import Conduit (connect, sinkLazy)
 import Config (ConfigFile, logLevel', rpId', staticDir', toLogLevel, widgetFile)
-import Config.StaticFiles (index_css, index_js)
+import Config.StaticFiles (index_js, style_base_css, style_black_css, style_sunset_css, style_trans_rights_css, style_white_css)
 import Control.Lens ((^.))
 import Control.Lens.TH (makeLenses)
 import Control.Monad (liftM)
@@ -72,6 +74,7 @@ import Yesod (
   addHeader,
   addScript,
   addStylesheet,
+  addStylesheetAttrs,
   defaultFormMessage,
   defaultGetDBRunner,
   getRequest,
@@ -188,7 +191,21 @@ instance Yesod App where
 
     pc <- widgetToPageContent $ do
       addScript $ StaticR index_js
-      addStylesheet $ StaticR index_css
+      addStylesheet $ StaticR style_base_css
+      case theme of
+        "black" -> addStylesheet $ StaticR style_black_css
+        "white" -> addStylesheet $ StaticR style_white_css
+        "sunset" -> addStylesheet $ StaticR style_sunset_css
+        "trans-rights" -> addStylesheet $ StaticR style_trans_rights_css
+        _ -> do
+          -- The order is important for legacy browsers compatiblity
+          -- The later ones will override the earlier ones and it’s probably best if it falls
+          -- back to the white high contrast theme
+          addStylesheetAttrs (StaticR style_sunset_css) [("media", "(prefers-color-scheme: dark) and (prefers-contrast: no-preference)")]
+          addStylesheetAttrs (StaticR style_black_css) [("media", "(prefers-color-scheme: dark) and not (prefers-contrast: no-preference)")]
+          addStylesheetAttrs (StaticR style_trans_rights_css) [("media", "(prefers-color-scheme: light) and (prefers-contrast: no-preference)")]
+          addStylesheetAttrs (StaticR style_white_css) [("media", "((prefers-color-scheme: light) and not (prefers-contrast: no-preference)), print")]
+          pass
       $(widgetFile "default-layout")
     withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
@@ -270,6 +287,12 @@ acceptsCbor =
       . reqAccept
   )
     `liftM` getRequest
+
+returnJSON' :: (MonadHandler m, A.ToJSON a, CBOR.Serialise a) => a -> m TypedContent
+returnJSON' a =
+  acceptsCbor >>= \case
+    False -> return $ TypedContent "application/json" $ toContent $ A.encode a
+    True -> return $ TypedContent "application/cbor" $ toContent $ toLazyByteString $ CBOR.encode a
 
 returnJSON :: (MonadHandler m, A.ToJSON a) => a -> m TypedContent
 returnJSON a =

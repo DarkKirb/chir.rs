@@ -6,3 +6,4 @@
 /auth/register/finish FinishRegistrationR POST
 /.well-known/openid-configuration OauthMetadataR GET
 /auth/jwks OauthJwksR GET
+/api/style-files StyleFilesR GET

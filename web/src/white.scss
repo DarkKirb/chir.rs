@@ -1,0 +1,21 @@
+$background-color: #fff !default;
+$background-image: none !default;
+$color: #000 !default;
+$muted-color: $color !default;
+$primary: #000 !default;
+$primary-hover: $primary !default;
+$highlight-background-color: $color !default;
+$highlight-color: $background-color !default;
+
+@use "themes/theming.scss" with (
+  $background-color: $background-color,
+  $background-image: $background-image,
+  $color: $color,
+  $muted-color: $muted-color,
+  $primary: $primary,
+  $primary-hover: $primary-hover,
+  $highlight-background-color: $highlight-background-color,
+  $highlight-color: $highlight-color
+);
+
+@use "style/high-contrast.scss";

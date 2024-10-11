@@ -8,6 +8,11 @@ module.exports = {
   entry: {
     index: "./src/index.ts",
     register: "./src/register.ts",
+    style_base: "./src/basestyle.scss",
+    style_sunset: "./src/sunset.scss",
+    style_trans_rights: "./src/trans-rights.scss",
+    style_black: "./src/black.scss",
+    style_white: "./src/white.scss",
   },
   output: {
     filename: "[name].js",

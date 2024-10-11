@@ -1,43 +1,48 @@
 $newline never
-<a .visually-hidden-focusable href="#main">^{__ MsgJumpToContent}
-<header .container>
-    <hgroup>
-        <h1>^{__ MsgPageTitle}
-        <p>^{__ MsgPageSubtitle}
-<nav .container .no-flex>
-    <input .visually-hidden type="checkbox" #settings-menu-checkbox aria-hidden=true>
-    <label .hamburger .fa-solid .fa-gear for="settings-menu-checkbox" title="^{__ MsgSettingsMenu}" aria-hidden=true>
-    <ul .flex>
-        <li>
-            <a href="@{HomeR}">^{__ MsgPageHome}
-        <li>
-            <a>^{__ MsgPageBlog}
-        <li>
-            <a>^{__ MsgPageChat}
-    <div #settings-menu>
-        <p>^{__ MsgSettingsCookieNotice}
-        <label for="change-language">^{__ MsgSettingLanguage}
-        <select #change-language>
-            <option value="auto">^{__ MsgAutomatic}
-            <option value="de">Deutsch (Deutschland)
-            <option value="en">English (Usonia)
-            <option value="en@STN">TKPWHREURB
-            <option value="en@STN-DISP">TKPWHREURB/SKWHAFPL/SRAOEURB/WAL/AOEUZ/-D/SKWHORBG
-            <option value="en@STN-RUNE">TKPWHREURB/SKWHAFPL/RAO*UPB/SKWHORBG
-            <option value="fr">Français (France)
-            <option value="jbo">la .lojban.
-            <option value="jbo@ZLR">  (la .lojban., zbalermorna)
-            <option value="nl">Nederlands (Netherland)
-            <option value="tok">toki pona
-            <option value="tok@SE">🗣️👍
-            <option value="tok@SM">言善
-            <option value="tok@SP">󱥬󱦖󱥔 (toki pona, sitelen pona)
-        <label for="change-theme">^{__ MsgSettingTheme}
-        <select #change-theme>
-            <option value="auto">^{__ MsgAutomatic}
-            <option value="dark">^{__ MsgSettingDarkTheme}
-            <option value="light">^{__ MsgSettingLightTheme}
-<main #main .container role="main" id="main">
-    ^{widget}
-<footer .container>
-    ^{__ MsgFooterText}
+<div .container>
+    <a .visually-hidden-focusable href="#main">^{__ MsgJumpToContent}
+    <header>
+        <hgroup>
+            <h1>^{__ MsgPageTitle}
+            <p>^{__ MsgPageSubtitle}
+    <nav #top-nav>
+        <input .visually-hidden type="checkbox" #settings-menu-checkbox aria-hidden=true tabindex="-1">
+        <label .hamburger for="settings-menu-checkbox" title="^{__ MsgSettingsMenu}" aria-hidden=true>
+            <svg aria-hidden="true" focusable="false" .svg-inline--fa role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path fill="currentColor" d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z">
+        <ul>
+            <li>
+                <a href="@{HomeR}">^{__ MsgPageHome}
+            <li>
+                <a>^{__ MsgPageBlog}
+            <li>
+                <a>^{__ MsgPageChat}
+        <div #settings-menu>
+            <p>^{__ MsgSettingsCookieNotice}
+            <label for="change-language">^{__ MsgSettingLanguage}
+            <select #change-language>
+                <option value="auto">^{__ MsgAutomatic}
+                <option value="de" lang="de">Deutsch (Deutschland)
+                <option value="en" lang="en">English (Usonia)
+                <option value="en@STN" lang="en@STN">TKPWHREURB
+                <option value="en@STN-DISP" lang="en@STN-DISP">TKPWHREURB/SKWHAFPL/SRAOEURB/WAL/AOEUZ/-D/SKWHORBG
+                <option value="en@STN-RUNE" lang="en@STN-RUNE">TKPWHREURB/SKWHAFPL/RAO*UPB/SKWHORBG
+                <option value="fr" lang="fr">Français (France)
+                <option value="jbo" lang="jbo">la .lojban.
+                <option value="jbo@ZLR" lang="jbo@ZLR">  (la .lojban., zbalermorna)
+                <option value="nl" lang="nl">Nederlands (Netherland)
+                <option value="tok" lang="tok">toki pona
+                <option value="tok@SE" lang="tok@SE">🗣️👍
+                <option value="tok@SM" lang="tok@SM">言善
+                <option value="tok@SP" lang="tok@SP">󱥬󱦖󱥔 (toki pona, sitelen pona)
+            <label for="change-theme">^{__ MsgSettingTheme}
+            <select #change-theme>
+                <option value="auto">^{__ MsgAutomatic}
+                <option value="sunset">^{__ MsgSettingSunsetTheme}
+                <option value="black">^{__ MsgSettingBlackTheme}
+                <option value="trans-rights">^{__ MsgSettingTransRightsTheme}
+                <option value="white">^{__ MsgSettingWhiteTheme}
+    <main #main role="main" id="main">
+        ^{widget}
+    <footer>
+        ^{__ MsgFooterText}

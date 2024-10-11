@@ -1,0 +1,66 @@
+@use "settings.scss";
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: settings.$spacing;
+  padding-right: settings.$spacing;
+  width: 100%;
+}
+
+:root {
+  font-size: 100%;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 510px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  :root {
+    font-size: 106.25%;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 700px;
+  }
+  :root {
+    font-size: 112.5%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 950px;
+  }
+  :root {
+    font-size: 118.75%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1200px;
+  }
+  :root {
+    font-size: 125%;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1450px;
+  }
+  :root {
+    font-size: 131.25%;
+  }
+}
+
+@media (min-width: 1920px) {
+  .container {
+    max-width: 75%;
+  }
+}

@@ -1,0 +1,234 @@
+@charset "utf-8";
+
+@use "style/settings.scss";
+@use "style/sanitize.css";
+@use "style/fonts.scss";
+@use "style/container.scss";
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+#settings-menu-checkbox:not(:checked) ~ #settings-menu:not(:focus):not(:active),
+.visually-hidden,
+.visually-hidden-focusable:not(:focus):not(:active) {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+header {
+  padding-top: 1rem;
+}
+hgroup,
+p {
+  margin-bottom: settings.$typography-spacing-vertical;
+}
+
+h1 {
+  font-size: 2rem;
+  line-height: 1.125;
+  font-weight: 700;
+}
+
+hgroup > * {
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+hgroup > p {
+  font-weight: unset;
+  font-size: 1rem;
+}
+
+#top-nav {
+  display: block;
+}
+
+svg:not(:root) {
+  overflow: hidden;
+}
+
+.svg-inline--fa {
+  display: inline-block;
+  height: 1em;
+  vertical-align: -0.125em;
+}
+
+:where(svg:not([fill])) {
+  fill: currentColor;
+}
+
+[type="checkbox"] ~ label,
+[type="radio"] ~ label {
+  cursor: pointer;
+  display: inline-block;
+  margin-bottom: 0;
+}
+.hamburger {
+  float: right;
+  padding: 40px 20px;
+}
+nav ol:last-of-type,
+nav ul:last-of-type {
+  margin-right: -(settings.$nav-element-spacing-horizontal);
+}
+
+nav ol:first-of-type,
+nav ul:first-of-type {
+  margin-left: -(settings.$nav-element-spacing-horizontal);
+}
+
+nav ol,
+nav ul {
+  align-items: center;
+  list-style: none;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+nav,
+nav ul {
+  display: flex;
+}
+
+nav li {
+  display: inline-block;
+  margin: 0;
+  padding: settings.$nav-element-spacing-vertical
+    settings.$nav-element-spacing-horizontal;
+}
+
+ul li {
+  list-style: square;
+}
+
+:where(nav li)::before {
+  content: "";
+  float: left;
+}
+
+nav li :where(a, [role="link"]):not(:hover) {
+  text-decoration: none;
+}
+
+nav li :where(a, [role="link"]) {
+  border-radius: settings.$border-radius;
+  display: inline-block;
+  margin: -(settings.$nav-link-spacing-vertical) (-(settings.$nav-link-spacing-horizontal));
+  padding: settings.$nav-link-spacing-vertical
+    settings.$nav-link-spacing-horizontal;
+}
+
+article {
+  padding: 1rem;
+  margin-bottom: settings.$block-spacing-vertical;
+  border-radius: settings.$border-radius;
+}
+
+.pfpfig {
+  float: left;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
+}
+
+@media (max-width: 576px) {
+  .pfpfig {
+    max-width: 25%;
+  }
+  .pfpfig > picture > img {
+    width: 100%;
+  }
+  .pfpfig > figcaption {
+    display: none;
+  }
+}
+
+@media (min-width: 576px) {
+  .pfpfig {
+    max-width: 256px;
+  }
+}
+
+.flex {
+  display: flex;
+}
+
+.clearfix:after {
+  clear: both;
+  content: "";
+  display: block;
+}
+
+select:not([multiple], [size]) {
+  background-image: url(./chevron.svg);
+  background-position: center right 0.75rem;
+  background-repeat: no-repeat;
+  background-size: 1rem auto;
+  padding-left: settings.$form-element-spacing-horizontal;
+  padding-right: settings.$form-element-spacing-horizontal + 1.5rem;
+  padding-inline-end: settings.$form-element-spacing-horizontal + 1.5rem;
+  padding-inline-start: settings.$form-element-spacing-horizontal;
+}
+
+input:not([type="checkbox"], [type="radio"]),
+select,
+textarea {
+  margin-bottom: settings.$spacing;
+}
+
+input,
+select,
+textarea {
+  border-radius: settings.$border-radius;
+}
+
+input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"]),
+select,
+textarea {
+  appearance: none;
+  padding: settings.$form-element-spacing-vertical
+    settings.$form-element-spacing-horizontal;
+}
+
+button[type="submit"],
+input:not([type="checkbox"], [type="radio"]),
+select,
+textarea {
+  width: 100%;
+}
+
+select {
+  text-transform: none;
+}
+
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  letter-spacing: inherit;
+  line-height: settings.$line-height;
+  margin: 0;
+}
+
+.flex-spacebetween {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-spacebetween > .flex-item-2 {
+  flex-basis: 50%;
+}
+
+.hidden {
+  display: none;
+}

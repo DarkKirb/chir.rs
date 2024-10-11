@@ -1,5 +1,5 @@
 $newline never
-<div .h-card>
+<article .h-card .clearfix>
     <figure .u-photo .pfpfig>
         ^{image img_2023_10_26_sammythetanuki_babylottepfp}
         <figcaption>^{__ MsgImgSammyTheTanukiBabyLottePFPFigcaption}
@@ -8,8 +8,8 @@ $newline never
         ^{__ MsgSelfIntroPart2}&nbsp;
         ^{__ MsgSelfIntroPart3}&nbsp;
         ^{__ MsgSelfIntroPart4}
-    <div .container .flex>
-        <div .flex-item>
+    <div .container .flex-spacebetween>
+        <div .flex-item-2>
             <hgroup>
                 <h2>^{__ MsgReportedSightings}
                 <p>^{__ MsgReportedSightingsSubtitle}
@@ -42,7 +42,7 @@ $newline never
             <p>
                 <sup>1
                 : ^{__ MsgFootnoteBridgedMatrix}
-        <div .flex-item>
+        <div .flex-item-2>
             <h2>^{__ MsgSiteIndex}
             <ul>
                 <li .hidden>
@@ -54,5 +54,3 @@ $newline never
                 <li>
                     <a .u-url href="https://cloud.chir.rs">^{__ MsgNextcloud}
                 <li>^{__ MsgAndALotMore}
-            <button>
-                ^{__ MsgPageChat}

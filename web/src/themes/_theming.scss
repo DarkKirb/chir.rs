@@ -1,0 +1,62 @@
+$background-color: #000 !default;
+$background-image: none !default;
+$color: #fff !default;
+$muted-color: #fff !default;
+$primary: #fff !default;
+$primary-hover: $primary !default;
+$highlight-background-color: $color !default;
+$highlight-color: $background-color !default;
+
+body {
+  background-color: $background-color;
+  background-image: $background-image;
+  color: $color;
+}
+
+@if $color != $muted-color {
+  hgroup > p {
+    color: $muted-color;
+  }
+}
+
+:where(a:not([role="button"])),
+[role="link"] {
+  color: $primary;
+  text-decoration-color: $primary;
+}
+:where(a:not([role="button"])):is(
+    [aria-current]:not([aria-current="false"]),
+    :hover,
+    :active,
+    :focus
+  ),
+[role="link"]:is(
+    [aria-current]:not([aria-current="false"]),
+    :hover,
+    :active,
+    :focus
+  ) {
+  outline: 1px solid $primary-hover;
+  text-decoration-color: $primary-hover;
+  color: $primary-hover;
+}
+
+article {
+  border-color: $color;
+}
+
+input,
+select,
+textarea {
+  background-color: $background-color;
+  color: $color;
+  border-color: $color;
+  outline: 0;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  background-color: $highlight-background-color;
+  color: $highlight-color;
+}
