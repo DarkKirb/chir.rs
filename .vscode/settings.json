@@ -8,5 +8,6 @@
   "editor.tabSize": 2,
   "files.associations": {
     "*.phs": "haskell"
-  }
+  },
+  "editor.unicodeHighlight.ambiguousCharacters": true
 }

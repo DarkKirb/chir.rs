@@ -4,8 +4,26 @@ import Text.Internationalisation.TokiPona.Common (spToString)
 import Text.Internationalisation.TokiPona.SitelenLasina (logogramToText)
 import Utils (capitalize)
 
+toCartouche :: String -> String
+toCartouche [] = "🔣"
+toCartouche ('a':r) = '❗' : toCartouche r
+toCartouche ('e':r) = '⏩' : toCartouche r
+toCartouche ('i':r) = '🐚' : toCartouche r
+toCartouche ('j':r) = '💩' : toCartouche r
+toCartouche ('k':r) = '🐟' : toCartouche r
+toCartouche ('l':r) = '🔼' : toCartouche r
+toCartouche ('m':r) = '🏝' : toCartouche r
+toCartouche ('n':r) = "#️⃣" ++ toCartouche r
+toCartouche ('o':r) = '👋': toCartouche r
+toCartouche ('p':r) = '💥': toCartouche r
+toCartouche ('s':r) = '⚖': toCartouche r
+toCartouche ('t':r) = '↩': toCartouche r
+toCartouche ('u':r) = '🍆': toCartouche r
+toCartouche ('w':r) = '⚪': toCartouche r
+toCartouche (c:r) = c : toCartouche r
+
 cartouche :: String -> Text
-cartouche = toText . capitalize
+cartouche s = toText $ '🔣' : toCartouche s
 
 fromSitelenPona :: String -> String
 fromSitelenPona = spToString False logogramToEmoji
