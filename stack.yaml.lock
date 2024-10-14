@@ -45,8 +45,8 @@ packages:
     hackage: webauthn-0.10.0.0@sha256:4fa08b264cd3d7ad6b0535bf6da2fa4eb06758bc14b2a10a7c244a81902d90e8,6414
 snapshots:
 - completed:
-    sha256: 6a553c5fa4f211a9b639da5e5359124a93627852dd9967bed202fdd71b25f15e
-    size: 720021
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/36.yaml
+    sha256: c6274f9587d6bf40b6aaa7d1092684c37a2d8bb1e0df999ae0e2b755db15682d
+    size: 720026
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/37.yaml
   original:
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/36.yaml
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/22/37.yaml
