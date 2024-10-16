@@ -9,5 +9,6 @@
   "files.associations": {
     "*.phs": "haskell"
   },
-  "editor.unicodeHighlight.ambiguousCharacters": true
+  "editor.unicodeHighlight.ambiguousCharacters": false,
+  "nixEnvSelector.nixFile": "${workspaceFolder}/flake.nix"
 }
