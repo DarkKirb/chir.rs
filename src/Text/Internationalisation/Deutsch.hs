@@ -30,7 +30,7 @@ translate MsgPageSubtitle = text "Waschbären? Im Internet? Das ist wahrscheinli
 translate MsgPageTitle = text "Lottes Dachboden"
 translate MsgReportedSightings = text "Gemeldete Sichtungen"
 translate MsgReportedSightingsSubtitle = text "Sortiert nach Meldungsseriösität."
-translate MsgSelfIntroPart1 = html "Hi! Ich bin <span class=\"p-name\">Charlotte</span>, oder auch nur <span class=\"p-nick\">Lotte</span>, eine <abbr class=\"dt-bday\" title=\"2001-01-10\">22 Jahre alte</abbr> Waschbärin-Therian und <span class=\"p-role\">Studentin</span> aus <span class=\"p-country-name\">Deutschland</span>."
+translate MsgSelfIntroPart1 = html "Hi! Ich bin <span class=\"p-name\">Charlotte</span>, oder auch nur <span class=\"p-nick\">Lotte</span>, eine <abbr class=\"dt-bday\" title=\"2001-01-10\">23 Jahre alte</abbr> Waschbärin-Therian und <span class=\"p-role\">Studentin</span> aus <span class=\"p-country-name\">Deutschland</span>."
 translate MsgSelfIntroPart2 = text "Ich bin Systemadministratorin, Softwareentwicklerin, und manchmal Hardwaredesignerin."
 translate MsgSelfIntroPart3 = text "Ich liebe Kaffe, Lasagne, Pizza, Waschbären, und Plüschtiere."
 translate MsgSelfIntroPart4 = html "Meine Pronomen sind <span class=\"p-pronoun\">es</span> und <span class=\"-pronoun\">sie</span>."
