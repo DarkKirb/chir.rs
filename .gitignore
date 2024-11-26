@@ -1,0 +1,7 @@
+/target
+.env
+config.toml
+.direnv
+target/
+target-bin/
+secrets/

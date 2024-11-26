@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "UPDATE 'file' SET 'file_path' = ?, 'mime' = ?, 'b3hash' = ? WHERE 'id' = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 4
+    },
+    "nullable": []
+  },
+  "hash": "88de2bc8bea8b9b5f1de736af16ed3cc0a2711b37687e595619fa001fa2633bc"
+}

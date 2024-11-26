@@ -1,0 +1,15 @@
+[logging]
+#sentry_dsn = "…"
+log_level = "debug"
+log_style = "Pretty"
+[http]
+listen = "[::1]:5621"
+# Alternatively:
+# listen = ["127.0.0.1:5621", "10.0.0.0:12345", "[::1]:5621"]
+[gemini]
+listen = "[::]:1965"
+host = "lotte.chir.rs"
+private_key = "secrets/server.key"
+certificate = "secrets/server.crt"
+[database]
+path = "secrets/test.db"
