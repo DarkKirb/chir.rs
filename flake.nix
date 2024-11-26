@@ -28,46 +28,52 @@
       cargo2nix,
       ...
     }@inputs:
-    flake-utils.lib.eachSystem [ "x86_64-linux" ] (
-      system:
-      let
-        overlays = [
-          cargo2nix.overlays.default
-          (import rust-overlay)
-        ];
-        pkgs = import nixpkgs {
-          inherit system overlays;
-        };
-        rustPkgs = pkgs.rustBuilder.makePackageSet {
-          packageFun = import ./Cargo.nix;
-          rustChannel = "stable";
-          rustVersion = "latest";
-          packageOverrides = pkgs: pkgs.rustBuilder.overrides.all;
-        };
-      in
-      rec {
-        devShells.default =
-          with pkgs;
-          mkShell {
-            buildInputs = [
-              cargo2nix.packages.${system}.cargo2nix
-              rustfilt
-              gdb
-              sqlx-cli
-              cargo-expand
-              sqlite
-            ];
+    flake-utils.lib.eachSystem
+      [
+        "x86_64-linux"
+        "aarch64-linux"
+        "riscv64-linux"
+      ]
+      (
+        system:
+        let
+          overlays = [
+            cargo2nix.overlays.default
+            (import rust-overlay)
+          ];
+          pkgs = import nixpkgs {
+            inherit system overlays;
           };
-        packages = pkgs.lib.mapAttrs (_: v: (v { }).overrideAttrs { dontStrip = true; }) rustPkgs.workspace;
-        nixosModules.default = import ./nixos {
-          inherit inputs system;
-        };
-        checks = pkgs.lib.mapAttrs (_: v: pkgs.rustBuilder.runTests v { }) rustPkgs.workspace;
-        hydraJobs = {
-          inherit packages checks;
-        };
-        formatter = pkgs.nixfmt-rfc-style;
-      }
-    );
+          rustPkgs = pkgs.rustBuilder.makePackageSet {
+            packageFun = import ./Cargo.nix;
+            rustChannel = "stable";
+            rustVersion = "latest";
+            packageOverrides = pkgs: pkgs.rustBuilder.overrides.all;
+          };
+        in
+        rec {
+          devShells.default =
+            with pkgs;
+            mkShell {
+              buildInputs = [
+                cargo2nix.packages.${system}.cargo2nix
+                rustfilt
+                gdb
+                sqlx-cli
+                cargo-expand
+                sqlite
+              ];
+            };
+          packages = pkgs.lib.mapAttrs (_: v: (v { }).overrideAttrs { dontStrip = true; }) rustPkgs.workspace;
+          nixosModules.default = import ./nixos {
+            inherit inputs system;
+          };
+          checks = pkgs.lib.mapAttrs (_: v: pkgs.rustBuilder.runTests v { }) rustPkgs.workspace;
+          hydraJobs = {
+            inherit packages checks;
+          };
+          formatter = pkgs.nixfmt-rfc-style;
+        }
+      );
 }
 # Trick renovate into working: "github:NixOS/nixpkgs/nixpkgs-unstable"
