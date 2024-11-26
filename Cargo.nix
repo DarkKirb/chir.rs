@@ -49,6 +49,7 @@ else
       genDrvsByProfile
       ;
     profilesByName = {
+      dev = builtins.fromTOML "opt-level = 1\n\n[package.\"*\"]\nopt-level = 2\n";
       release = builtins.fromTOML "codegen-units = 1\ndebug = \"full\"\nlto = true\nstrip = \"none\"\n";
     };
     rootFeatures' = expandFeatures rootFeatures;
