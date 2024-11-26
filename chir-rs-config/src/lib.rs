@@ -1,6 +1,7 @@
 //! Configuration file support
 
 use std::{
+    default,
     net::SocketAddr,
     path::{Path, PathBuf},
 };
@@ -76,6 +77,17 @@ pub struct LoggingConfig {
     pub log_style: LogFormat,
 }
 
+impl Default for LoggingConfig {
+    fn default() -> Self {
+        Self {
+            sentry_dsn: None,
+            log_level: default_log_level(),
+            log_style: LogFormat::default(),
+        }
+    }
+}
+
+/// Deserializer for either one socket address or multiple.
 fn deserialize_socket_addrs<'de, D: Deserializer<'de>>(d: D) -> Result<Vec<SocketAddr>, D::Error> {
     /// Internal representation of socket addresses
     ///
@@ -135,6 +147,19 @@ pub struct Http {
     pub listen: Vec<SocketAddr>,
 }
 
+impl Default for Http {
+    fn default() -> Self {
+        Self {
+            listen: default_http_socket_addrs(),
+        }
+    }
+}
+
+/// Default gemini hostname
+fn default_gemini_host() -> String {
+    "lotte.chir.rs".to_string()
+}
+
 /// Configuration used for the gemini server
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub struct Gemini {
@@ -146,6 +171,7 @@ pub struct Gemini {
     #[serde(default = "default_gemini_socket_addrs")]
     pub listen: Vec<SocketAddr>,
     /// Host name to run under
+    #[serde(default = "default_gemini_host")]
     pub host: String,
     /// Path to the private key
     pub private_key: PathBuf,
@@ -164,8 +190,10 @@ pub struct Database {
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub struct ChirRs {
     /// Logging and monitoring related settings
+    #[serde(default)]
     pub logging: LoggingConfig,
     /// HTTP Configuration
+    #[serde(default)]
     pub http: Http,
     /// Gemini Configuration
     pub gemini: Gemini,
