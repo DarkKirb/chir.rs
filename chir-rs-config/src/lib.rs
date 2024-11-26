@@ -1,7 +1,6 @@
 //! Configuration file support
 
 use std::{
-    default,
     net::SocketAddr,
     path::{Path, PathBuf},
 };

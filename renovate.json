@@ -1,0 +1,13 @@
+{
+    "extends": [
+        "config:best-practices"
+    ],
+    "postUpgradeTasks": {
+        "commands": [
+            "cargo2nix -o"
+        ],
+        "fileFilters": [
+            "Cargo.*"
+        ]
+    }
+}
