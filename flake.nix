@@ -2,21 +2,26 @@
   description = "rust-template";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
-    flake-utils.url = "github:numtide/flake-utils";
-
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     cargo2nix = {
       url = "github:DarkKirb/cargo2nix/master";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.rust-overlay.follows = "rust-overlay";
     };
+
     flake-compat.url = "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz";
+    flake-utils.url = "github:numtide/flake-utils";
+
+    nixpkgs.url = "github:NixOS/nixpkgs";
+
+    riscv-overlay = {
+      url = "github:DarkKirb/riscv-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -26,6 +31,7 @@
       flake-utils,
       rust-overlay,
       cargo2nix,
+      riscv-overlay,
       ...
     }@inputs:
     flake-utils.lib.eachSystem
@@ -37,10 +43,19 @@
       (
         system:
         let
-          overlays = [
-            cargo2nix.overlays.default
-            (import rust-overlay)
-          ];
+          overlays =
+            [
+              cargo2nix.overlays.default
+              (import rust-overlay)
+            ]
+            ++ (
+              if system == "riscv64-linux" then
+                [
+                  riscv-overlay.overlays.default
+                ]
+              else
+                [ ]
+            );
           pkgs = import nixpkgs {
             inherit system overlays;
           };

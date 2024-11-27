@@ -91,12 +91,33 @@
         "type": "github"
       }
     },
+    "riscv-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1732691666,
+        "narHash": "sha256-IjLKI/ifm5AolDMGuUUugFIdYYy+MP5q3HMa169gfCU=",
+        "owner": "DarkKirb",
+        "repo": "riscv-overlay",
+        "rev": "ac6bf799c2d2b1f281444b528841659f84492028",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DarkKirb",
+        "repo": "riscv-overlay",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "cargo2nix": "cargo2nix",
         "flake-compat": "flake-compat_2",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
+        "riscv-overlay": "riscv-overlay",
         "rust-overlay": "rust-overlay"
       }
     },
