@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-atty = "0.2.14"
 eyre = "0.6.12"
 sentry-core = "0.34.0"
 serde = { version = "1.0.215", features = ["derive"] }

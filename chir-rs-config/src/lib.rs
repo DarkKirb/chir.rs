@@ -1,6 +1,7 @@
 //! Configuration file support
 
 use std::{
+    io::IsTerminal,
     net::SocketAddr,
     path::{Path, PathBuf},
 };
@@ -39,7 +40,7 @@ pub enum LogFormat {
 
 impl Default for LogFormat {
     fn default() -> Self {
-        if atty::is(atty::Stream::Stdout) {
+        if std::io::stdout().is_terminal() {
             #[cfg(debug_assertions)]
             {
                 Self::Pretty
