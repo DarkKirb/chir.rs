@@ -3,6 +3,7 @@
 use std::sync::Arc;
 
 use bytes::BytesMut;
+use chir_rs_castore::CaStore;
 use chir_rs_config::ChirRs;
 use chir_rs_db::Database;
 use eyre::Result;
@@ -19,7 +20,7 @@ use tracing::{error, info};
 /// # Errors
 ///
 /// This function returns an error if starting the gemini server fails
-pub async fn main(cfg: Arc<ChirRs>, _: Database) -> Result<()> {
+pub async fn main(cfg: Arc<ChirRs>, _: Database, _: CaStore) -> Result<()> {
     let certs =
         CertificateDer::pem_file_iter(&cfg.gemini.certificate)?.collect::<Result<Vec<_>, _>>()?;
     let key = PrivateKeyDer::from_pem_file(&cfg.gemini.private_key)?;

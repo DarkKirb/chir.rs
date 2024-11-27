@@ -13,3 +13,9 @@ private_key = "secrets/server.key"
 certificate = "secrets/server.crt"
 [database]
 path = "secrets/test.db"
+
+[s3]
+region = "us-east-1"
+access_key_id_file = "secrets/access_key_id.txt"
+secret_access_key_file = "secrets/secret_access_key.txt"
+bucket = "chir-rs"

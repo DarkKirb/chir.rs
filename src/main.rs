@@ -92,9 +92,10 @@ fn main() -> Result<()> {
         .block_on(async move {
             let cfg = Arc::new(cfg);
             let db = chir_rs_db::open_database(&cfg.database.path).await?;
+            let castore = chir_rs_castore::CaStore::new(&cfg).await?;
             try_join!(
-                chir_rs_http::main(Arc::clone(&cfg), db.clone()),
-                chir_rs_gemini::main(Arc::clone(&cfg), db.clone())
+                chir_rs_http::main(Arc::clone(&cfg), db.clone(), castore.clone()),
+                chir_rs_gemini::main(Arc::clone(&cfg), db.clone(), castore.clone())
             )
             .context("Starting server components")?;
             Ok::<_, eyre::Report>(())

@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "chir-rs-castore",
     "chir-rs-config",
     "chir-rs-db",
     "chir-rs-gemini",
@@ -14,6 +15,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+chir-rs-castore = { version = "0.1.0", path = "chir-rs-castore" }
 chir-rs-config = { version = "0.1.0", path = "chir-rs-config" }
 chir-rs-db = { version = "0.1.0", path = "chir-rs-db" }
 chir-rs-gemini = { version = "0.1.0", path = "chir-rs-gemini" }

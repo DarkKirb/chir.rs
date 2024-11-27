@@ -8,6 +8,7 @@ use axum::{
     Router,
 };
 use axum_prometheus::PrometheusMetricLayer;
+use chir_rs_castore::CaStore;
 use chir_rs_config::ChirRs;
 use chir_rs_db::{file::File, Database};
 use chir_rs_http_api::{axum::bincode::Bincode, readiness::ReadyState};
@@ -29,7 +30,7 @@ pub struct AppState {
 /// This function returns an error if the startup of the server fails.
 ///
 /// Errors it encounters during runtime should be automatically handled.
-pub async fn main(cfg: Arc<ChirRs>, db: Database) -> Result<()> {
+pub async fn main(cfg: Arc<ChirRs>, db: Database, _: CaStore) -> Result<()> {
     let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
     let app = Router::new()
         // Routes here

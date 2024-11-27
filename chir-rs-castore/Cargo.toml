@@ -1,23 +1,14 @@
 [package]
-name = "chir-rs-http"
+name = "chir-rs-castore"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-axum = { version = "0.7.9", features = ["tracing"] }
-axum-prometheus = "0.7.0"
-chir-rs-castore = { version = "0.1.0", path = "../chir-rs-castore" }
+aws-config = { version = "1.5.10", features = ["behavior-version-latest"] }
+aws-sdk-s3 = "1.63.0"
 chir-rs-config = { version = "0.1.0", path = "../chir-rs-config" }
-chir-rs-db = { version = "0.1.0", path = "../chir-rs-db" }
-chir-rs-http-api = { version = "0.1.0", path = "../chir-rs-http-api", features = [
-    "axum",
-] }
 eyre = "0.6.12"
-sentry-tower = { version = "0.34.0", features = ["axum", "axum-matched-path"] }
-tokio = { version = "1.41.1", features = ["net"] }
-tower-http = { version = "0.6.2", features = ["trace"] }
-tracing = "0.1.40"
-
+tokio = { version = "1.41.1", features = ["fs"] }
 [lints.rust]
 deprecated-safe = "forbid"
 elided_lifetimes_in_paths = "warn"

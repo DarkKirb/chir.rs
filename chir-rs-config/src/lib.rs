@@ -186,6 +186,21 @@ pub struct Database {
     pub path: String,
 }
 
+/// S3 configuration
+#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+pub struct S3Config {
+    /// S3 endpoint url
+    pub endpoint: String,
+    /// S3 Region name
+    pub region: String,
+    /// File containing the access key id
+    pub access_key_id_file: PathBuf,
+    /// File containing the secret access key
+    pub secret_access_key_file: PathBuf,
+    /// Bucket name
+    pub bucket: String,
+}
+
 /// Root configuration file
 #[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
 pub struct ChirRs {
@@ -199,6 +214,8 @@ pub struct ChirRs {
     pub gemini: Gemini,
     /// Database Configuration
     pub database: Database,
+    /// S3 configuration
+    pub s3: S3Config,
 }
 
 impl ChirRs {
