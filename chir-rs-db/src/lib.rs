@@ -1,9 +1,9 @@
 //! Chir.rs database models
 
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration};
 
-use eyre::{Context, Result};
-use sqlx::{migrate, PgPool};
+use eyre::{eyre, Context, Result};
+use sqlx::{migrate, query, PgPool};
 use tracing::instrument;
 
 pub mod file;
@@ -12,6 +12,29 @@ pub mod file;
 #[derive(Clone, Debug)]
 #[repr(transparent)]
 pub struct Database(Arc<PgPool>);
+
+impl Database {
+    /// This function verifies an active connection to the database.
+    ///
+    /// # Errors
+    /// This function returns an error if the database connection has failed or a timeout of 1s occurred
+    #[instrument]
+    pub async fn ping(&self) -> Result<()> {
+        let fut = async {
+            match query!("SELECT 1 as running").fetch_one(&*self.0).await {
+                Ok(v) if v.running == Some(1) => Ok::<_, eyre::Report>(()),
+                Err(e) => Err(e).context("Checking for readiness"),
+                r => Err(eyre!("Unknown database response: {r:#?}")),
+            }
+        };
+
+        tokio::time::timeout(Duration::from_secs(1), fut)
+            .await
+            .context("Awaiting a ping")??;
+
+        Ok(())
+    }
+}
 
 /// Opens the database
 ///

@@ -4,7 +4,7 @@ use std::sync::Arc;
 
 use axum::{
     extract::{MatchedPath, Request, State},
-    http::Response,
+    http::{Response, StatusCode},
     response::IntoResponse,
     routing::get,
     Router,
@@ -17,7 +17,7 @@ use chir_rs_http_api::{axum::bincode::Bincode, readiness::ReadyState};
 use eyre::{Context, Result};
 use tokio::net::TcpListener;
 use tower_http::trace::TraceLayer;
-use tracing::{info, info_span};
+use tracing::{error, info, info_span};
 
 /// Application state
 #[derive(Clone, Debug)]
@@ -48,7 +48,21 @@ pub async fn main(cfg: Arc<ChirRs>, db: Database, castore: CaStore) -> Result<()
     let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
     let app = Router::new()
         // Routes here
-        .route("/.api/readyz", get(|| async { Bincode(ReadyState::Ready) }))
+        .route(
+            "/.api/readyz",
+            get(|State(state): State<AppState>| async move {
+                match state.db.ping().await {
+                    Ok(()) => (StatusCode::OK, Bincode(ReadyState::Ready)),
+                    Err(e) => {
+                        error!("Database is not responding: {e:?}");
+                        (
+                            StatusCode::INTERNAL_SERVER_ERROR,
+                            Bincode(ReadyState::NotReady),
+                        )
+                    }
+                }
+            }),
+        )
         .route(
             "/.api/metrics",
             get(|| async move { metric_handle.render() }),

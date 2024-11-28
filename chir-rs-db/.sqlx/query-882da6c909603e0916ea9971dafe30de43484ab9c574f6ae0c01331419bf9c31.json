@@ -1,0 +1,20 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT 1 as running",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "running",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "882da6c909603e0916ea9971dafe30de43484ab9c574f6ae0c01331419bf9c31"
+}
