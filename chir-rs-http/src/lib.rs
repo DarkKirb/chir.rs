@@ -4,6 +4,8 @@ use std::sync::Arc;
 
 use axum::{
     extract::{MatchedPath, Request, State},
+    http::Response,
+    response::IntoResponse,
     routing::get,
     Router,
 };
@@ -22,6 +24,18 @@ use tracing::{info, info_span};
 pub struct AppState {
     /// Database handle
     pub db: Database,
+    /// CA store handle
+    pub ca: CaStore,
+}
+
+async fn root_handler(State(state): State<AppState>) -> impl IntoResponse {
+    let res = state.ca.upload(b"Hewwo!".as_slice()).await.unwrap();
+
+    info!("{res:?}");
+
+    let res = state.ca.download(res).await.unwrap();
+
+    Response::builder().body(res).unwrap()
 }
 
 /// Entrypoint for the HTTP server component
@@ -30,7 +44,7 @@ pub struct AppState {
 /// This function returns an error if the startup of the server fails.
 ///
 /// Errors it encounters during runtime should be automatically handled.
-pub async fn main(cfg: Arc<ChirRs>, db: Database, _: CaStore) -> Result<()> {
+pub async fn main(cfg: Arc<ChirRs>, db: Database, castore: CaStore) -> Result<()> {
     let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
     let app = Router::new()
         // Routes here
@@ -39,13 +53,8 @@ pub async fn main(cfg: Arc<ChirRs>, db: Database, _: CaStore) -> Result<()> {
             "/.api/metrics",
             get(|| async move { metric_handle.render() }),
         )
-        .route(
-            "/",
-            get(|State(state): State<AppState>| async move {
-                Bincode(File::list(&state.db, 0, 100).await.ok())
-            }),
-        )
-        .with_state(AppState { db })
+        .route("/", get(root_handler))
+        .with_state(AppState { db, ca: castore })
         .layer(
             TraceLayer::new_for_http().make_span_with(|request: &Request<_>| {
                 let matched_path = request

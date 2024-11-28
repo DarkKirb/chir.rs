@@ -37,50 +37,50 @@ fn main() -> Result<()> {
         chir_rs_config::LogFormat::Full => {
             let log_format = tracing_subscriber::fmt::format();
             tracing_subscriber::registry()
+                .with(ErrorLayer::default())
+                .with(sentry_tracing::layer())
                 .with(
                     tracing_subscriber::fmt::layer()
                         .event_format(log_format)
                         .with_filter(log_filter),
                 )
-                .with(ErrorLayer::default())
-                .with(sentry_tracing::layer())
                 .init();
         }
         chir_rs_config::LogFormat::Compact => {
             let log_format = tracing_subscriber::fmt::format().compact();
             tracing_subscriber::registry()
+                .with(ErrorLayer::default())
+                .with(sentry_tracing::layer())
                 .with(
                     tracing_subscriber::fmt::layer()
                         .event_format(log_format)
                         .with_filter(log_filter),
                 )
-                .with(ErrorLayer::default())
-                .with(sentry_tracing::layer())
                 .init();
         }
         chir_rs_config::LogFormat::Pretty => {
             let log_format = tracing_subscriber::fmt::format().pretty();
             tracing_subscriber::registry()
+                .with(ErrorLayer::default())
+                .with(sentry_tracing::layer())
                 .with(
                     tracing_subscriber::fmt::layer()
                         .event_format(log_format)
                         .with_filter(log_filter),
                 )
-                .with(ErrorLayer::default())
-                .with(sentry_tracing::layer())
                 .init();
         }
         chir_rs_config::LogFormat::Json => {
             let log_format = tracing_subscriber::fmt::format().json();
             tracing_subscriber::registry()
+                .with(ErrorLayer::default())
+                .with(sentry_tracing::layer())
                 .with(
                     tracing_subscriber::fmt::layer()
                         .event_format(log_format)
                         .fmt_fields(JsonFields::new())
                         .with_filter(log_filter),
                 )
-                .with(ErrorLayer::default())
-                .with(sentry_tracing::layer())
                 .init();
         }
     }
