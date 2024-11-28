@@ -12,9 +12,12 @@ host = "lotte.chir.rs"
 private_key = "secrets/server.key"
 certificate = "secrets/server.crt"
 [database]
-path = "secrets/test.db"
+# This file would contain something like
+# postgresql://darkkirb:blah@localhost:6432/darkkirb
+path = "secrets/db_url.txt"
 
 [s3]
+endpoint = "https://ams1.vultrobjects.com/"
 region = "us-east-1"
 access_key_id_file = "secrets/access_key_id.txt"
 secret_access_key_file = "secrets/secret_access_key.txt"

@@ -1,10 +1,10 @@
 -- Add migration script here
 
-create table 'file' (
-    id integer primary key not null,
+create table file_map (
+    id bigint generated always as identity,
     file_path text not null,
     mime text not null,
-    b3hash blob not null
+    b3hash bytea not null
 );
-create unique index file_path_mime on 'file' (file_path, mime);
-create index file_path on 'file' (file_path);
+create unique index file_path_mime on file_map (file_path, mime);
+create index file_path on file_map (file_path);

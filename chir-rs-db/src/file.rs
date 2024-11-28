@@ -5,7 +5,7 @@ use blake3::Hash;
 use eyre::Context as _;
 use eyre::Result;
 use serde::{Deserialize, Serialize};
-use sqlx::{prelude::FromRow, query_as, sqlite::SqliteRow};
+use sqlx::{postgres::PgRow, prelude::FromRow, query_as};
 use sqlx::{query, Row as _};
 use tracing::instrument;
 
@@ -53,8 +53,8 @@ impl Decode for File {
     }
 }
 
-impl<'r> FromRow<'r, SqliteRow> for File {
-    fn from_row(row: &'r SqliteRow) -> std::result::Result<Self, sqlx::Error> {
+impl<'r> FromRow<'r, PgRow> for File {
+    fn from_row(row: &'r PgRow) -> std::result::Result<Self, sqlx::Error> {
         let id = u64::try_from(row.try_get::<i64, _>("id")?).unwrap_or_default();
         let file_path: String = row.try_get("file_path")?;
         let mime: String = row.try_get("mime")?;
@@ -86,7 +86,7 @@ impl File {
     /// This function returns an error if a database error occurs while loading.
     #[instrument(skip(db))]
     pub async fn get_by_path_mime(db: &Database, path: &str, mime: &str) -> Result<Option<Self>> {
-        query_as("SELECT * FROM 'file' WHERE 'path' = ? AND 'mime' = ?")
+        query_as(r#"SELECT * FROM file_map WHERE "path" = $1 AND "mime" = $2"#)
             .bind(path)
             .bind(mime)
             .fetch_optional(&*db.0)
@@ -100,7 +100,7 @@ impl File {
     /// This function returns an error if a database error occurs while loading.
     #[instrument(skip(db))]
     pub async fn get_by_path(db: &Database, path: &str) -> Result<Vec<Self>> {
-        query_as("SELECT * FROM 'file' WHERE 'path' = ?")
+        query_as(r#"SELECT * FROM file_map WHERE "path" = $1"#)
             .bind(path)
             .fetch_all(&*db.0)
             .await
@@ -114,7 +114,7 @@ impl File {
     #[instrument(skip(db))]
     pub async fn list(db: &Database, after: i64, limit: usize) -> Result<Vec<Self>> {
         let limit: i64 = limit.min(100).try_into().unwrap_or(100); // reasonable limit for pagination size
-        query_as("SELECT * FROM 'file' WHERE id > ? LIMIT ?")
+        query_as(r#"SELECT * FROM file_map WHERE "id" > $1 LIMIT $2"#)
             .bind(after)
             .bind(limit)
             .fetch_all(&*db.0)
@@ -128,13 +128,15 @@ impl File {
     /// This function returns an error if a database error occurs when writing, or there is a conflict
     #[instrument(skip(db))]
     pub async fn new(db: &Database, path: &str, mime: &str, hash: &Hash) -> Result<()> {
-        query_as("INSERT INTO 'file' ('file_path', 'mime', 'b3hash') VALUES (?, ?, ?) RETURNING *")
-            .bind(path)
-            .bind(mime)
-            .bind(hash.as_bytes().as_slice())
-            .fetch_one(&*db.0)
-            .await
-            .with_context(|| format!("Inserting new file {path} with mime type {mime}"))
+        query_as(
+            r#"INSERT INTO file_map ("file_path", "mime", "b3hash") VALUES ($1, $2, $3) RETURNING *"#,
+        )
+        .bind(path)
+        .bind(mime)
+        .bind(hash.as_bytes().as_slice())
+        .fetch_one(&*db.0)
+        .await
+        .with_context(|| format!("Inserting new file {path} with mime type {mime}"))
     }
 
     /// Deletes a file record from the database. This does not perform any actual file deletion.
@@ -144,7 +146,7 @@ impl File {
     #[instrument(skip(db))]
     pub async fn delete(self, db: &Database) -> Result<()> {
         let id: i64 = self.id.try_into()?;
-        query!("DELETE FROM 'file' WHERE 'id' = ?", id)
+        query!(r#"DELETE FROM file_map WHERE "id" = $1"#, id)
             .execute(&*db.0)
             .await
             .with_context(|| {
@@ -171,7 +173,7 @@ impl File {
         let id: i64 = self.id.try_into()?;
         let b3hash = self.b3hash.as_bytes().as_slice();
         query!(
-            "UPDATE 'file' SET 'file_path' = ?, 'mime' = ?, 'b3hash' = ? WHERE 'id' = ?",
+            r#"UPDATE file_map SET "file_path" = $1, "mime" = $2, "b3hash" = $3 WHERE "id" = $4"#,
             self.file_path,
             self.mime,
             b3hash,

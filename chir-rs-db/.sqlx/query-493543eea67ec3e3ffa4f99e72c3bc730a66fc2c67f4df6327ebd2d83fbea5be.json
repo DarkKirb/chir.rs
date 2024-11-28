@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM file_map WHERE \"id\" = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "493543eea67ec3e3ffa4f99e72c3bc730a66fc2c67f4df6327ebd2d83fbea5be"
+}
