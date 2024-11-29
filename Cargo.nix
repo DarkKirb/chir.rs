@@ -31,7 +31,7 @@ args@{
   ignoreLockHash,
 }:
 let
-  nixifiedLockHash = "96a66cd40fb21c0e1fdd6dda80c454f78a1db05a8014b5916b983f827a409ce3";
+  nixifiedLockHash = "492619d4eb6e1df303730a34aaca887bd75b386bfa9612d617feddfbff36499c";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -566,7 +566,7 @@ else
                 profileName = "__noProfile";
               }).out;
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.1" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.2" {
                 profileName = "__noProfile";
               }).out;
             cmake =
@@ -2017,7 +2017,7 @@ else
           };
           buildDependencies = {
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.1" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.2" {
                 profileName = "__noProfile";
               }).out;
           };
@@ -2310,7 +2310,7 @@ else
           };
           buildDependencies = {
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.1" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.2" {
                 profileName = "__noProfile";
               }).out;
           };
@@ -2406,15 +2406,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".cc."1.2.1" =
+    "registry+https://github.com/rust-lang/crates.io-index".cc."1.2.2" =
       overridableMkRustCrate
         (profileName: rec {
           name = "cc";
-          version = "1.2.1";
+          version = "1.2.2";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "fd9de9f2205d5ef3fd67e685b0df337994ddd4495e2a28d185500d0e1edfea47";
+            sha256 = "f34d93e62b03caf570cccc334cbc6c2fceca82f39211051345108adcba3eebdc";
           };
           features = builtins.concatLists [
             [ "parallel" ]
@@ -2613,6 +2613,10 @@ else
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".eyre."0.6.12" {
             inherit profileName;
           }).out;
+        mime =
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".mime."0.3.17" {
+            inherit profileName;
+          }).out;
         serde =
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.215" {
             inherit profileName;
@@ -2682,12 +2686,21 @@ else
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".axum-prometheus."0.7.0" {
             inherit profileName;
           }).out;
+        bincode =
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bincode."2.0.0-rc.3" {
+            inherit profileName;
+          }).out;
         chir_rs_castore = (rustPackages."unknown".chir-rs-castore."0.1.0" { inherit profileName; }).out;
         chir_rs_config = (rustPackages."unknown".chir-rs-config."0.1.0" { inherit profileName; }).out;
         chir_rs_db = (rustPackages."unknown".chir-rs-db."0.1.0" { inherit profileName; }).out;
         chir_rs_http_api = (rustPackages."unknown".chir-rs-http-api."0.1.0" { inherit profileName; }).out;
+        chir_rs_misc = (rustPackages."unknown".chir-rs-misc."0.1.0" { inherit profileName; }).out;
         eyre =
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".eyre."0.6.12" {
+            inherit profileName;
+          }).out;
+        mime =
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".mime."0.3.17" {
             inherit profileName;
           }).out;
         sentry_tower =
@@ -2910,7 +2923,7 @@ else
           };
           dependencies = {
             cc =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.1" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.2" {
                 inherit profileName;
               }).out;
           };
@@ -3791,15 +3804,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".errno."0.3.9" =
+    "registry+https://github.com/rust-lang/crates.io-index".errno."0.3.10" =
       overridableMkRustCrate
         (profileName: rec {
           name = "errno";
-          version = "0.3.9";
+          version = "0.3.10";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "534c5cf6194dfab3db3242765c03bbe257cf92f22b38f6bc0c58d59108a820ba";
+            sha256 = "33d852cb9b869c2a9b3df2f71a3074817f01e1844f839a144f5fcef059a4eb5d";
           };
           features = builtins.concatLists [
             [ "std" ]
@@ -3819,7 +3832,7 @@ else
                 inherit profileName;
               }).out;
             ${if hostPlatform.isWindows then "windows_sys" else null} =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".windows-sys."0.52.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".windows-sys."0.59.0" {
                 inherit profileName;
               }).out;
           };
@@ -3979,7 +3992,7 @@ else
           };
           buildDependencies = {
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.1" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.2" {
                 profileName = "__noProfile";
               }).out;
           };
@@ -5341,7 +5354,7 @@ else
           };
           buildDependencies = {
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.1" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.2" {
                 profileName = "__noProfile";
               }).out;
           };
@@ -5963,7 +5976,7 @@ else
           ];
           buildDependencies = {
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.1" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.2" {
                 profileName = "__noProfile";
               }).out;
             pkg_config =
@@ -7993,7 +8006,7 @@ else
           };
           buildDependencies = {
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.1" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.2" {
                 profileName = "__noProfile";
               }).out;
           };
@@ -8188,7 +8201,7 @@ else
               else
                 null
             } =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".errno."0.3.9" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".errno."0.3.10" {
                 inherit profileName;
               }).out;
             ${
@@ -12650,8 +12663,6 @@ else
             [ "Win32_Storage_FileSystem" ]
             [ "Win32_System" ]
             [ "Win32_System_Com" ]
-            [ "Win32_System_Diagnostics" ]
-            [ "Win32_System_Diagnostics_Debug" ]
             [ "Win32_System_IO" ]
             [ "Win32_System_LibraryLoader" ]
             [ "Win32_System_Pipes" ]
@@ -12696,6 +12707,8 @@ else
             [ "Win32_Storage" ]
             [ "Win32_Storage_FileSystem" ]
             [ "Win32_System" ]
+            [ "Win32_System_Diagnostics" ]
+            [ "Win32_System_Diagnostics_Debug" ]
             [ "Win32_System_IO" ]
             [ "Win32_System_LibraryLoader" ]
             [ "Win32_System_Memory" ]

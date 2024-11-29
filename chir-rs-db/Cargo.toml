@@ -11,6 +11,7 @@ eyre = "0.6.12"
 tracing = "0.1.40"
 blake3 = { version = "1.5.4", features = ["serde"] }
 tokio = { version = "1.41.1", features = ["fs", "macros", "rt", "sync"] }
+mime = "0.3.17"
 
 [lints.rust]
 deprecated-safe = "forbid"

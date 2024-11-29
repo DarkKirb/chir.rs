@@ -1,15 +1,44 @@
 //! File related APIs
 
-use bincode::{Decode, Encode};
+use std::fmt::Formatter;
+
+use bincode::{error::DecodeError, Decode, Encode};
 use blake3::Hash;
 use eyre::Context as _;
 use eyre::Result;
-use serde::{Deserialize, Serialize};
+use mime::Mime;
+use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
 use sqlx::{postgres::PgRow, prelude::FromRow, query_as};
 use sqlx::{query, Row as _};
 use tracing::instrument;
 
 use crate::Database;
+
+/// Serializes a mime type to string
+fn serialize_mime<S: Serializer>(mime: &Mime, s: S) -> Result<S::Ok, S::Error> {
+    s.serialize_str(mime.as_ref())
+}
+
+/// Deserializes a mime type from string
+fn deserialize_mime<'de, D: Deserializer<'de>>(d: D) -> Result<Mime, D::Error> {
+    /// Helper struct for parsing
+    struct JsonStringVisitor;
+
+    impl Visitor<'_> for JsonStringVisitor {
+        type Value = Mime;
+        fn expecting(&self, formatter: &mut Formatter<'_>) -> std::fmt::Result {
+            formatter.write_str("a string containing a mime type")
+        }
+        fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+        where
+            E: serde::de::Error,
+        {
+            v.parse().map_err(E::custom)
+        }
+    }
+
+    d.deserialize_any(JsonStringVisitor)
+}
 
 /// File record
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -19,7 +48,9 @@ pub struct File {
     /// Path this file is mounted at
     pub file_path: String,
     /// MIME type of file
-    pub mime: String,
+    #[serde(serialize_with = "serialize_mime")]
+    #[serde(deserialize_with = "deserialize_mime")]
+    pub mime: Mime,
     /// blake3 hash of the file to serve
     pub b3hash: Hash,
 }
@@ -31,18 +62,24 @@ impl Encode for File {
     ) -> std::result::Result<(), bincode::error::EncodeError> {
         self.id.encode(encoder)?;
         self.file_path.encode(encoder)?;
-        self.mime.encode(encoder)?;
+        self.mime.as_ref().encode(encoder)?;
         self.b3hash.as_bytes().encode(encoder)
     }
 }
 
 impl Decode for File {
-    fn decode<D: bincode::de::Decoder>(
-        decoder: &mut D,
-    ) -> std::result::Result<Self, bincode::error::DecodeError> {
+    fn decode<D: bincode::de::Decoder>(decoder: &mut D) -> std::result::Result<Self, DecodeError> {
         let id = u64::decode(decoder)?;
         let file_path = String::decode(decoder)?;
-        let mime = String::decode(decoder)?;
+        let mime = match String::decode(decoder)?.parse() {
+            Ok(v) => v,
+            Err(e) => {
+                return Err(DecodeError::Io {
+                    inner: std::io::Error::other(e),
+                    additional: 0,
+                });
+            }
+        };
         let b3hash = <[u8; 32]>::decode(decoder)?;
         Ok(Self {
             id,
@@ -57,7 +94,10 @@ impl<'r> FromRow<'r, PgRow> for File {
     fn from_row(row: &'r PgRow) -> std::result::Result<Self, sqlx::Error> {
         let id = u64::try_from(row.try_get::<i64, _>("id")?).unwrap_or_default();
         let file_path: String = row.try_get("file_path")?;
-        let mime: String = row.try_get("mime")?;
+        let mime: Mime = match row.try_get::<&str, _>("mime")?.parse() {
+            Ok(v) => v,
+            Err(e) => return Err(sqlx::Error::Decode(Box::new(e))),
+        };
         let b3hash: Vec<u8> = row.try_get("b3hash")?;
 
         if b3hash.len() != 32 {
@@ -86,7 +126,7 @@ impl File {
     /// This function returns an error if a database error occurs while loading.
     #[instrument(skip(db))]
     pub async fn get_by_path_mime(db: &Database, path: &str, mime: &str) -> Result<Option<Self>> {
-        query_as(r#"SELECT * FROM file_map WHERE "path" = $1 AND "mime" = $2"#)
+        query_as(r#"SELECT * FROM file_map WHERE "file_path" = $1 AND "mime" = $2"#)
             .bind(path)
             .bind(mime)
             .fetch_optional(&*db.0)
@@ -100,7 +140,7 @@ impl File {
     /// This function returns an error if a database error occurs while loading.
     #[instrument(skip(db))]
     pub async fn get_by_path(db: &Database, path: &str) -> Result<Vec<Self>> {
-        query_as(r#"SELECT * FROM file_map WHERE "path" = $1"#)
+        query_as(r#"SELECT * FROM file_map WHERE "file_path" = $1"#)
             .bind(path)
             .fetch_all(&*db.0)
             .await
@@ -177,7 +217,7 @@ impl File {
         query!(
             r#"UPDATE file_map SET "file_path" = $1, "mime" = $2, "b3hash" = $3 WHERE "id" = $4"#,
             self.file_path,
-            self.mime,
+            self.mime.as_ref(),
             b3hash,
             id
         )

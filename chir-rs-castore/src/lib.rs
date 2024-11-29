@@ -17,8 +17,8 @@ use educe::Educe;
 use eyre::{Context as _, Result};
 use tokio::{
     fs::read_to_string,
-    io::{AsyncBufRead, AsyncRead, AsyncReadExt},
-    sync::{Mutex, Semaphore},
+    io::{AsyncRead, AsyncReadExt},
+    sync::Mutex,
     task::spawn_blocking,
     try_join,
 };
@@ -192,17 +192,16 @@ impl CaStore {
     ///
     /// This function returns an error if loading file matadata fails
     #[instrument]
-    pub async fn download(&self, hash: blake3::Hash) -> Result<SdkBody> {
+    pub async fn download(&self, hash: blake3::Hash) -> Result<(Option<i64>, SdkBody)> {
         let key = lexicographic_base64::encode(hash.as_bytes());
-        Ok(self
+        let file = self
             .client
             .get_object()
             .bucket(&*self.bucket)
             .key(&key)
             .send()
             .await
-            .with_context(|| format!("Downloading content-addressed file {key}"))?
-            .body
-            .into_inner())
+            .with_context(|| format!("Downloading content-addressed file {key}"))?;
+        Ok((file.content_length, file.body.into_inner()))
     }
 }

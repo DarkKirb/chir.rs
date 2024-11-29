@@ -4,20 +4,21 @@ use std::sync::Arc;
 
 use axum::{
     extract::{MatchedPath, Request, State},
-    http::{Response, StatusCode},
-    response::IntoResponse,
+    http::StatusCode,
     routing::get,
     Router,
 };
 use axum_prometheus::PrometheusMetricLayer;
 use chir_rs_castore::CaStore;
 use chir_rs_config::ChirRs;
-use chir_rs_db::{file::File, Database};
+use chir_rs_db::Database;
 use chir_rs_http_api::{axum::bincode::Bincode, readiness::ReadyState};
 use eyre::{Context, Result};
 use tokio::net::TcpListener;
 use tower_http::trace::TraceLayer;
 use tracing::{error, info, info_span};
+
+pub mod ca_server;
 
 /// Application state
 #[derive(Clone, Debug)]
@@ -26,16 +27,6 @@ pub struct AppState {
     pub db: Database,
     /// CA store handle
     pub ca: CaStore,
-}
-
-async fn root_handler(State(state): State<AppState>) -> impl IntoResponse {
-    let res = state.ca.upload(b"Hewwo!".as_slice()).await.unwrap();
-
-    info!("{res:?}");
-
-    let res = state.ca.download(res).await.unwrap();
-
-    Response::builder().body(res).unwrap()
 }
 
 /// Entrypoint for the HTTP server component
@@ -67,7 +58,7 @@ pub async fn main(cfg: Arc<ChirRs>, db: Database, castore: CaStore) -> Result<()
             "/.api/metrics",
             get(|| async move { metric_handle.render() }),
         )
-        .route("/", get(root_handler))
+        .fallback(get(ca_server::serve_files))
         .with_state(AppState { db, ca: castore })
         .layer(
             TraceLayer::new_for_http().make_span_with(|request: &Request<_>| {
