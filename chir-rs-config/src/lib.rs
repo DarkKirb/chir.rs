@@ -216,6 +216,8 @@ pub struct ChirRs {
     pub database: Database,
     /// S3 configuration
     pub s3: S3Config,
+    /// Ca Cache max size in bytes
+    pub cache_max_size: u64,
 }
 
 impl ChirRs {

@@ -9,12 +9,13 @@ use aws_sdk_s3::{
     types::{CompletedMultipartUpload, CompletedPart},
     Client,
 };
-use blake3::Hasher;
-use bytes::BytesMut;
+use blake3::{Hash, Hasher};
+use bytes::{Bytes, BytesMut};
 use chir_rs_config::ChirRs;
 use chir_rs_misc::{id_generator, lexicographic_base64};
 use educe::Educe;
 use eyre::{Context as _, Result};
+use stretto::{AsyncCache, AsyncCacheBuilder};
 use tokio::{
     fs::read_to_string,
     io::{AsyncRead, AsyncReadExt},
@@ -53,6 +54,9 @@ pub struct CaStore {
     client: Arc<Client>,
     /// Bucket
     bucket: Arc<str>,
+    /// CA Value Cache
+    #[educe(Debug(ignore))]
+    cache: AsyncCache<Hash, Bytes>,
 }
 
 impl CaStore {
@@ -66,6 +70,16 @@ impl CaStore {
         Ok(Self {
             client: Arc::new(Client::new(&sdk_config)),
             bucket: Arc::from(config.s3.bucket.as_ref()),
+            cache: AsyncCache::new(
+                (config.cache_max_size / 1_000)
+                    .try_into()
+                    .context("Cache size too large")?,
+                config
+                    .cache_max_size
+                    .try_into()
+                    .context("Value too large")?,
+                tokio::spawn,
+            )?,
         })
     }
 
@@ -75,7 +89,7 @@ impl CaStore {
     ///
     /// This function returns an error if reading the source stream fails, uploading the source stream fails, or moving the file to its correct content-addressed position fails.
     #[instrument(skip(reader))]
-    async fn upload_inner<R>(&self, reader: R, id: u128) -> Result<blake3::Hash>
+    async fn upload_inner<R>(&self, reader: R, id: u128) -> Result<Hash>
     where
         R: AsyncRead + AsyncReadExt + Send,
     {
@@ -178,11 +192,12 @@ impl CaStore {
     /// # Errors
     ///
     /// This function returns an error if reading the source stream fails, uploading the source stream fails, or moving the file to its correct content-addressed position fails.
-    pub async fn upload<R>(&self, reader: R) -> Result<blake3::Hash>
+    pub async fn upload<R>(&self, reader: R) -> Result<Hash>
     where
         R: AsyncRead + AsyncReadExt + Send,
     {
         let id = id_generator::generate();
+
         self.upload_inner(reader, id).await
     }
 
@@ -192,10 +207,19 @@ impl CaStore {
     ///
     /// This function returns an error if loading file matadata fails
     #[instrument]
-    pub async fn download_bytestream(
-        &self,
-        hash: blake3::Hash,
-    ) -> Result<(Option<i64>, ByteStream)> {
+    pub async fn download_bytestream(&self, hash: Hash) -> Result<(Option<i64>, ByteStream)> {
+        #[allow(
+            clippy::significant_drop_in_scrutinee,
+            reason = "We are cloning like 1 arc lol"
+        )]
+        if let Some(v) = self.cache.get(&hash).await {
+            info!("{hash:?} found in cache. Returning");
+            let data = v.as_ref();
+            return Ok((
+                Some(data.len().try_into().context("Bad api design")?),
+                data.clone().into(),
+            ));
+        }
         let key = lexicographic_base64::encode(hash.as_bytes());
         let file = self
             .client
@@ -205,7 +229,27 @@ impl CaStore {
             .send()
             .await
             .with_context(|| format!("Downloading content-addressed file {key}"))?;
-        Ok((file.content_length, file.body))
+        let file_size_hint = file.content_length.unwrap_or(i64::MAX);
+        let file_size_hint: u64 = file_size_hint.try_into().unwrap_or(u64::MAX);
+        if file_size_hint < 1_000_000 {
+            // Cache this
+            let data = file.body.collect().await?.into_bytes();
+
+            self.cache
+                .insert(
+                    hash,
+                    data.clone(),
+                    data.len().try_into().context("Bad api design")?,
+                )
+                .await;
+
+            Ok((
+                Some(data.len().try_into().context("Bad api design")?),
+                data.into(),
+            ))
+        } else {
+            Ok((file.content_length, file.body))
+        }
     }
 
     /// Downloads a file from the CA store backend with its hash
@@ -214,7 +258,7 @@ impl CaStore {
     ///
     /// This function returns an error if loading file matadata fails
     #[instrument]
-    pub async fn download(&self, hash: blake3::Hash) -> Result<(Option<i64>, SdkBody)> {
+    pub async fn download(&self, hash: Hash) -> Result<(Option<i64>, SdkBody)> {
         let (length, body) = self.download_bytestream(hash).await?;
         Ok((length, body.into_inner()))
     }

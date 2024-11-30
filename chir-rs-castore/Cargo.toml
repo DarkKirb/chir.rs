@@ -12,6 +12,7 @@ chir-rs-config = { version = "0.1.0", path = "../chir-rs-config" }
 chir-rs-misc = { version = "0.1.0", path = "../chir-rs-misc", features = ["id-generator", "base64"] }
 educe = { version = "0.6.0", default-features = false, features = ["Debug"] }
 eyre = "0.6.12"
+stretto = { version = "0.8.4", features = ["async"] }
 tokio = { version = "1.41.1", features = ["fs"] }
 tracing = "0.1.41"
 [lints.rust]
