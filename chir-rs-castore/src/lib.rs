@@ -15,7 +15,7 @@ use chir_rs_config::ChirRs;
 use chir_rs_misc::{id_generator, lexicographic_base64};
 use educe::Educe;
 use eyre::{Context as _, Result};
-use stretto::{AsyncCache, AsyncCacheBuilder};
+use stretto::AsyncCache;
 use tokio::{
     fs::read_to_string,
     io::{AsyncRead, AsyncReadExt},

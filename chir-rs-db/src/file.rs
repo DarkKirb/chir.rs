@@ -208,7 +208,7 @@ impl File {
     /// Updates the file with new information
     ///
     /// # Errors
-    /// THis function returns an error if updating the entry in the database fails
+    /// This function returns an error if updating the entry in the database fails
     #[instrument(skip(db))]
     pub async fn update(&self, db: &Database) -> Result<()> {
         let id: i64 = self.id.try_into()?;
@@ -230,5 +230,23 @@ impl File {
             )
         })?;
         Ok(())
+    }
+
+    /// Checks if a particular hash is in use
+    ///
+    /// # Errors
+    /// This function returns an error if updating the entry in the database fails
+    #[instrument(skip(db))]
+    pub async fn is_used(db: &Database, hash: Hash) -> Result<bool> {
+        #[expect(clippy::panic, reason = "sqlx silliness")]
+        let count = query!(
+            r#"SELECT COUNT(*) as amount FROM file_map WHERE "b3hash" = $1"#,
+            hash.as_bytes()
+        )
+        .fetch_one(&*db.0)
+        .await
+        .with_context(|| format!("Checking if {hash:?} is still used."))?;
+
+        Ok(count.amount.unwrap_or_default() != 0)
     }
 }
