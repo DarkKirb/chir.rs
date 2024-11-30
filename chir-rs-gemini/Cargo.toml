@@ -13,6 +13,7 @@ rustls = "0.23.18"
 tokio = { version = "1.41.1", features = ["net"] }
 tokio-rustls = "0.26.0"
 tracing = "0.1.40"
+url = "2.5.4"
 [lints.rust]
 deprecated-safe = "forbid"
 elided_lifetimes_in_paths = "warn"

@@ -124,7 +124,7 @@ impl CaStore {
                 .part_number(i)
                 .send();
 
-            let (_, part_upload_result) = try_join!(
+            let ((), part_upload_result) = try_join!(
                 async { hasher_job.await.context("Awaiting hasher job") },
                 async { part_upload_fut.await.context("Awaiting uploader job") }
             )
@@ -192,7 +192,10 @@ impl CaStore {
     ///
     /// This function returns an error if loading file matadata fails
     #[instrument]
-    pub async fn download(&self, hash: blake3::Hash) -> Result<(Option<i64>, SdkBody)> {
+    pub async fn download_bytestream(
+        &self,
+        hash: blake3::Hash,
+    ) -> Result<(Option<i64>, ByteStream)> {
         let key = lexicographic_base64::encode(hash.as_bytes());
         let file = self
             .client
@@ -202,6 +205,17 @@ impl CaStore {
             .send()
             .await
             .with_context(|| format!("Downloading content-addressed file {key}"))?;
-        Ok((file.content_length, file.body.into_inner()))
+        Ok((file.content_length, file.body))
+    }
+
+    /// Downloads a file from the CA store backend with its hash
+    ///
+    /// # Errors
+    ///
+    /// This function returns an error if loading file matadata fails
+    #[instrument]
+    pub async fn download(&self, hash: blake3::Hash) -> Result<(Option<i64>, SdkBody)> {
+        let (length, body) = self.download_bytestream(hash).await?;
+        Ok((length, body.into_inner()))
     }
 }

@@ -5,7 +5,7 @@ use axum::{
     extract::State,
     http::{
         header::{ACCEPT, CACHE_CONTROL, CONTENT_LENGTH, CONTENT_TYPE, ETAG, IF_NONE_MATCH},
-        response, HeaderMap, StatusCode, Uri,
+        HeaderMap, StatusCode, Uri,
     },
     response::Response,
 };
