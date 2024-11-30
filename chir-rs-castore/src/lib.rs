@@ -201,6 +201,26 @@ impl CaStore {
         self.upload_inner(reader, id).await
     }
 
+    /// Deletes a file from the CA store backend with its hash
+    ///
+    /// # Errors
+    ///
+    /// This function fails if deleting the object fails
+    #[instrument]
+    pub async fn delete_object(&self, hash: Hash) -> Result<()> {
+        let key = lexicographic_base64::encode(hash.as_bytes());
+        self.cache.remove(&hash).await;
+        self.client
+            .delete_object()
+            .bucket(&*self.bucket)
+            .key(&key)
+            .send()
+            .await
+            .with_context(|| format!("Deleting content-addressed file {key}"))?;
+
+        Ok(())
+    }
+
     /// Downloads a file from the CA store backend with its hash
     ///
     /// # Errors
