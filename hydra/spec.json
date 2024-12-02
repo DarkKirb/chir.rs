@@ -12,7 +12,7 @@
     "inputs": {
         "chir-rs": {
             "type": "git",
-            "value": "https://git.chir.rs/darkkirb/chir-rs.git main",
+            "value": "https://git.chir.rs/darkkirb/chir.rs.git main",
             "emailresponsible": false
         },
         "nixpkgs": {
