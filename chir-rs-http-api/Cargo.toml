@@ -9,9 +9,11 @@ axum = ["axum-core", "async-trait", "bytes", "mime", "tracing"]
 [dependencies]
 async-trait = { version = "0.1.83", optional = true }
 axum-core = { version = "0.4.5", optional = true }
+b64-ct = "0.1.2"
 bincode = "2.0.0-rc.3"
 bytes = { version = "1.8.0", optional = true }
 educe = { version = "0.6.0", default-features = false, features = ["Debug"] }
+eyre = "0.6.12"
 http = "1.1.0"
 mime = { version = "0.3.17", optional = true }
 serde = { version = "1.0.215", features = ["derive"] }

@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "chir-rs-castore",
+    "chir-rs-castore", "chir-rs-client",
     "chir-rs-config",
     "chir-rs-db",
     "chir-rs-gemini",

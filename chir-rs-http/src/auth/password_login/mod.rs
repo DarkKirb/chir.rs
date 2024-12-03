@@ -3,7 +3,11 @@
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use axum::extract::State;
 use chir_rs_db::user::User;
-use chir_rs_http_api::{auth::LoginRequest, axum::bincode::Bincode, errors::APIError};
+use chir_rs_http_api::{
+    auth::{LoginRequest, PasetoToken},
+    axum::bincode::Bincode,
+    errors::APIError,
+};
 use chrono::{Days, Utc};
 use eyre::{Context as _, OptionExt};
 use rusty_paseto::{
@@ -24,7 +28,7 @@ use crate::AppState;
 pub async fn login(
     State(state): State<AppState>,
     Bincode(login_request): Bincode<LoginRequest>,
-) -> Result<Bincode<String>, APIError> {
+) -> Result<Bincode<PasetoToken>, APIError> {
     let Some(user_info) = User::get(&state.db, &login_request.username)
         .await
         .with_context(|| format!("Fetching user info for {}", login_request.username))
@@ -78,5 +82,7 @@ pub async fn login(
         .context("Signing paseto key")
         .map_err(|e| APIError::Unknown(format!("{e:?}")))?;
 
-    Ok(Bincode(token))
+    Ok(Bincode(
+        PasetoToken::from_paseto(&token).map_err(|e| APIError::Unknown(format!("{e:?}")))?,
+    ))
 }
