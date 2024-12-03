@@ -4,8 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+argon2 = "0.5.3"
 axum = { version = "0.7.9", features = ["tracing"] }
+axum-client-ip = "0.6.1"
 axum-prometheus = "0.7.0"
+b64-ct = "0.1.2"
+base64 = "0.22.1"
 bincode = "2.0.0-rc.3"
 chir-rs-castore = { version = "0.1.0", path = "../chir-rs-castore" }
 chir-rs-config = { version = "0.1.0", path = "../chir-rs-config" }
@@ -16,12 +20,15 @@ chir-rs-http-api = { version = "0.1.0", path = "../chir-rs-http-api", features =
 chir-rs-misc = { version = "0.1.0", path = "../chir-rs-misc", features = [
     "base64",
 ] }
+chrono = "0.4.38"
 eyre = "0.6.12"
 mime = "0.3.17"
+rusty_paseto = { version = "0.7.1", default-features = false, features = ["batteries_included", "v4_local"] }
 sentry-tower = { version = "0.34.0", features = ["axum", "axum-matched-path"] }
-tokio = { version = "1.41.1", features = ["net"] }
+tokio = { version = "1.41.1", features = ["fs", "net"] }
 tower-http = { version = "0.6.2", features = ["trace"] }
 tracing = "0.1.40"
+unicode-normalization = "0.1.24"
 
 [lints.rust]
 deprecated-safe = "forbid"

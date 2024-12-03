@@ -77,6 +77,8 @@
                 sqlx-cli
                 cargo-expand
                 sqlite
+                treefmt
+                nixfmt-rfc-style
               ];
             };
           packages = pkgs.lib.mapAttrs (_: v: (v { }).overrideAttrs { dontStrip = true; }) rustPkgs.workspace;

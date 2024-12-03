@@ -218,6 +218,8 @@ pub struct ChirRs {
     pub s3: S3Config,
     /// Ca Cache max size in bytes
     pub cache_max_size: u64,
+    /// Paseto secret key file
+    pub paseto_secret_key_file: String,
 }
 
 impl ChirRs {

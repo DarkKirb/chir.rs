@@ -33,6 +33,15 @@ pub enum APIError {
     /// Returned when the error is unknown
     #[error("Unknown Error")]
     Unknown(String),
+    /// Returned when there is a database error
+    #[error("Database error: {0}")]
+    DatabaseError(String),
+    /// Returned when the specified user was not found
+    #[error("Resource not found: {0}")]
+    UserNotFound(String),
+    /// Invalid password
+    #[error("Invalid password for user {0}")]
+    InvalidPassword(String),
 }
 
 impl APIError {
@@ -45,7 +54,8 @@ impl APIError {
             }
             Self::PayloadTooBig => StatusCode::PAYLOAD_TOO_LARGE,
             Self::PayloadLoadError | Self::PayloadInvalid => StatusCode::BAD_REQUEST,
-            Self::Unknown(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::UserNotFound(_) | Self::InvalidPassword(_) => StatusCode::UNAUTHORIZED,
+            Self::Unknown(_) | Self::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }

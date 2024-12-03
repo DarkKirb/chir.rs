@@ -1,5 +1,6 @@
 # Maximum size of the in-memory object cache.
 cache_max_size = 32_000_000
+paseto_secret_key_file = "secrets/paseto-secret"
 
 [logging]
 #sentry_dsn = "…"

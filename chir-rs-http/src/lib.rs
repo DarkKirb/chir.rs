@@ -1,32 +1,43 @@
 //! HTTP server implementation for chir-rs
 
-use std::sync::Arc;
+use std::{fmt::Debug, sync::Arc};
 
 use axum::{
     extract::{MatchedPath, Request, State},
     http::StatusCode,
-    routing::get,
+    routing::{get, post},
     Router,
 };
 use axum_prometheus::PrometheusMetricLayer;
+use b64_ct::FromBase64;
 use chir_rs_castore::CaStore;
 use chir_rs_config::ChirRs;
 use chir_rs_db::Database;
 use chir_rs_http_api::{axum::bincode::Bincode, readiness::ReadyState};
-use eyre::{Context, Result};
+use eyre::{bail, eyre, Context, Result};
+use rusty_paseto::core::{Key, Local, PasetoSymmetricKey, V4};
 use tokio::net::TcpListener;
 use tower_http::trace::TraceLayer;
 use tracing::{error, info, info_span};
 
+pub mod auth;
 pub mod ca_server;
 
 /// Application state
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct AppState {
     /// Database handle
     pub db: Database,
     /// CA store handle
     pub ca: CaStore,
+    /// PASETO private key
+    pub paseto_key: Arc<PasetoSymmetricKey<V4, Local>>,
+}
+
+impl Debug for AppState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AppState").finish_non_exhaustive()
+    }
 }
 
 /// Entrypoint for the HTTP server component
@@ -36,6 +47,16 @@ pub struct AppState {
 ///
 /// Errors it encounters during runtime should be automatically handled.
 pub async fn main(cfg: Arc<ChirRs>, db: Database, castore: CaStore) -> Result<()> {
+    let paseto_symmetric_key =
+        tokio::fs::read_to_string(cfg.paseto_secret_key_file.clone()).await?;
+    let paseto_symmetric_key = paseto_symmetric_key
+        .from_base64()
+        .map_err(|e| eyre!("{e:?}"))?;
+    if paseto_symmetric_key.len() != 32 {
+        bail!("Invalid symmetric key size");
+    }
+    let paseto_symmetric_key = PasetoSymmetricKey::from(Key::from(paseto_symmetric_key.as_slice()));
+
     let (prometheus_layer, metric_handle) = PrometheusMetricLayer::pair();
     let app = Router::new()
         // Routes here
@@ -58,8 +79,13 @@ pub async fn main(cfg: Arc<ChirRs>, db: Database, castore: CaStore) -> Result<()
             "/.api/metrics",
             get(|| async move { metric_handle.render() }),
         )
+        .route("/.api/auth/login", post(auth::password_login::login))
         .fallback(get(ca_server::serve_files))
-        .with_state(AppState { db, ca: castore })
+        .with_state(AppState {
+            db,
+            ca: castore,
+            paseto_key: Arc::new(paseto_symmetric_key),
+        })
         .layer(
             TraceLayer::new_for_http().make_span_with(|request: &Request<_>| {
                 let matched_path = request
