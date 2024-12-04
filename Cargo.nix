@@ -32,7 +32,7 @@ args@{
   ignoreLockHash,
 }:
 let
-  nixifiedLockHash = "11a64cfe7de901d3281b189f031b32ae0457044c4134a845d433d25e040d5018";
+  nixifiedLockHash = "7dc55944ae2b0d1b65a004e3be3f5314339c3d2e023e794d54b030b197c5bf87";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -3072,6 +3072,10 @@ else
         chir_rs_misc = (rustPackages."unknown".chir-rs-misc."0.1.0" { inherit profileName; }).out;
         eyre =
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".eyre."0.6.12" {
+            inherit profileName;
+          }).out;
+        futures =
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".futures."0.3.31" {
             inherit profileName;
           }).out;
         mime =

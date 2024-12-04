@@ -21,6 +21,17 @@ impl Scope {
             Self::Full => 0,
         }
     }
+
+    /// Converts a scope ID to the scope
+    ///
+    /// # Errors
+    /// This function returns an error if the scope ID is invalid.
+    pub fn from_i64(id: i64) -> Result<Self> {
+        match id {
+            0 => Ok(Self::Full),
+            _ => bail!("Invalid scope ID {id}"),
+        }
+    }
 }
 
 /// Login request for the user

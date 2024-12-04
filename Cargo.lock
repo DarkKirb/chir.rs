@@ -987,6 +987,7 @@ dependencies = [
  "chir-rs-http-api",
  "chir-rs-misc",
  "eyre",
+ "futures",
  "mime",
  "rand",
  "serde",

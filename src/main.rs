@@ -14,23 +14,8 @@ use tracing_subscriber::{
     fmt::format::JsonFields, layer::SubscriberExt as _, util::SubscriberInitExt as _, Layer,
 };
 
-fn main() -> Result<()> {
-    color_eyre::install().ok();
-    dotenvy::dotenv().ok();
-
-    // NO THREADS BEFORE THIS POINT
-
-    let cfg = ChirRs::read_from_env().context("Reading chir.rs configuration")?;
-
-    let _guard = sentry::init(sentry::ClientOptions {
-        dsn: cfg.logging.sentry_dsn.clone(),
-        release: sentry::release_name!(),
-        traces_sample_rate: 0.1,
-        attach_stacktrace: true,
-        debug: cfg!(debug_assertions),
-        ..Default::default()
-    });
-
+/// Initializes logging for the application
+fn init_logging(cfg: &ChirRs) -> Result<()> {
     let log_filter = tracing_subscriber::EnvFilter::from_str(&cfg.logging.log_level)
         .with_context(|| format!("Setting log filter to {}", cfg.logging.log_level))?;
 
@@ -85,6 +70,27 @@ fn main() -> Result<()> {
                 .init();
         }
     }
+    Ok(())
+}
+
+fn main() -> Result<()> {
+    color_eyre::install().ok();
+    dotenvy::dotenv().ok();
+
+    // NO THREADS BEFORE THIS POINT
+
+    let cfg = ChirRs::read_from_env().context("Reading chir.rs configuration")?;
+
+    let _guard = sentry::init(sentry::ClientOptions {
+        dsn: cfg.logging.sentry_dsn.clone(),
+        release: sentry::release_name!(),
+        traces_sample_rate: 0.1,
+        attach_stacktrace: true,
+        debug: cfg!(debug_assertions),
+        ..Default::default()
+    });
+
+    init_logging(&cfg)?;
 
     tokio::runtime::Builder::new_multi_thread()
         .enable_all()

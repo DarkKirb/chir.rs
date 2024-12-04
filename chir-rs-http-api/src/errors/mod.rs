@@ -42,6 +42,21 @@ pub enum APIError {
     /// Invalid password
     #[error("Invalid password for user {0}")]
     InvalidPassword(String),
+    /// Missing authorization header
+    #[error("Missing authorization header")]
+    MissingAuthorizationHeader,
+    /// Invalid Authorization header value
+    #[error("Invalid authorization header: {0}")]
+    InvalidAuthorizationHeader(String),
+    /// Invalid authorization method
+    #[error("Invalid authorization method: {0}, expected {1}")]
+    InvalidAuthorizationMethod(String, String),
+    /// Unauthorized
+    #[error("Unauthorized")]
+    Unauthorized,
+    /// Invalid session
+    #[error("Invalid session")]
+    InvalidSession,
 }
 
 impl APIError {
@@ -54,7 +69,13 @@ impl APIError {
             }
             Self::PayloadTooBig => StatusCode::PAYLOAD_TOO_LARGE,
             Self::PayloadLoadError | Self::PayloadInvalid => StatusCode::BAD_REQUEST,
-            Self::UserNotFound(_) | Self::InvalidPassword(_) => StatusCode::UNAUTHORIZED,
+            Self::UserNotFound(_)
+            | Self::InvalidPassword(_)
+            | Self::MissingAuthorizationHeader
+            | Self::InvalidAuthorizationHeader(_)
+            | Self::InvalidAuthorizationMethod(_, _)
+            | Self::Unauthorized
+            | Self::InvalidSession => StatusCode::UNAUTHORIZED,
             Self::Unknown(_) | Self::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
