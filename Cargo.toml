@@ -35,7 +35,8 @@ sentry = { version = "0.34.0", default-features = false, features = [
 ] }
 sentry-eyre = "0.2.0"
 sentry-tracing = { version = "0.34.0", features = ["backtrace"] }
-tokio = { version = "1.41.1", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.41.1", features = ["macros", "rt-multi-thread", "signal"] }
+tracing = "0.1.41"
 tracing-error = "0.2.0"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter", "json"] }
 

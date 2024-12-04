@@ -67,9 +67,10 @@ impl PasetoToken {
     }
 
     /// Converts a compressed `PasetoToken` to string
-    pub fn to_paseto(&self) -> Result<String> {
+    #[must_use]
+    pub fn to_paseto(&self) -> String {
         let res = self.token.to_base64(URL_SAFE);
 
-        Ok(format!("v4.local.{res}"))
+        format!("v4.local.{res}")
     }
 }

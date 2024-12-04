@@ -7,6 +7,7 @@ use sqlx::{migrate, query, PgPool};
 use tracing::instrument;
 
 pub mod file;
+pub mod session;
 pub mod user;
 
 /// Opaque database handle

@@ -49,7 +49,7 @@ async fn login(url: String, username: String, password: String) -> Result<()> {
     if status.is_success() {
         let response: PasetoToken =
             bincode::decode_from_slice(&response, bincode::config::standard())?.0;
-        println!("{}", response.to_paseto()?);
+        println!("{}", response.to_paseto());
     } else {
         let response: APIError =
             bincode::decode_from_slice(&response, bincode::config::standard())?.0;

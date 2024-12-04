@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM \"session_scopes\" WHERE session_id < $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Bytea"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "20689c3363e0c27e4664c608378b9731f98e1e9d8d9122cc8c7e63773fcb5bf2"
+}

@@ -4,6 +4,7 @@ use std::{collections::HashSet, fmt::Debug};
 
 use bincode::{Decode, Encode};
 use chir_rs_http_api::auth::Scope;
+use chir_rs_misc::id_generator;
 use eyre::{Context, Result};
 use serde::{Deserialize, Serialize};
 use sqlx::{prelude::FromRow, query};
@@ -54,21 +55,24 @@ impl User {
     /// An error occurs if accessing the database fails
     #[instrument(skip(db))]
     #[allow(clippy::panic, reason = "sqlx moment")]
-    pub async fn new_session(&self, db: &Database, scopes: HashSet<Scope>) -> Result<i64> {
+    pub async fn new_session(&self, db: &Database, scopes: HashSet<Scope>) -> Result<u128> {
         let mut txn = db.0.begin().await?;
         let user_id: i64 = self.id.try_into()?;
+        let session_id_num = id_generator::generate();
+        let session_id = session_id_num.to_be_bytes();
 
-        let session = query!(
-            "INSERT INTO sessions (user_id) VALUES ($1) RETURNING (id)",
+        query!(
+            "INSERT INTO sessions (id, user_id) VALUES ($1, $2)",
+            &session_id,
             user_id
         )
-        .fetch_one(&mut *txn)
+        .execute(&mut *txn)
         .await?;
 
         for scope in scopes {
             query!(
                 "INSERT INTO session_scopes (session_id, scope) VALUES ($1, $2)",
-                session.id,
+                &session_id,
                 scope.to_i64()
             )
             .execute(&mut *txn)
@@ -77,6 +81,6 @@ impl User {
 
         txn.commit().await?;
 
-        Ok(session.id)
+        Ok(session_id_num)
     }
 }

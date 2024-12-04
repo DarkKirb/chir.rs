@@ -7,7 +7,8 @@ use chir_rs_config::ChirRs;
 use eyre::{Context, Result};
 // implicitly used
 use sentry_eyre as _;
-use tokio::try_join;
+use tokio::signal;
+use tracing::error;
 use tracing_error::ErrorLayer;
 use tracing_subscriber::{
     fmt::format::JsonFields, layer::SubscriberExt as _, util::SubscriberInitExt as _, Layer,
@@ -24,7 +25,7 @@ fn main() -> Result<()> {
     let _guard = sentry::init(sentry::ClientOptions {
         dsn: cfg.logging.sentry_dsn.clone(),
         release: sentry::release_name!(),
-        traces_sample_rate: 1.0,
+        traces_sample_rate: 0.1,
         attach_stacktrace: true,
         debug: cfg!(debug_assertions),
         ..Default::default()
@@ -93,11 +94,38 @@ fn main() -> Result<()> {
             let cfg = Arc::new(cfg);
             let db = chir_rs_db::open_database(&cfg.database.path).await?;
             let castore = chir_rs_castore::CaStore::new(&cfg).await?;
-            try_join!(
-                chir_rs_http::main(Arc::clone(&cfg), db.clone(), castore.clone()),
-                chir_rs_gemini::main(Arc::clone(&cfg), db.clone(), castore.clone())
-            )
-            .context("Starting server components")?;
+            let cfg1 = Arc::clone(&cfg);
+            let cfg2 = Arc::clone(&cfg);
+            let db1 = db.clone();
+            let db2 = db.clone();
+            let castore1 = castore.clone();
+            let castore2 = castore.clone();
+            let jobs = [
+                tokio::spawn(chir_rs_db::session::expire_sessions_job(db.clone())),
+                tokio::spawn(async move {
+                    if let Err(e) = chir_rs_http::main(cfg1, db1, castore1).await {
+                        error!("Failing to start HTTP Server: {e:?}");
+                    }
+                }),
+                tokio::spawn(async move {
+                    if let Err(e) = chir_rs_gemini::main(cfg2, db2, castore2).await {
+                        error!("Failing to start Gemini Server: {e:?}");
+                    }
+                }),
+            ];
+
+            signal::ctrl_c()
+                .await
+                .context("Trying to register ctrl+c handler")?;
+
+            for job in jobs {
+                job.abort();
+                if let Err(e) = job.await {
+                    if e.is_panic() {
+                        error!("Failed running job: {e:?}");
+                    }
+                }
+            }
             Ok::<_, eyre::Report>(())
         })
         .context("Running chir.rs")

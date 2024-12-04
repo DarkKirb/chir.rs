@@ -10,9 +10,11 @@ sqlx = { version = "0.8.2", features = ["runtime-tokio", "derive", "macros", "mi
 eyre = "0.6.12"
 tracing = "0.1.40"
 blake3 = { version = "1.5.4", features = ["serde"] }
-tokio = { version = "1.41.1", features = ["fs", "macros", "rt", "sync"] }
+tokio = { version = "1.41.1", features = ["fs", "macros", "rt", "sync", "time"] }
 mime = "0.3.17"
 chir-rs-http-api = { version = "0.1.0", path = "../chir-rs-http-api" }
+chir-rs-misc = { version = "0.1.0", path = "../chir-rs-misc", features = ["id-generator"] }
+rand = "0.8.5"
 
 [lints.rust]
 deprecated-safe = "forbid"
