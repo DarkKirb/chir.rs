@@ -2,20 +2,24 @@
 
 use axum::{
     body::Body,
-    extract::State,
+    extract::{Query, State},
     http::{
         header::{ACCEPT, CACHE_CONTROL, CONTENT_LENGTH, CONTENT_TYPE, ETAG, IF_NONE_MATCH},
-        HeaderMap, StatusCode, Uri,
+        HeaderMap, Request, StatusCode, Uri,
     },
     response::Response,
 };
 use chir_rs_db::file::File;
+use chir_rs_http_api::{auth::Scope, errors::APIError};
 use chir_rs_misc::lexicographic_base64;
 use eyre::Context as _;
+use futures::TryStreamExt;
 use mime::MimeIter;
+use serde::Deserialize;
+use tokio_util::compat::FuturesAsyncReadCompatExt as _;
 use tracing::{debug, error, info};
 
-use crate::AppState;
+use crate::{auth::req_auth::auth_header::AuthHeader, AppState};
 
 /// Formats an eyre error message
 #[expect(clippy::expect_used, reason = "fatal error in error handling function")]
@@ -152,4 +156,36 @@ pub async fn serve_files(
         .body(Body::new(file_body))
         .with_context(|| format!("Serving file for {path}"))
         .map_err(format_error)
+}
+
+/// Creates a static file
+///
+/// # Errors
+///
+/// This function returns an error if the request fails.
+pub async fn create_files(
+    State(state): State<AppState>,
+    session: AuthHeader,
+    uri: Uri,
+    headers: HeaderMap,
+    req: Request<Body>,
+) -> Result<[u8; 32], APIError> {
+    session.assert_scope(Scope::CreateUpdateFile)?;
+    let mime = headers
+        .get(CONTENT_TYPE)
+        .ok_or_else(|| APIError::ClientMissingContentType {
+            expected: "*/*".to_string(),
+        })?
+        .to_str()
+        .map_err(|e| APIError::ClientInvalidContentType {
+            expected: "*/*".to_string(),
+            received: format!("{e:?}"),
+        })?;
+    let mut stream =
+        TryStreamExt::map_err(req.into_body().into_data_stream(), std::io::Error::other)
+            .into_async_read()
+            .compat();
+    let result = state.ca.upload(&mut stream).await?;
+    File::new(&state.db, uri.path(), mime, &result).await?;
+    Ok(*result.as_bytes())
 }

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-axum = ["axum-core", "async-trait", "bytes", "mime", "tracing"]
+axum = ["axum-core", "async-trait", "bytes", "mime"]
 
 [dependencies]
 async-trait = { version = "0.1.83", optional = true }
@@ -18,7 +18,7 @@ http = "1.1.0"
 mime = { version = "0.3.17", optional = true }
 serde = { version = "1.0.215", features = ["derive"] }
 thiserror = "2.0.3"
-tracing = { version = "0.1.40", optional = true }
+tracing = { version = "0.1.40" }
 
 [lints.rust]
 deprecated-safe = "forbid"

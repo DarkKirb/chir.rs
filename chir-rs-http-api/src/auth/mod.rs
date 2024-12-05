@@ -4,13 +4,27 @@ use bincode::{Decode, Encode};
 use educe::Educe;
 use eyre::{bail, eyre, Result};
 use serde::{Deserialize, Serialize};
-use std::{collections::HashSet, fmt::Debug};
+use std::{
+    collections::HashSet,
+    fmt::{Debug, Display},
+};
 
 /// List of supported scopes for authentication
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Encode, Decode, Hash)]
 pub enum Scope {
     /// Full scope granted by logging in.
     Full,
+    /// The ability to create or update files.
+    CreateUpdateFile,
+}
+
+impl Display for Scope {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match *self {
+            Self::Full => write!(f, "Full permissions"),
+            Self::CreateUpdateFile => write!(f, "Create and update files"),
+        }
+    }
 }
 
 impl Scope {
@@ -19,6 +33,7 @@ impl Scope {
     pub const fn to_i64(self) -> i64 {
         match self {
             Self::Full => 0,
+            Self::CreateUpdateFile => 1,
         }
     }
 
@@ -29,6 +44,7 @@ impl Scope {
     pub fn from_i64(id: i64) -> Result<Self> {
         match id {
             0 => Ok(Self::Full),
+            1 => Ok(Self::CreateUpdateFile),
             _ => bail!("Invalid scope ID {id}"),
         }
     }

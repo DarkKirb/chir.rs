@@ -20,6 +20,23 @@ use crate::AppState;
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct AuthHeader(pub String, pub HashSet<Scope>);
 
+impl AuthHeader {
+    /// Checks whether or not a scope is granted for the session
+    ///
+    /// # Errors
+    /// This function returns an error if the current session does not have a scope granted.
+    pub fn assert_scope(&self, scope: Scope) -> Result<(), APIError> {
+        if self.1.contains(&Scope::Full) {
+            return Ok(());
+        }
+        if self.1.contains(&scope) {
+            Ok(())
+        } else {
+            Err(APIError::MissingScope(scope))
+        }
+    }
+}
+
 #[async_trait]
 impl FromRequestParts<AppState> for AuthHeader {
     type Rejection = APIError;

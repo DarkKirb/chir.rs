@@ -23,7 +23,7 @@ pub async fn expire(db: &Database) -> Result<()> {
     let oldest_acceptable_id = oldest_acceptable_id.to_be_bytes();
     #[expect(clippy::panic, reason = "sqlx moment")]
     query!(
-        r#"DELETE FROM "session_scopes" WHERE session_id < $1"#,
+        r#"DELETE FROM "sessions" WHERE id < $1"#,
         &oldest_acceptable_id
     )
     .execute(&*db.0)

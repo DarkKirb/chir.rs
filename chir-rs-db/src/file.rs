@@ -165,11 +165,11 @@ impl File {
     /// Creates a new file
     ///
     /// # Errors
-    /// This function returns an error if a database error occurs when writing, or there is a conflict
+    /// This function returns an error if a database error occurs when writing
     #[instrument(skip(db))]
     pub async fn new(db: &Database, path: &str, mime: &str, hash: &Hash) -> Result<()> {
         query_as(
-            r#"INSERT INTO file_map ("file_path", "mime", "b3hash") VALUES ($1, $2, $3) RETURNING *"#,
+            r#"INSERT INTO file_map ("file_path", "mime", "b3hash") VALUES ($1, $2, $3) ON CONFLICT ("file_path", "mime") DO UPDATE SET "b3hash" = $3 RETURNING *"#,
         )
         .bind(path)
         .bind(mime)

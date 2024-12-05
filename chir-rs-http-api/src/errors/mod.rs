@@ -3,6 +3,9 @@
 use bincode::{Decode, Encode};
 use http::StatusCode;
 use thiserror::Error;
+use tracing::error;
+
+use crate::auth::Scope;
 
 /// The main error type
 #[derive(Clone, Debug, PartialEq, Eq, Encode, Decode, Error)]
@@ -31,7 +34,7 @@ pub enum APIError {
     #[error("Invalid payload")]
     PayloadInvalid,
     /// Returned when the error is unknown
-    #[error("Unknown Error")]
+    #[error("Unknown Error {0}")]
     Unknown(String),
     /// Returned when there is a database error
     #[error("Database error: {0}")]
@@ -57,6 +60,16 @@ pub enum APIError {
     /// Invalid session
     #[error("Invalid session")]
     InvalidSession,
+    /// Missing scope
+    #[error("Missing required scope for request: {0}")]
+    MissingScope(Scope),
+}
+
+impl From<eyre::Report> for APIError {
+    fn from(value: eyre::Report) -> Self {
+        error!("Error while handling request: {value:?}");
+        Self::Unknown(format!("Error while handling request: {value:?}"))
+    }
 }
 
 impl APIError {
@@ -75,7 +88,8 @@ impl APIError {
             | Self::InvalidAuthorizationHeader(_)
             | Self::InvalidAuthorizationMethod(_, _)
             | Self::Unauthorized
-            | Self::InvalidSession => StatusCode::UNAUTHORIZED,
+            | Self::InvalidSession
+            | Self::MissingScope(_) => StatusCode::UNAUTHORIZED,
             Self::Unknown(_) | Self::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }

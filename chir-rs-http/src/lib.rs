@@ -80,7 +80,7 @@ pub async fn main(cfg: Arc<ChirRs>, db: Database, castore: CaStore) -> Result<()
             get(|| async move { metric_handle.render() }),
         )
         .route("/.api/auth/login", post(auth::password_login::login))
-        .fallback(get(ca_server::serve_files))
+        .fallback(get(ca_server::serve_files).post(ca_server::create_files))
         .with_state(AppState {
             db,
             ca: castore,

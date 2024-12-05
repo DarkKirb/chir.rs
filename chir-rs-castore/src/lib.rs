@@ -95,9 +95,9 @@ impl CaStore {
     {
         let mut reader = Box::pin(reader);
         let string_id = lexicographic_base64::encode(id.to_be_bytes());
-
-        info!("Starting multipart upload {id}");
         let source_fname = format!("temp/{string_id}");
+
+        /*info!("Starting multipart upload {id}");
         let multipart_result = self
             .client
             .create_multipart_upload()
@@ -163,7 +163,28 @@ impl CaStore {
             .set_upload_id(multipart_result.upload_id)
             .send()
             .await
-            .context("Completing multipart upload")?;
+            .context("Completing multipart upload")?;*/
+
+        let hasher = Arc::new(Mutex::new(Hasher::new()));
+        let mut buf = Vec::new();
+        reader.read_to_end(&mut buf).await?;
+        let buf = Bytes::from(buf);
+        let buf2 = buf.clone();
+        let hasher2 = Arc::clone(&hasher);
+        spawn_blocking(move || {
+            hasher2.blocking_lock().update_rayon(&buf2);
+        })
+        .await?;
+        self.client
+            .put_object()
+            .bucket(&*self.bucket)
+            .key(&source_fname)
+            .body(ByteStream::from(buf.to_vec()))
+            .send()
+            .await
+            .context("Uploading file")?;
+
+        let hash = hasher.lock().await.finalize();
 
         let target_fname = lexicographic_base64::encode(hash.as_bytes());
 

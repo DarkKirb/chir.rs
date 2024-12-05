@@ -20,10 +20,13 @@ chir-rs-misc = { version = "0.1.0", path = "../chir-rs-misc", features = [
 ] }
 chrono = "0.4.38"
 eyre = "0.6.12"
+futures = "0.3.31"
 mime = "0.3.17"
 rusty_paseto = { version = "0.7.1", default-features = false, features = ["batteries_included", "v4_local"] }
 sentry-tower = { version = "0.34.0", features = ["axum", "axum-matched-path"] }
+serde = { version = "1.0.215", features = ["derive"] }
 tokio = { version = "1.41.1", features = ["fs", "net"] }
+tokio-util = { version = "0.7.13", features = ["compat"] }
 tower-http = { version = "0.6.2", features = ["trace"] }
 tracing = "0.1.40"
 unicode-normalization = "0.1.24"
