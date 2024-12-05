@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT \"user\".username FROM \"user\"\n            INNER JOIN \"sessions\"\n                ON \"sessions\".user_id = \"user\".id\n            WHERE \"sessions\".id = $1\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "username",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Bytea"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "a890d5ff7316e8d1f9252feda2e12c69e592ad3d3959ff0e6a9317f908bf51ec"
+}

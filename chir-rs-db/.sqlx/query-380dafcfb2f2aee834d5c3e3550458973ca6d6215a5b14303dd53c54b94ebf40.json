@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "DELETE FROM \"session_scopes\" WHERE session_id < $1",
+  "query": "DELETE FROM \"sessions\" WHERE id < $1",
   "describe": {
     "columns": [],
     "parameters": {
@@ -10,5 +10,5 @@
     },
     "nullable": []
   },
-  "hash": "20689c3363e0c27e4664c608378b9731f98e1e9d8d9122cc8c7e63773fcb5bf2"
+  "hash": "380dafcfb2f2aee834d5c3e3550458973ca6d6215a5b14303dd53c54b94ebf40"
 }
