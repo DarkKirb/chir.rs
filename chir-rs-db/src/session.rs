@@ -19,7 +19,7 @@ use tracing::{error, info, instrument};
 #[instrument]
 pub async fn expire(db: &Database) -> Result<()> {
     let id = id_generator::generate();
-    let oldest_acceptable_id = id - ((24 * 60 * 60) << 48);
+    let oldest_acceptable_id = id - ((24 * 60 * 60 * 1_000_000_000) << 48);
     let oldest_acceptable_id = oldest_acceptable_id.to_be_bytes();
     #[expect(clippy::panic, reason = "sqlx moment")]
     query!(
