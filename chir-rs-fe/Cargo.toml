@@ -1,49 +1,17 @@
-[workspace]
-members = [
-    "chir-rs-castore",
-    "chir-rs-client",
-    "chir-rs-config",
-    "chir-rs-db", "chir-rs-fe",
-    "chir-rs-gemini",
-    "chir-rs-http",
-    "chir-rs-http-api",
-    "chir-rs-misc",
-]
-resolver = "2"
-
 [package]
-name = "chir-rs"
+name = "chir-rs-fe"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+crate-type = ["cdylib"]
+
 [dependencies]
-chir-rs-castore = { version = "0.1.0", path = "chir-rs-castore" }
-chir-rs-config = { version = "0.1.0", path = "chir-rs-config" }
-chir-rs-db = { version = "0.1.0", path = "chir-rs-db" }
-chir-rs-gemini = { version = "0.1.0", path = "chir-rs-gemini" }
-chir-rs-http = { version = "0.1.0", path = "chir-rs-http" }
-color-eyre = { version = "0.6.3", features = ["issue-url"] }
-dotenvy = "0.15.7"
-eyre = "0.6.12"
-sentry = { version = "0.34.0", default-features = false, features = [
-    "backtrace",
-    "contexts",
-    "debug-images",
-    "panic",
-    "metrics",
-    "reqwest",
-    "rustls",
-] }
-sentry-eyre = "0.2.0"
-sentry-tracing = { version = "0.34.0", features = ["backtrace"] }
-tokio = { version = "1.41.1", features = [
-    "macros",
-    "rt-multi-thread",
-    "signal",
-] }
-tracing = "0.1.41"
-tracing-error = "0.2.0"
-tracing-subscriber = { version = "0.3.18", features = ["env-filter", "json"] }
+wasm-bindgen = "=0.2.99"
+yew = { version = "0.21.0", features = ["csr"] }
+
+[build-dependencies]
+wasm-bindgen-cli = { version = "=0.2.99", artifact = "bin" }
 
 [lints.rust]
 deprecated-safe = "forbid"
@@ -93,9 +61,3 @@ panic-in-result-fn = "forbid"
 rc-buffer = "warn"
 rc-mutex = "deny"
 unwrap-used = "forbid"
-
-[profile.release]
-codegen-units = 1
-lto = true
-debug = "full"
-strip = "none"

@@ -1,7 +1,7 @@
 /target
 .env
-config.toml
+/config.toml
 .direnv
-target/
-target-bin/
+/target
+/target-bin
 secrets/
