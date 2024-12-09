@@ -15,6 +15,7 @@ eyre = "0.6.12"
 stretto = { version = "0.8.4", features = ["async"] }
 tokio = { version = "1.41.1", features = ["fs"] }
 tracing = "0.1.41"
+
 [lints.rust]
 deprecated-safe = "forbid"
 elided_lifetimes_in_paths = "warn"
