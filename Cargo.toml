@@ -1,6 +1,7 @@
 [workspace]
 members = [
-    "chir-rs-castore", "chir-rs-client",
+    "chir-rs-castore",
+    "chir-rs-client",
     "chir-rs-config",
     "chir-rs-db",
     "chir-rs-gemini",
@@ -35,7 +36,11 @@ sentry = { version = "0.34.0", default-features = false, features = [
 ] }
 sentry-eyre = "0.2.0"
 sentry-tracing = { version = "0.34.0", features = ["backtrace"] }
-tokio = { version = "1.41.1", features = ["macros", "rt-multi-thread", "signal"] }
+tokio = { version = "1.41.1", features = [
+    "macros",
+    "rt-multi-thread",
+    "signal",
+] }
 tracing = "0.1.41"
 tracing-error = "0.2.0"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter", "json"] }
@@ -94,9 +99,3 @@ codegen-units = 1
 lto = true
 debug = "full"
 strip = "none"
-
-[profile.dev.package."*"]
-opt-level = 2
-
-[profile.dev]
-opt-level = 1

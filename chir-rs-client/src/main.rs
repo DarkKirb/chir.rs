@@ -9,7 +9,7 @@ use eyre::{eyre, Context as _, OptionExt as _, Result};
 use mime_guess::{Mime, MimeGuess};
 use reqwest::Body;
 use tokio::join;
-use tracing::instrument;
+use tracing::{info, instrument};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -92,6 +92,7 @@ async fn upload(url: String, source: impl AsRef<Path>, dest: String) -> Result<(
         .body(Body::from(file))
         .send()
         .await?;
+    info!("Finished uploading {dest}");
     if !res.status().is_success() {
         let response = res.bytes().await?;
         let response: APIError =
@@ -122,11 +123,10 @@ async fn upload_dir(url: String, source: impl AsRef<Path>, dest: String) -> Resu
             continue;
         }
         if file_name_str == "index.html" {
-            if dest.is_empty() {
-                upload(url.clone(), ent.path(), "".to_string()).await?;
-            } else {
+            if !dest.is_empty() {
                 upload(url.clone(), ent.path(), format!("{dest}/")).await?;
             }
+            upload(url.clone(), ent.path(), dest.clone()).await?;
         }
         upload(url.clone(), ent.path(), tgt).await?;
     }
