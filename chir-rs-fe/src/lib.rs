@@ -1,13 +1,28 @@
 //! Management frontend for chir.rs
 
+use std::future::Future;
+
+use tracing::{error, instrument};
 use tracing_subscriber::{layer::SubscriberExt as _, util::SubscriberInitExt as _};
 use wasm_bindgen::prelude::*;
 use wasm_tracing::{WASMLayer, WASMLayerConfigBuilder};
-use yew::prelude::*;
+use yew::{platform::spawn_local, prelude::*};
 use yew_router::prelude::*;
 
 pub mod home;
 pub mod login;
+
+#[instrument(skip(fut))]
+pub fn spawn<F>(fut: F)
+where
+    F: Future<Output = eyre::Result<()>> + 'static,
+{
+    spawn_local(async move {
+        if let Err(e) = fut.await {
+            error!("Failed to run async closure: {e:?}");
+        }
+    });
+}
 
 /// Routes defined by this SPA
 #[derive(Clone, Routable, PartialEq)]
@@ -25,7 +40,9 @@ enum Route {
 fn switch(routes: Route) -> Html {
     match routes {
         Route::Home => home::home_page(),
-        Route::Login => login::login(),
+        Route::Login => html! {
+            <login::Login />
+        },
     }
 }
 
