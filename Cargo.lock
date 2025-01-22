@@ -5681,9 +5681,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-tracing"
-version = "0.2.1"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fdc25eceb983ff5a063ec348bd7b309e7ae5605ca4e306af81a5d14d8bbed2c1"
+checksum = "2107431e9bd9fa9ff3c4e7d384563c849cbfae830866a74d59c3472942bd5af1"
 dependencies = [
  "tracing",
  "tracing-subscriber",

@@ -33,7 +33,7 @@ args@{
   ignoreLockHash,
 }:
 let
-  nixifiedLockHash = "b17f3dd6589b38b80dc0caf7accb72ff50bbacf13f531ac4c3b0cc2f9f3a4d40";
+  nixifiedLockHash = "e3d0f3729fd3e333936755f8418bf5ae6e6cfc5947a0322c3ace9b4244720e9c";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored = if ignoreLockHash
@@ -1569,7 +1569,7 @@ in
       tracing_subscriber = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing-subscriber."0.3.19" { inherit profileName; }).out;
       unicode_normalization = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".unicode-normalization."0.1.24" { inherit profileName; }).out;
       wasm_bindgen = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".wasm-bindgen."0.2.99" { inherit profileName; }).out;
-      wasm_tracing = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".wasm-tracing."0.2.1" { inherit profileName; }).out;
+      wasm_tracing = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".wasm-tracing."1.0.1" { inherit profileName; }).out;
       web_sys = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".web-sys."0.3.76" { inherit profileName; }).out;
       yew = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".yew."0.21.0" { inherit profileName; }).out;
       yew_router = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".yew-router."0.18.0" { inherit profileName; }).out;
@@ -8089,11 +8089,11 @@ in
     };
   });
   
-  "registry+https://github.com/rust-lang/crates.io-index".wasm-tracing."0.2.1" = overridableMkRustCrate (profileName: rec {
+  "registry+https://github.com/rust-lang/crates.io-index".wasm-tracing."1.0.1" = overridableMkRustCrate (profileName: rec {
     name = "wasm-tracing";
-    version = "0.2.1";
+    version = "1.0.1";
     registry = "registry+https://github.com/rust-lang/crates.io-index";
-    src = fetchCratesIo { inherit name version; sha256 = "fdc25eceb983ff5a063ec348bd7b309e7ae5605ca4e306af81a5d14d8bbed2c1"; };
+    src = fetchCratesIo { inherit name version; sha256 = "2107431e9bd9fa9ff3c4e7d384563c849cbfae830866a74d59c3472942bd5af1"; };
     dependencies = {
       tracing = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.41" { inherit profileName; }).out;
       tracing_subscriber = (rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing-subscriber."0.3.19" { inherit profileName; }).out;
