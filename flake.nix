@@ -115,7 +115,7 @@
                 nixfmt-rfc-style
                 wabt
                 trunk
-                (rustPkgs."registry+https://github.com/rust-lang/crates.io-index".wasm-bindgen-cli."0.2.99" { })
+                (rustPkgs."registry+https://github.com/rust-lang/crates.io-index".wasm-bindgen-cli."0.2.100" { })
                 binaryen
               ];
             };
@@ -126,7 +126,7 @@
                 let
                   chir-rs-fe = rustPkgs-wasm32.workspace.chir-rs-fe { };
                   wasm-bindgen-cli =
-                    rustPkgs."registry+https://github.com/rust-lang/crates.io-index".wasm-bindgen-cli."0.2.99"
+                    rustPkgs."registry+https://github.com/rust-lang/crates.io-index".wasm-bindgen-cli."0.2.100"
                       { };
                 in
                 pkgs.stdenvNoCC.mkDerivation {
