@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 argon2 = "0.5.3"
 axum = { version = "0.7.9", features = ["tracing"] }
-axum-prometheus = "0.7.0"
+axum-prometheus = "0.8.0"
 b64-ct = "0.1.2"
 bincode = "2.0.0-rc.3"
 chir-rs-castore = { version = "0.1.0", path = "../chir-rs-castore" }
