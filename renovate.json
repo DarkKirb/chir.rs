@@ -4,7 +4,8 @@
     ],
     "postUpgradeTasks": {
         "commands": [
-            "cargo2nix -o"
+            "cargo2nix -o",
+            "treefmt"
         ],
         "fileFilters": [
             "Cargo.*"
