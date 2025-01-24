@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 bincode = "2.0.0-rc.3"
 serde = { version = "1.0.215", features = ["derive"] }
-sqlx = { version = "0.8.2", features = ["runtime-tokio", "derive", "macros", "migrate", "postgres"] }
+sqlx = { version = "0.8.2", features = ["runtime-tokio", "derive", "macros", "migrate", "postgres", "sqlite"], default-features = false }
 eyre = "0.6.12"
 tracing = "0.1.40"
 blake3 = { version = "1.5.4", features = ["serde"] }
