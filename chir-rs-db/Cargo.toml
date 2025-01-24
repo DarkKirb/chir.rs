@@ -16,6 +16,8 @@ chir-rs-http-api = { version = "0.1.0", path = "../chir-rs-http-api" }
 chir-rs-misc = { version = "0.1.0", path = "../chir-rs-misc", features = ["id-generator"] }
 rand = "0.8.5"
 futures = "0.3.31"
+dashmap = "6.1.0"
+chrono = "0.4.39"
 
 [lints.rust]
 deprecated-safe = "forbid"

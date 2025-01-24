@@ -33,7 +33,7 @@ args@{
   ignoreLockHash,
 }:
 let
-  nixifiedLockHash = "f75e8177bb74af1e7a9a712eb86754a1ff5bca4f90dfc60345ea3e6ddd12b0d7";
+  nixifiedLockHash = "ece6712c9bd247d69ebb0e360e5574df42061846426bd518f3b81aefdcd51162";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -3496,6 +3496,14 @@ else
           }).out;
         chir_rs_http_api = (rustPackages."unknown".chir-rs-http-api."0.1.0" { inherit profileName; }).out;
         chir_rs_misc = (rustPackages."unknown".chir-rs-misc."0.1.0" { inherit profileName; }).out;
+        chrono =
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".chrono."0.4.39" {
+            inherit profileName;
+          }).out;
+        dashmap =
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".dashmap."6.1.0" {
+            inherit profileName;
+          }).out;
         eyre =
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".eyre."0.6.12" {
             inherit profileName;
@@ -4612,6 +4620,44 @@ else
               }).out;
             typenum =
               (rustPackages."registry+https://github.com/rust-lang/crates.io-index".typenum."1.17.0" {
+                inherit profileName;
+              }).out;
+          };
+        });
+
+    "registry+https://github.com/rust-lang/crates.io-index".dashmap."6.1.0" =
+      overridableMkRustCrate
+        (profileName: rec {
+          name = "dashmap";
+          version = "6.1.0";
+          registry = "registry+https://github.com/rust-lang/crates.io-index";
+          src = fetchCratesIo {
+            inherit name version;
+            sha256 = "5041cc499144891f3790297212f32a74fb938e5136a14943f338ef9e0ae276cf";
+          };
+          dependencies = {
+            cfg_if =
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".cfg-if."1.0.0" {
+                inherit profileName;
+              }).out;
+            crossbeam_utils =
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".crossbeam-utils."0.8.21" {
+                inherit profileName;
+              }).out;
+            hashbrown =
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".hashbrown."0.14.5" {
+                inherit profileName;
+              }).out;
+            lock_api =
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".lock_api."0.4.12" {
+                inherit profileName;
+              }).out;
+            once_cell =
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".once_cell."1.20.2" {
+                inherit profileName;
+              }).out;
+            parking_lot_core =
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".parking_lot_core."0.9.10" {
                 inherit profileName;
               }).out;
           };
@@ -7274,6 +7320,7 @@ else
           };
           features = builtins.concatLists [
             [ "ahash" ]
+            [ "raw" ]
             [ "serde" ]
           ];
           dependencies = {

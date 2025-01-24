@@ -1,18 +1,38 @@
 //! File related APIs
 
-use std::fmt::Formatter;
+use std::{fmt::Formatter, sync::LazyLock};
 
 use bincode::{error::DecodeError, Decode, Encode};
 use blake3::Hash;
+use chrono::{DateTime, Duration, Utc};
+use dashmap::DashMap;
 use eyre::Context as _;
 use eyre::Result;
 use mime::Mime;
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
 use sqlx::{postgres::PgRow, prelude::FromRow, query_as};
 use sqlx::{query, Row as _};
-use tracing::instrument;
+use tracing::{error, instrument};
 
 use crate::Database;
+
+/// Value for the file association cache
+#[derive(Debug, Clone)]
+struct CacheValue {
+    /// The file that is cached
+    file: File,
+    /// The last time the association has been verified
+    last_checked: DateTime<Utc>,
+}
+
+/// Value for the file-mime association cache
+#[derive(Debug, Clone)]
+struct CacheValueVec {
+    /// The files that are cached
+    file: Vec<File>,
+    /// The last time the association has been verified
+    last_checked: DateTime<Utc>,
+}
 
 /// Serializes a mime type to string
 fn serialize_mime<S: Serializer>(mime: &Mime, s: S) -> Result<S::Ok, S::Error> {
@@ -125,7 +145,7 @@ impl File {
     /// # Errors
     /// This function returns an error if a database error occurs while loading.
     #[instrument(skip(db))]
-    pub async fn get_by_path_mime(db: &Database, path: &str, mime: &str) -> Result<Option<Self>> {
+    async fn get_by_path_mime_inner(db: &Database, path: &str, mime: &str) -> Result<Option<Self>> {
         query_as(r#"SELECT * FROM file_map WHERE "file_path" = $1 AND "mime" = $2"#)
             .bind(path)
             .bind(mime)
@@ -134,17 +154,116 @@ impl File {
             .with_context(|| format!("Loading file path {path} with mime type {mime}"))
     }
 
+    /// Attempts to load a file by path and mime type
+    ///
+    /// # Errors
+    /// This function returns an error if a database error occurs while loading.
+    #[instrument(skip(db))]
+    pub async fn get_by_path_mime(db: &Database, path: &str, mime: &str) -> Result<Option<Self>> {
+        static CACHE: LazyLock<DashMap<(String, String), CacheValue>> = LazyLock::new(DashMap::new);
+        let path = path.to_string();
+        let mime = mime.to_string();
+        if let Some(value) = CACHE.get(&(path.clone(), mime.clone())) {
+            let file = value.file.clone();
+            if value.last_checked < (Utc::now() - Duration::minutes(1)) {
+                let db2 = db.clone();
+                let path = path.clone();
+                let mime = mime.clone();
+                tokio::spawn(async move {
+                    match Self::get_by_path_mime_inner(&db2, &path, &mime).await {
+                        Err(e) => {
+                            error!("Failed to update path info for {path}: {e:?}");
+                        }
+                        Ok(None) => {
+                            CACHE.remove(&(path, mime));
+                        }
+                        Ok(Some(file)) => {
+                            CACHE.insert(
+                                (path, mime),
+                                CacheValue {
+                                    file,
+                                    last_checked: Utc::now(),
+                                },
+                            );
+                        }
+                    }
+                });
+            }
+            Ok(Some(file))
+        } else {
+            let file = Self::get_by_path_mime_inner(db, &path, &mime).await?;
+            if let Some(ref file) = file {
+                CACHE.insert(
+                    (path, mime),
+                    CacheValue {
+                        file: file.clone(),
+                        last_checked: Utc::now(),
+                    },
+                );
+            }
+            Ok(file)
+        }
+    }
+
+    /// Attempts to load any files by path.
+    ///
+    /// # Errors
+    /// This function returns an error if a database error occurs while loading.
+    #[instrument(skip(db))]
+    async fn get_by_path_inner(db: &Database, path: &str) -> Result<Vec<Self>> {
+        query_as(r#"SELECT * FROM file_map WHERE "file_path" = $1"#)
+            .bind(path)
+            .fetch_all(&*db.0)
+            .await
+            .with_context(|| format!("Loading files with path {path}"))
+    }
+
     /// Attempts to load any files by path.
     ///
     /// # Errors
     /// This function returns an error if a database error occurs while loading.
     #[instrument(skip(db))]
     pub async fn get_by_path(db: &Database, path: &str) -> Result<Vec<Self>> {
-        query_as(r#"SELECT * FROM file_map WHERE "file_path" = $1"#)
-            .bind(path)
-            .fetch_all(&*db.0)
-            .await
-            .with_context(|| format!("Loading files with path {path}"))
+        static CACHE: LazyLock<DashMap<String, CacheValueVec>> = LazyLock::new(DashMap::new);
+        if let Some(value) = CACHE.get(path) {
+            let file = value.file.clone();
+            if value.last_checked < (Utc::now() - Duration::minutes(1)) {
+                let db2 = db.clone();
+                let path = path.to_string();
+                tokio::spawn(async move {
+                    match Self::get_by_path_inner(&db2, &path).await {
+                        Err(e) => {
+                            error!("Failed to update path info for {path}: {e:?}");
+                        }
+                        Ok(v) if v.is_empty() => {
+                            CACHE.remove(&path);
+                        }
+                        Ok(file) => {
+                            CACHE.insert(
+                                path,
+                                CacheValueVec {
+                                    file,
+                                    last_checked: Utc::now(),
+                                },
+                            );
+                        }
+                    }
+                });
+            }
+            Ok(file)
+        } else {
+            let file = Self::get_by_path_inner(db, path).await?;
+            if !file.is_empty() {
+                CACHE.insert(
+                    path.to_string(),
+                    CacheValueVec {
+                        file: file.clone(),
+                        last_checked: Utc::now(),
+                    },
+                );
+            }
+            Ok(file)
+        }
     }
 
     /// Returns a paginated view into the file table
