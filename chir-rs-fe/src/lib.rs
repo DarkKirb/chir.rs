@@ -5,7 +5,7 @@ use std::future::Future;
 use tracing::{error, instrument};
 use tracing_subscriber::{layer::SubscriberExt as _, util::SubscriberInitExt as _};
 use wasm_bindgen::prelude::*;
-use wasm_tracing::{WASMLayer, WASMLayerConfigBuilder};
+use wasm_tracing::{WasmLayer, WasmLayerConfig};
 use yew::{platform::spawn_local, prelude::*};
 use yew_router::prelude::*;
 
@@ -69,7 +69,7 @@ fn app() -> Html {
 fn main() {
     console_error_panic_hook::set_once();
     tracing_subscriber::registry()
-        .with(WASMLayer::new(WASMLayerConfigBuilder::new().build()))
+        .with(WasmLayer::new(WasmLayerConfig::new()))
         .init();
 
     yew::Renderer::<App>::new().render();
