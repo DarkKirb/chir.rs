@@ -5,10 +5,9 @@ use chir_rs_http_api::{
     errors::APIError,
 };
 use clap::{arg, Parser, Subcommand};
-use eyre::{eyre, Context as _, OptionExt as _, Result};
-use mime_guess::{Mime, MimeGuess};
+use eyre::{eyre, Context as _, Result};
+use mime_guess::MimeGuess;
 use reqwest::Body;
-use tokio::join;
 use tracing::{info, instrument};
 
 #[derive(Parser, Debug)]

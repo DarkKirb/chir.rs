@@ -80,7 +80,7 @@ pub fn Login() -> Html {
                     bincode::decode_from_slice(&resp_body, bincode::config::standard())
                         .context("Decoding success response")?
                         .0;
-                SessionStorage::set("api", token.to_paseto());
+                SessionStorage::set("api", token.to_paseto())?;
             }
             navigator.replace(&Route::Home);
             Ok(())

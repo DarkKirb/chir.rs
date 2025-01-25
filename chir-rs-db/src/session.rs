@@ -21,7 +21,6 @@ pub async fn expire(db: &Database) -> Result<()> {
     let id = id_generator::generate();
     let oldest_acceptable_id = id - ((24 * 60 * 60 * 1_000_000_000) << 48);
     let oldest_acceptable_id = oldest_acceptable_id.to_be_bytes();
-    #[expect(clippy::panic, reason = "sqlx moment")]
     query!(
         r#"DELETE FROM "sessions" WHERE id < $1"#,
         &oldest_acceptable_id
@@ -36,7 +35,6 @@ pub async fn expire(db: &Database) -> Result<()> {
 /// # Errors
 /// This function returns an error if accessing the database fails
 #[instrument]
-#[expect(clippy::panic, reason = "sqlx moment")]
 pub async fn fetch_session_info(
     db: &Database,
     session_id: u128,

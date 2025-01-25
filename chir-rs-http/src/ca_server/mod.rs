@@ -2,7 +2,7 @@
 
 use axum::{
     body::Body,
-    extract::{Query, State},
+    extract::State,
     http::{
         header::{ACCEPT, CACHE_CONTROL, CONTENT_LENGTH, CONTENT_TYPE, ETAG, IF_NONE_MATCH},
         HeaderMap, Request, StatusCode, Uri,
@@ -15,7 +15,6 @@ use chir_rs_misc::lexicographic_base64;
 use eyre::Context as _;
 use futures::TryStreamExt;
 use mime::MimeIter;
-use serde::Deserialize;
 use tokio_util::compat::FuturesAsyncReadCompatExt as _;
 use tracing::{debug, error, info};
 

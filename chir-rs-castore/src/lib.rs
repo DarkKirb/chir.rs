@@ -6,11 +6,10 @@ use aws_config::{AppName, Region, SdkConfig};
 use aws_sdk_s3::{
     config::Credentials,
     primitives::{ByteStream, SdkBody},
-    types::{CompletedMultipartUpload, CompletedPart},
     Client,
 };
 use blake3::{Hash, Hasher};
-use bytes::{Bytes, BytesMut};
+use bytes::Bytes;
 use chir_rs_config::ChirRs;
 use chir_rs_misc::{id_generator, lexicographic_base64};
 use educe::Educe;
@@ -21,9 +20,8 @@ use tokio::{
     io::{AsyncRead, AsyncReadExt},
     sync::Mutex,
     task::spawn_blocking,
-    try_join,
 };
-use tracing::{debug, info, instrument};
+use tracing::{info, instrument};
 
 /// Loads the AWS SDK config from the configuration file
 async fn get_aws_config(config: &Arc<ChirRs>) -> Result<SdkConfig> {

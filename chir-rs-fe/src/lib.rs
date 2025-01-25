@@ -12,6 +12,7 @@ use yew_router::prelude::*;
 pub mod home;
 pub mod login;
 
+/// Spans a future asynchronously
 #[instrument(skip(fut))]
 pub fn spawn<F>(fut: F)
 where

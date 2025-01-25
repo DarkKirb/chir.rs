@@ -305,7 +305,6 @@ impl File {
     #[instrument(skip(db))]
     pub async fn delete(self, db: &Database) -> Result<()> {
         let id: i64 = self.id.try_into()?;
-        #[expect(clippy::panic, reason = "sqlx silliness")]
         query!(r#"DELETE FROM file_map WHERE "id" = $1"#, id)
             .execute(&*db.0)
             .await
@@ -332,7 +331,6 @@ impl File {
     pub async fn update(&self, db: &Database) -> Result<()> {
         let id: i64 = self.id.try_into()?;
         let b3hash = self.b3hash.as_bytes().as_slice();
-        #[expect(clippy::panic, reason = "sqlx silliness")]
         query!(
             r#"UPDATE file_map SET "file_path" = $1, "mime" = $2, "b3hash" = $3 WHERE "id" = $4"#,
             self.file_path,
@@ -357,7 +355,6 @@ impl File {
     /// This function returns an error if updating the entry in the database fails
     #[instrument(skip(db))]
     pub async fn is_used(db: &Database, hash: Hash) -> Result<bool> {
-        #[expect(clippy::panic, reason = "sqlx silliness")]
         let count = query!(
             r#"SELECT COUNT(*) as amount FROM file_map WHERE "b3hash" = $1"#,
             hash.as_bytes()
