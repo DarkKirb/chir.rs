@@ -10,7 +10,7 @@ members = [
     "chir-rs-http-api",
     "chir-rs-misc",
 ]
-resolver = "2"
+resolver = "3"
 
 [package]
 name = "chir-rs"
