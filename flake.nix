@@ -14,10 +14,6 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs";
 
-    riscv-overlay = {
-      url = "github:DarkKirb/riscv-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -31,31 +27,20 @@
       flake-utils,
       rust-overlay,
       cargo2nix,
-      riscv-overlay,
       ...
     }@inputs:
     flake-utils.lib.eachSystem
       [
         "x86_64-linux"
         "aarch64-linux"
-        "riscv64-linux"
       ]
       (
         system:
         let
-          overlays =
-            [
-              cargo2nix.overlays.default
-              (import rust-overlay)
-            ]
-            ++ (
-              if system == "riscv64-linux" then
-                [
-                  riscv-overlay.overlays.default
-                ]
-              else
-                [ ]
-            );
+          overlays = [
+            cargo2nix.overlays.default
+            (import rust-overlay)
+          ];
           pkgs = import nixpkgs {
             inherit system overlays;
           };
