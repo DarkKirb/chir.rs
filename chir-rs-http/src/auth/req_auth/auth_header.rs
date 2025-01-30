@@ -3,7 +3,6 @@
 use std::collections::HashSet;
 
 use axum::{
-    async_trait,
     extract::FromRequestParts,
     http::{header::AUTHORIZATION, request::Parts},
 };
@@ -37,7 +36,6 @@ impl AuthHeader {
     }
 }
 
-#[async_trait]
 impl FromRequestParts<AppState> for AuthHeader {
     type Rejection = APIError;
 

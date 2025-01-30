@@ -33,7 +33,7 @@ args@{
   ignoreLockHash,
 }:
 let
-  nixifiedLockHash = "c4f4ad9d89cb8470d3b0e9a4dafcb8ba097f2c90e070636b40b3a5d87f04647e";
+  nixifiedLockHash = "078880c160ec0632d9f2bbbe191c7cde91fa99d0498f1e03612a01eae7524f14";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -642,32 +642,6 @@ else
               ).out;
             pin_project_lite =
               (rustPackages."registry+https://github.com/rust-lang/crates.io-index".pin-project-lite."0.2.16" {
-                inherit profileName;
-              }).out;
-          };
-        });
-
-    "registry+https://github.com/rust-lang/crates.io-index".async-trait."0.1.85" =
-      overridableMkRustCrate
-        (profileName: rec {
-          name = "async-trait";
-          version = "0.1.85";
-          registry = "registry+https://github.com/rust-lang/crates.io-index";
-          src = fetchCratesIo {
-            inherit name version;
-            sha256 = "3f934833b4b7233644e5848f235df3f57ed8c80f1528a26c3dfa13d2147fa056";
-          };
-          dependencies = {
-            proc_macro2 =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".proc-macro2."1.0.93" {
-                inherit profileName;
-              }).out;
-            quote =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".quote."1.0.38" {
-                inherit profileName;
-              }).out;
-            syn =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".syn."2.0.96" {
                 inherit profileName;
               }).out;
           };
@@ -3527,17 +3501,12 @@ else
       registry = "unknown";
       src = fetchCrateLocal (workspaceSrc + "/chir-rs-http-api");
       features = builtins.concatLists [
-        [ "async-trait" ]
         [ "axum" ]
         [ "axum-core" ]
         [ "bytes" ]
         [ "mime" ]
       ];
       dependencies = {
-        async_trait =
-          (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".async-trait."0.1.85" {
-            profileName = "__noProfile";
-          }).out;
         axum_core =
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".axum-core."0.5.0" {
             inherit profileName;
