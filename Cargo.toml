@@ -25,7 +25,7 @@ chir-rs-http = { version = "0.1.0", path = "chir-rs-http" }
 color-eyre = { version = "0.6.3", features = ["issue-url"] }
 dotenvy = "0.15.7"
 eyre = "0.6.12"
-sentry = { version = "0.34.0", default-features = false, features = [
+sentry = { version = "0.36.0", default-features = false, features = [
     "backtrace",
     "contexts",
     "debug-images",
@@ -34,8 +34,8 @@ sentry = { version = "0.34.0", default-features = false, features = [
     "reqwest",
     "rustls",
 ] }
-sentry-eyre = "0.2.0"
-sentry-tracing = { version = "0.34.0", features = ["backtrace"] }
+sentry-eyre = { git = "https://github.com/auguwu/sentry-eyre" }
+sentry-tracing = { version = "0.36.0", features = ["backtrace"] }
 tokio = { version = "1.41.1", features = [
     "macros",
     "rt-multi-thread",
