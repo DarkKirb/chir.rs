@@ -1,6 +1,5 @@
 //! Binary serialization format
 
-use async_trait::async_trait;
 use axum_core::{
     extract::{FromRequest, Request},
     response::{IntoResponse, Response},
@@ -24,7 +23,6 @@ impl IntoResponse for APIError {
     }
 }
 
-#[async_trait]
 impl<T, S> FromRequest<S> for Bincode<T>
 where
     T: Decode,
