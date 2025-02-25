@@ -11309,7 +11309,7 @@ else
             ${
               if
                 hostPlatform.parsed.cpu.name == "aarch64"
-                && hostPlatform.parsed.cpu.significantByte == "littleEndian"
+                && hostPlatform.parsed.cpu.significantByte.name == "littleEndian"
                 && hostPlatform.parsed.vendor.name == "apple"
                 && (
                   hostPlatform.parsed.kernel.name == "ios"
@@ -11321,10 +11321,10 @@ else
                 ||
                   (
                     hostPlatform.parsed.cpu.name == "aarch64"
-                    && hostPlatform.parsed.cpu.significantByte == "littleEndian"
+                    && hostPlatform.parsed.cpu.significantByte.name == "littleEndian"
                     ||
                       (hostPlatform.parsed.cpu.name == "armv6l" || hostPlatform.parsed.cpu.name == "armv7l")
-                      && hostPlatform.parsed.cpu.significantByte == "littleEndian"
+                      && hostPlatform.parsed.cpu.significantByte.name == "littleEndian"
                   )
                   && (hostPlatform.parsed.kernel.name == "android" || hostPlatform.parsed.kernel.name == "linux")
               then
@@ -11342,7 +11342,7 @@ else
             ${
               if
                 hostPlatform.parsed.cpu.name == "aarch64"
-                && hostPlatform.parsed.cpu.significantByte == "littleEndian"
+                && hostPlatform.parsed.cpu.significantByte.name == "littleEndian"
                 && hostPlatform.parsed.kernel.name == "windows"
               then
                 "windows_sys"
@@ -11605,7 +11605,8 @@ else
               if
                 hostPlatform.parsed.kernel.name == "linux"
                 && (
-                  hostPlatform.parsed.cpu.significantByte == "littleEndian" || hostPlatform.parsed.cpu.name == "s390x"
+                  hostPlatform.parsed.cpu.significantByte.name == "littleEndian"
+                  || hostPlatform.parsed.cpu.name == "s390x"
                 )
                 && (
                   hostPlatform.parsed.cpu.name == "armv6l"
@@ -11620,7 +11621,8 @@ else
                   && !(
                     hostPlatform.parsed.kernel.name == "linux"
                     && (
-                      hostPlatform.parsed.cpu.significantByte == "littleEndian" || hostPlatform.parsed.cpu.name == "s390x"
+                      hostPlatform.parsed.cpu.significantByte.name == "littleEndian"
+                      || hostPlatform.parsed.cpu.name == "s390x"
                     )
                     && (
                       hostPlatform.parsed.cpu.name == "armv6l"
@@ -11644,7 +11646,8 @@ else
               if
                 hostPlatform.parsed.kernel.name == "linux"
                 && (
-                  hostPlatform.parsed.cpu.significantByte == "littleEndian" || hostPlatform.parsed.cpu.name == "s390x"
+                  hostPlatform.parsed.cpu.significantByte.name == "littleEndian"
+                  || hostPlatform.parsed.cpu.name == "s390x"
                 )
                 && (
                   hostPlatform.parsed.cpu.name == "armv6l"
@@ -11659,7 +11662,8 @@ else
                   && !(
                     hostPlatform.parsed.kernel.name == "linux"
                     && (
-                      hostPlatform.parsed.cpu.significantByte == "littleEndian" || hostPlatform.parsed.cpu.name == "s390x"
+                      hostPlatform.parsed.cpu.significantByte.name == "littleEndian"
+                      || hostPlatform.parsed.cpu.name == "s390x"
                     )
                     && (
                       hostPlatform.parsed.cpu.name == "armv6l"
@@ -11682,7 +11686,8 @@ else
               if
                 hostPlatform.parsed.kernel.name == "linux"
                 && (
-                  hostPlatform.parsed.cpu.significantByte == "littleEndian" || hostPlatform.parsed.cpu.name == "s390x"
+                  hostPlatform.parsed.cpu.significantByte.name == "littleEndian"
+                  || hostPlatform.parsed.cpu.name == "s390x"
                 )
                 && (
                   hostPlatform.parsed.cpu.name == "armv6l"
@@ -11697,7 +11702,8 @@ else
                   && !(
                     hostPlatform.parsed.kernel.name == "linux"
                     && (
-                      hostPlatform.parsed.cpu.significantByte == "littleEndian" || hostPlatform.parsed.cpu.name == "s390x"
+                      hostPlatform.parsed.cpu.significantByte.name == "littleEndian"
+                      || hostPlatform.parsed.cpu.name == "s390x"
                     )
                     && (
                       hostPlatform.parsed.cpu.name == "armv6l"
