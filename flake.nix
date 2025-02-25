@@ -91,7 +91,6 @@
                   }
                 ))
                 cargo2nix.packages.${system}.cargo2nix
-                rustfilt
                 gdb
                 sqlx-cli
                 cargo-expand
