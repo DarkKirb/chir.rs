@@ -12,7 +12,7 @@
     "inputs": {
         "chir-rs": {
             "type": "git",
-            "value": "https://git.chir.rs/darkkirb/chir.rs.git main",
+            "value": "https://github.com/DarkKirb/chir.rs.git main",
             "emailresponsible": false
         },
         "nixpkgs": {
@@ -21,21 +21,21 @@
             "emailresponsible": false
         },
         "prsJSON": {
-            "type": "giteapulls",
-            "value": "git.chir.rs darkkirb chir.rs",
+            "type": "githubpulls",
+            "value": "DarkKirb chir.rs",
             "emailresponsible": false
         },
-        "gitea_status_repo": {
+        "github_input": {
             "type": "string",
             "value": "chir-rs"
         },
-        "gitea_repo_owner": {
+        "github_repo_owner": {
             "type": "string",
-            "value": "darkkirb"
+            "value": "DarkKirb"
         },
-        "gitea_repo_name": {
+        "github_repo_name": {
             "type": "string",
-            "value": "chir-rs"
+            "value": "chir.rs"
         }
     }
 }
