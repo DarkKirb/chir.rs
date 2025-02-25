@@ -27,7 +27,7 @@ let
           };
           github_input = {
             type = "string";
-            value = "chir.rs";
+            value = "chir-rs";
           };
           github_repo_owner = {
             type = "string";
