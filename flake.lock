@@ -14,11 +14,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1737798823,
-        "narHash": "sha256-r0T7s1Jb2UXpEYJlP9Sxyir7FhyBckPm6epsB1PZ5Sc=",
+        "lastModified": 1740473782,
+        "narHash": "sha256-yXr3RzUUpB7tP2hK3J5B3HgoaFs3J5WPjVQnoyaX77Y=",
         "owner": "DarkKirb",
         "repo": "cargo2nix",
-        "rev": "29084d950413d317ce5c5901d5f5fd3510a38974",
+        "rev": "f05926c2a91997615dbaa51dcc5a4a433fb682c5",
         "type": "github"
       },
       "original": {

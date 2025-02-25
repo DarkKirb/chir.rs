@@ -45,4 +45,3 @@ in
 {
   jobsets = pkgs.writeText "jobsets.json" (builtins.toJSON jobsets);
 }
-
