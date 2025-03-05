@@ -33,7 +33,7 @@ args@{
   ignoreLockHash,
 }:
 let
-  nixifiedLockHash = "5b6917fa9f0a490c4970272409691895f2d4278033172e444be06ed82dff6e66";
+  nixifiedLockHash = "e609440831f1d0dfbbaba323966202516b64fcb4f97dbb14e4d2b1aa5ca27a03";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -772,7 +772,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             fastrand =
@@ -1002,7 +1002,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             fastrand =
@@ -1111,7 +1111,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             fastrand =
@@ -1213,7 +1213,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             http =
@@ -1283,7 +1283,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             http =
@@ -1420,7 +1420,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             crypto_bigint =
@@ -1535,7 +1535,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             crc32c =
@@ -1601,7 +1601,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             crc32fast =
@@ -1640,7 +1640,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             bytes_utils =
@@ -1756,7 +1756,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             fastrand =
@@ -1846,7 +1846,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             http_02x =
@@ -1899,7 +1899,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             bytes_utils =
@@ -2055,7 +2055,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             form_urlencoded =
@@ -2172,7 +2172,7 @@ else
           ];
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             futures_util =
@@ -2243,7 +2243,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             futures_core =
@@ -2869,15 +2869,15 @@ else
           ];
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" =
+    "registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" =
       overridableMkRustCrate
         (profileName: rec {
           name = "bytes";
-          version = "1.10.0";
+          version = "1.10.1";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "f61dac84819c6588b558454b194026eb1f09c293b9036ae9b159e74e73ab6cf9";
+            sha256 = "d71b6127be86fdcfddb610f7182ac57211d4b18a3e9c82eb2d17662f2227ad6a";
           };
           features = builtins.concatLists [
             [ "default" ]
@@ -2901,7 +2901,7 @@ else
           ];
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             either =
@@ -3086,7 +3086,7 @@ else
             inherit profileName;
           }).out;
         bytes =
-          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
             inherit profileName;
           }).out;
         chir_rs_config = (rustPackages."unknown".chir-rs-config."0.1.0" { inherit profileName; }).out;
@@ -3322,7 +3322,7 @@ else
       src = fetchCrateLocal (workspaceSrc + "/chir-rs-gemini");
       dependencies = {
         bytes =
-          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
             inherit profileName;
           }).out;
         chir_rs_castore = (rustPackages."unknown".chir-rs-castore."0.1.0" { inherit profileName; }).out;
@@ -3458,7 +3458,7 @@ else
             inherit profileName;
           }).out;
         bytes =
-          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
             inherit profileName;
           }).out;
         educe =
@@ -7022,7 +7022,7 @@ else
           };
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             fnv =
@@ -7319,7 +7319,7 @@ else
           };
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             fnv =
@@ -7349,7 +7349,7 @@ else
           ];
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             fnv =
@@ -7375,7 +7375,7 @@ else
           };
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             http =
@@ -7401,7 +7401,7 @@ else
           };
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             http =
@@ -7423,7 +7423,7 @@ else
           };
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             futures_util =
@@ -7508,7 +7508,7 @@ else
           ];
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             futures_channel =
@@ -7592,7 +7592,7 @@ else
           ];
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             futures_channel =
@@ -7782,7 +7782,7 @@ else
           ];
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             futures_channel =
@@ -10424,7 +10424,7 @@ else
           ];
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             pin_project_lite =
@@ -10482,7 +10482,7 @@ else
           ];
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             ${if false then "getrandom" else null} =
@@ -11077,7 +11077,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             ${if !(hostPlatform.parsed.cpu.name == "wasm32") then "futures_channel" else null} =
@@ -13341,7 +13341,7 @@ else
           ];
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             crc =
@@ -13612,7 +13612,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             crc =
@@ -14606,7 +14606,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             ${if hostPlatform.isUnix then "libc" else null} =
@@ -14771,7 +14771,7 @@ else
           ];
           dependencies = {
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             futures_core =
@@ -15001,7 +15001,7 @@ else
                 inherit profileName;
               }).out;
             bytes =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
             http =
