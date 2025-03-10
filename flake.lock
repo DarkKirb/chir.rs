@@ -14,16 +14,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1740473782,
-        "narHash": "sha256-yXr3RzUUpB7tP2hK3J5B3HgoaFs3J5WPjVQnoyaX77Y=",
+        "lastModified": 1741603680,
+        "narHash": "sha256-3gNRsVMXu9US3JpqMYRSgIL2Fs+MVuWjWhywFBTfFL4=",
         "owner": "DarkKirb",
         "repo": "cargo2nix",
-        "rev": "f05926c2a91997615dbaa51dcc5a4a433fb682c5",
+        "rev": "d6a578053d8c113dc08fb5f5d66f09b4e3a47488",
         "type": "github"
       },
       "original": {
         "owner": "DarkKirb",
-        "ref": "master",
+        "ref": "respect-config-toml",
         "repo": "cargo2nix",
         "type": "github"
       }

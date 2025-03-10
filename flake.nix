@@ -3,7 +3,7 @@
 
   inputs = {
     cargo2nix = {
-      url = "github:DarkKirb/cargo2nix/master";
+      url = "github:DarkKirb/cargo2nix/respect-config-toml";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.rust-overlay.follows = "rust-overlay";
@@ -56,10 +56,7 @@
             rustChannel = "nightly";
             rustVersion = "latest";
             packageOverrides = pkgs: pkgs.rustBuilder.overrides.all;
-            extraConfigToml = ''
-              [unstable]
-              bindeps = true
-            '';
+            cargoConfig.unstable.bindeps = true;
           };
           rustPkgs-wasm32 = pkgs-wasm32.rustBuilder.makePackageSet {
             packageFun = import ./Cargo.nix;
@@ -72,10 +69,7 @@
                 kernel.name = "unknown";
               };
             };
-            extraConfigToml = ''
-              [unstable]
-              bindeps = true
-            '';
+            cargoConfig.unstable.bindeps = true;
           };
         in
         rec {
