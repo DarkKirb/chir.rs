@@ -31,6 +31,7 @@ args@{
   lib,
   workspaceSrc,
   ignoreLockHash,
+  cargoConfig ? { },
 }:
 let
   nixifiedLockHash = "e609440831f1d0dfbbaba323966202516b64fcb4f97dbb14e4d2b1aa5ca27a03";
@@ -52,6 +53,15 @@ else
       decideProfile
       genDrvsByProfile
       ;
+    cargoConfig' =
+      if cargoConfig != { } then
+        cargoConfig
+      else if builtins.pathExists ./.cargo/config then
+        lib.importTOML ./.cargo/config
+      else if builtins.pathExists ./.cargo/config.toml then
+        lib.importTOML ./.cargo/config.toml
+      else
+        { };
     profilesByName = {
       release = builtins.fromTOML "codegen-units = 1\ndebug = \"full\"\nlto = true\nstrip = \"none\"\n";
     };
@@ -75,6 +85,7 @@ else
                 rustcLinkFlags
                 rustcBuildFlags
                 ;
+              cargoConfig = cargoConfig';
             }
             // (f profileName)
           )
