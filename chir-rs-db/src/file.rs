@@ -87,7 +87,7 @@ impl Encode for File {
     }
 }
 
-impl Decode for File {
+impl Decode<()> for File {
     fn decode<D: bincode::de::Decoder>(decoder: &mut D) -> std::result::Result<Self, DecodeError> {
         let id = u64::decode(decoder)?;
         let file_path = String::decode(decoder)?;

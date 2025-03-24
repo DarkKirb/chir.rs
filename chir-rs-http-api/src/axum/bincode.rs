@@ -25,7 +25,7 @@ impl IntoResponse for APIError {
 
 impl<T, S> FromRequest<S> for Bincode<T>
 where
-    T: Decode,
+    T: Decode<()>,
     S: Send + Sync,
 {
     type Rejection = APIError;
