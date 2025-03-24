@@ -1,23 +1,37 @@
+
 [package]
-name = "chir-rs-http-api"
+name = "chir-rs"
 version = "0.1.0"
 edition = "2021"
 
-[features]
-axum = ["dep:axum-core", "dep:bytes", "dep:mime"]
-
 [dependencies]
-axum-core = { version = "0.5.0", optional = true }
-b64-ct = "0.1.2"
-bincode = "2.0.0-rc.3"
-bytes = { version = "1.8.0", optional = true }
-educe = { version = "0.6.0", default-features = false, features = ["Debug"] }
+chir-rs-castore = { version = "0.1.0", path = "../chir-rs-castore" }
+chir-rs-config = { version = "0.1.0", path = "../chir-rs-config" }
+chir-rs-db = { version = "0.1.0", path = "../chir-rs-db" }
+chir-rs-gemini = { version = "0.1.0", path = "../chir-rs-gemini" }
+chir-rs-http = { version = "0.1.0", path = "../chir-rs-http" }
+color-eyre = { version = "0.6.3", features = ["issue-url"] }
+dotenvy = "0.15.7"
 eyre = "0.6.12"
-http = "1.1.0"
-mime = { version = "0.3.17", optional = true }
-serde = { version = "1.0.215", features = ["derive"] }
-thiserror = "2.0.3"
-tracing = { version = "0.1.40" }
+sentry = { version = "0.36.0", default-features = false, features = [
+    "backtrace",
+    "contexts",
+    "debug-images",
+    "panic",
+    "metrics",
+    "reqwest",
+    "rustls",
+] }
+sentry-eyre = { git = "https://github.com/auguwu/sentry-eyre" }
+sentry-tracing = { version = "0.36.0", features = ["backtrace"] }
+tokio = { version = "1.41.1", features = [
+    "macros",
+    "rt-multi-thread",
+    "signal",
+] }
+tracing = "0.1.41"
+tracing-error = "0.2.0"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter", "json"] }
 
 [lints.rust]
 deprecated-safe = "forbid"
