@@ -59,16 +59,22 @@
             cargoConfig.unstable.bindeps = true;
           };
           rustPkgs-wasm32 = pkgs-wasm32.rustBuilder.makePackageSet {
-            packageFun = import ./Cargo.nix;
+            packageFun =
+              attrs:
+              import ./Cargo.nix (
+                attrs
+                // {
+                  hostPlatform = attrs.hostPlatform // {
+                    parsed = attrs.hostPlatform.parsed // {
+                      kernel.name = "unknown";
+                    };
+                  };
+                }
+              );
             rustChannel = "nightly";
             rustVersion = "latest";
             packageOverrides = pkgs: pkgs.rustBuilder.overrides.all;
             target = "wasm32-unknown-unknown";
-            /*hostPlatform = pkgs-wasm32.stdenv.hostPlatform // {
-              parsed = pkgs-wasm32.stdenv.hostPlatform.parsed // {
-                kernel.name = "unknown";
-              };
-            };*/
             cargoConfig.unstable.bindeps = true;
           };
         in
