@@ -12,9 +12,3 @@ members = [
     "chir-rs-misc",
 ]
 resolver = "2"
-
-[profile.release]
-codegen-units = 1
-lto = true
-debug = "full"
-strip = "none"

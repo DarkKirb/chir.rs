@@ -63,7 +63,6 @@ else
       else
         { };
     profilesByName = {
-      release = builtins.fromTOML "codegen-units = 1\ndebug = \"full\"\nlto = true\nstrip = \"none\"\n";
     };
     rootFeatures' = expandFeatures rootFeatures;
     overridableMkRustCrate =
