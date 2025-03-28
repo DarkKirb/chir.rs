@@ -34,7 +34,7 @@ args@{
   cargoConfig ? { },
 }:
 let
-  nixifiedLockHash = "18887a781ed5bbdb63f0d0a3bb7b25643eebfc1e88d01fbbf6d4b89843d787e1";
+  nixifiedLockHash = "3aa7cd3ad133a0929ddd9c84545c6f6630dfbfc1624a56eef19eb8c0a46d688e";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -2175,15 +2175,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".axum."0.8.1" =
+    "registry+https://github.com/rust-lang/crates.io-index".axum."0.8.3" =
       overridableMkRustCrate
         (profileName: rec {
           name = "axum";
-          version = "0.8.1";
+          version = "0.8.3";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "6d6fd624c75e18b3b4c6b9caf42b1afe24437daaee904069137d8bab077be8b8";
+            sha256 = "de45108900e1f9b9242f7f2e254aa3e2c029c921c258fe9e6b4217eeebd54288";
           };
           features = builtins.concatLists [
             [ "default" ]
@@ -2199,7 +2199,7 @@ else
           ];
           dependencies = {
             axum_core =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".axum-core."0.5.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".axum-core."0.5.2" {
                 inherit profileName;
               }).out;
             bytes =
@@ -2305,15 +2305,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".axum-core."0.5.0" =
+    "registry+https://github.com/rust-lang/crates.io-index".axum-core."0.5.2" =
       overridableMkRustCrate
         (profileName: rec {
           name = "axum-core";
-          version = "0.5.0";
+          version = "0.5.2";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "df1362f362fd16024ae199c1970ce98f9661bf5ef94b9808fee734bc3698b733";
+            sha256 = "68464cd0412f486726fb3373129ef5d2993f90c34bc2bc1c1e9943b2f4fc7ca6";
           };
           features = builtins.concatLists [
             [ "tracing" ]
@@ -2323,8 +2323,8 @@ else
               (rustPackages."registry+https://github.com/rust-lang/crates.io-index".bytes."1.10.1" {
                 inherit profileName;
               }).out;
-            futures_util =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".futures-util."0.3.31" {
+            futures_core =
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".futures-core."0.3.31" {
                 inherit profileName;
               }).out;
             http =
@@ -2387,7 +2387,7 @@ else
           ];
           dependencies = {
             axum =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".axum."0.8.1" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".axum."0.8.3" {
                 inherit profileName;
               }).out;
             bytes =
@@ -3517,7 +3517,7 @@ else
             inherit profileName;
           }).out;
         axum =
-          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".axum."0.8.1" {
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".axum."0.8.3" {
             inherit profileName;
           }).out;
         axum_prometheus =
@@ -3594,7 +3594,7 @@ else
       ];
       dependencies = {
         axum_core =
-          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".axum-core."0.5.0" {
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".axum-core."0.5.2" {
             inherit profileName;
           }).out;
         b64_ct =
@@ -13166,7 +13166,7 @@ else
           ];
           dependencies = {
             axum =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".axum."0.8.1" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".axum."0.8.3" {
                 inherit profileName;
               }).out;
             http =
