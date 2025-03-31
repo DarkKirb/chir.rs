@@ -34,7 +34,7 @@ args@{
   cargoConfig ? { },
 }:
 let
-  nixifiedLockHash = "2aa0d14575e9d0538ea9f6d046a90a42446cc4c2fcd42340cc7053d03bf6b5c3";
+  nixifiedLockHash = "ee6807c5879170dbe22668eb2d478313bdf554ed5972b908bb90261bbf58e5b5";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -7797,7 +7797,7 @@ else
                 inherit profileName;
               }).out;
             socket2 =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".socket2."0.5.8" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".socket2."0.5.9" {
                 inherit profileName;
               }).out;
             tokio =
@@ -8068,7 +8068,7 @@ else
                 inherit profileName;
               }).out;
             socket2 =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".socket2."0.5.8" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".socket2."0.5.9" {
                 inherit profileName;
               }).out;
             tokio =
@@ -10794,7 +10794,7 @@ else
                 inherit profileName;
               }).out;
             socket2 =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".socket2."0.5.8" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".socket2."0.5.9" {
                 inherit profileName;
               }).out;
             thiserror =
@@ -10911,7 +10911,7 @@ else
                 inherit profileName;
               }).out;
             socket2 =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".socket2."0.5.8" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".socket2."0.5.9" {
                 inherit profileName;
               }).out;
             tracing =
@@ -13757,15 +13757,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".socket2."0.5.8" =
+    "registry+https://github.com/rust-lang/crates.io-index".socket2."0.5.9" =
       overridableMkRustCrate
         (profileName: rec {
           name = "socket2";
-          version = "0.5.8";
+          version = "0.5.9";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "c970269d99b64e60ec3bd6ad27270092a5394c4e309314b18ae3fe575695fbe8";
+            sha256 = "4f5fd57c80058a56cf5c777ab8a126398ece8e442983605d280a44ce79d0edef";
           };
           features = builtins.concatLists [
             [ "all" ]
@@ -15218,7 +15218,7 @@ else
                 inherit profileName;
               }).out;
             socket2 =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".socket2."0.5.8" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".socket2."0.5.9" {
                 inherit profileName;
               }).out;
             tokio_macros =
