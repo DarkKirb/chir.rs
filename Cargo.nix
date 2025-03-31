@@ -34,7 +34,7 @@ args@{
   cargoConfig ? { },
 }:
 let
-  nixifiedLockHash = "ee6807c5879170dbe22668eb2d478313bdf554ed5972b908bb90261bbf58e5b5";
+  nixifiedLockHash = "aaba1da9859afc59978741dba1ce868c896e7b1e0a2998feaab6efb3e308a01e";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -2849,15 +2849,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".blake3."1.7.0" =
+    "registry+https://github.com/rust-lang/crates.io-index".blake3."1.8.0" =
       overridableMkRustCrate
         (profileName: rec {
           name = "blake3";
-          version = "1.7.0";
+          version = "1.8.0";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "b17679a8d69b6d7fd9cd9801a536cec9fa5e5970b69f9d4747f70b39b031f5e7";
+            sha256 = "34a796731680be7931955498a16a10b2270c7762963d5d570fdbfe02dcbf314f";
           };
           features = builtins.concatLists [
             [ "default" ]
@@ -3233,7 +3233,7 @@ else
             inherit profileName;
           }).out;
         blake3 =
-          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".blake3."1.7.0" {
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".blake3."1.8.0" {
             inherit profileName;
           }).out;
         bytes =
@@ -3355,7 +3355,7 @@ else
             inherit profileName;
           }).out;
         blake3 =
-          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".blake3."1.7.0" {
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".blake3."1.8.0" {
             inherit profileName;
           }).out;
         chir_rs_http_api = (rustPackages."unknown".chir-rs-http-api."0.1.0" { inherit profileName; }).out;
