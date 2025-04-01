@@ -34,7 +34,7 @@ args@{
   cargoConfig ? { },
 }:
 let
-  nixifiedLockHash = "23e9cc9da3e4f163cbc2b32f4f857e05224e316671205a5952a24c7d335344d6";
+  nixifiedLockHash = "aaf2317423ce35792459666294324fe11e22dfb6a71c25eb60d8bfdfea5db1ad";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -3077,7 +3077,7 @@ else
           ];
           dependencies = {
             jobserver =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".jobserver."0.1.32" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".jobserver."0.1.33" {
                 inherit profileName;
               }).out;
             ${if hostPlatform.isUnix then "libc" else null} =
@@ -3277,7 +3277,7 @@ else
           }).out;
         chir_rs_http_api = (rustPackages."unknown".chir-rs-http-api."0.1.0" { inherit profileName; }).out;
         clap =
-          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap."4.5.34" {
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap."4.5.35" {
             inherit profileName;
           }).out;
         color_eyre =
@@ -3814,15 +3814,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".clap."4.5.34" =
+    "registry+https://github.com/rust-lang/crates.io-index".clap."4.5.35" =
       overridableMkRustCrate
         (profileName: rec {
           name = "clap";
-          version = "4.5.34";
+          version = "4.5.35";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "e958897981290da2a852763fe9cdb89cd36977a5d729023127095fa94d95e2ff";
+            sha256 = "d8aa86934b44c19c50f87cc2790e19f54f7a67aedb64101c2e1a2e5ecfb73944";
           };
           features = builtins.concatLists [
             [ "color" ]
@@ -3836,7 +3836,7 @@ else
           ];
           dependencies = {
             clap_builder =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap_builder."4.5.34" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap_builder."4.5.35" {
                 inherit profileName;
               }).out;
             clap_derive =
@@ -3846,15 +3846,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".clap_builder."4.5.34" =
+    "registry+https://github.com/rust-lang/crates.io-index".clap_builder."4.5.35" =
       overridableMkRustCrate
         (profileName: rec {
           name = "clap_builder";
-          version = "4.5.34";
+          version = "4.5.35";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "83b0f35019843db2160b5bb19ae09b4e6411ac33fc6a712003c33e03090e2489";
+            sha256 = "2414dbb2dd0695280da6ea9261e327479e9d37b0630f6b53ba2a11c60c679fd9";
           };
           features = builtins.concatLists [
             [ "color" ]
@@ -8877,17 +8877,21 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".jobserver."0.1.32" =
+    "registry+https://github.com/rust-lang/crates.io-index".jobserver."0.1.33" =
       overridableMkRustCrate
         (profileName: rec {
           name = "jobserver";
-          version = "0.1.32";
+          version = "0.1.33";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "48d1dbcbbeb6a7fec7e059840aa538bd62aaccf972c7346c4d9d2059312853d0";
+            sha256 = "38f262f097c174adebe41eb73d66ae9c06b2844fb0da69969647bbddd9b0538a";
           };
           dependencies = {
+            ${if hostPlatform.isWindows then "getrandom" else null} =
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".getrandom."0.3.2" {
+                inherit profileName;
+              }).out;
             ${if hostPlatform.isUnix then "libc" else null} =
               (rustPackages."registry+https://github.com/rust-lang/crates.io-index".libc."0.2.171" {
                 inherit profileName;
@@ -12072,15 +12076,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".rustix."1.0.3" =
+    "registry+https://github.com/rust-lang/crates.io-index".rustix."1.0.5" =
       overridableMkRustCrate
         (profileName: rec {
           name = "rustix";
-          version = "1.0.3";
+          version = "1.0.5";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "e56a18552996ac8d29ecc3b190b4fdbb2d91ca4ec396de7bbffaf43f3d637e96";
+            sha256 = "d97817398dd4bb2e6da002002db259209759911da105da92bec29ccb12cf58bf";
           };
           features = builtins.concatLists [
             [ "alloc" ]
@@ -14836,7 +14840,7 @@ else
                 inherit profileName;
               }).out;
             ${if hostPlatform.isUnix || hostPlatform.parsed.kernel.name == "wasi" then "rustix" else null} =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".rustix."1.0.3" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".rustix."1.0.5" {
                 inherit profileName;
               }).out;
             ${if hostPlatform.isWindows then "windows_sys" else null} =
@@ -16592,7 +16596,7 @@ else
                 inherit profileName;
               }).out;
             clap =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap."4.5.34" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap."4.5.35" {
                 inherit profileName;
               }).out;
             env_logger =
