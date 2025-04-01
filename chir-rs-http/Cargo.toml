@@ -26,7 +26,7 @@ rusty_paseto = { version = "0.7.1", default-features = false, features = [
     "batteries_included",
     "v4_local",
 ] }
-sentry-tower = { version = "0.36.0", features = ["axum", "axum-matched-path"] }
+sentry-tower = { version = "0.37.0", features = ["axum", "axum-matched-path"] }
 tokio = { version = "1.41.1", features = ["fs", "net"] }
 tokio-util = { version = "0.7.13", features = ["compat"] }
 tower-http = { version = "0.6.2", features = ["trace"] }
