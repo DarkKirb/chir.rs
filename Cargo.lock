@@ -1019,38 +1019,45 @@ dependencies = [
 name = "chir-rs"
 version = "0.1.0"
 dependencies = [
- "chir-rs-castore",
- "chir-rs-config",
- "chir-rs-db",
- "chir-rs-gemini",
- "chir-rs-http",
+ "argon2",
+ "aws-config",
+ "aws-sdk-s3",
+ "axum",
+ "axum-prometheus",
+ "b64-ct",
+ "bincode 2.0.1",
+ "blake3",
+ "bytes",
+ "chir-rs-common",
+ "chrono",
  "color-eyre",
+ "dashmap",
  "dotenvy",
+ "educe",
  "eyre",
+ "futures",
+ "mime",
+ "rand 0.9.0",
+ "rustls 0.23.25",
+ "rusty_paseto",
  "sentry",
+ "sentry-core",
  "sentry-eyre",
+ "sentry-tower",
  "sentry-tracing",
+ "serde",
+ "sqlx",
+ "stretto",
  "tokio",
+ "tokio-rustls 0.26.2",
+ "tokio-util",
+ "toml",
+ "tower-http",
  "tracing",
  "tracing-error",
  "tracing-subscriber",
-]
-
-[[package]]
-name = "chir-rs-castore"
-version = "0.1.0"
-dependencies = [
- "aws-config",
- "aws-sdk-s3",
- "blake3",
- "bytes",
- "chir-rs-config",
- "chir-rs-misc",
- "educe",
- "eyre",
- "stretto",
- "tokio",
- "tracing",
+ "unicode-normalization",
+ "url",
 ]
 
 [[package]]
@@ -1058,7 +1065,7 @@ name = "chir-rs-client"
 version = "0.1.0"
 dependencies = [
  "bincode 2.0.1",
- "chir-rs-http-api",
+ "chir-rs-common",
  "clap",
  "color-eyre",
  "dotenvy",
@@ -1072,32 +1079,22 @@ dependencies = [
 ]
 
 [[package]]
-name = "chir-rs-config"
+name = "chir-rs-common"
 version = "0.1.0"
 dependencies = [
- "eyre",
- "sentry-core",
- "serde",
- "toml",
-]
-
-[[package]]
-name = "chir-rs-db"
-version = "0.1.0"
-dependencies = [
+ "axum-core",
+ "b64-ct",
+ "base64 0.22.1",
  "bincode 2.0.1",
- "blake3",
- "chir-rs-http-api",
- "chir-rs-misc",
+ "bytes",
  "chrono",
- "dashmap",
+ "educe",
  "eyre",
- "futures",
+ "http 1.3.1",
  "mime",
  "rand 0.9.0",
  "serde",
- "sqlx",
- "tokio",
+ "thiserror 2.0.12",
  "tracing",
 ]
 
@@ -1106,7 +1103,7 @@ name = "chir-rs-fe"
 version = "0.1.0"
 dependencies = [
  "bincode 2.0.1",
- "chir-rs-http-api",
+ "chir-rs-common",
  "console_error_panic_hook",
  "eyre",
  "gloo-net 0.6.0",
@@ -1120,75 +1117,6 @@ dependencies = [
  "web-sys",
  "yew",
  "yew-router",
-]
-
-[[package]]
-name = "chir-rs-gemini"
-version = "0.1.0"
-dependencies = [
- "bytes",
- "chir-rs-castore",
- "chir-rs-config",
- "chir-rs-db",
- "eyre",
- "rustls 0.23.25",
- "tokio",
- "tokio-rustls 0.26.2",
- "tracing",
- "url",
-]
-
-[[package]]
-name = "chir-rs-http"
-version = "0.1.0"
-dependencies = [
- "argon2",
- "axum",
- "axum-prometheus",
- "b64-ct",
- "bincode 2.0.1",
- "chir-rs-castore",
- "chir-rs-config",
- "chir-rs-db",
- "chir-rs-http-api",
- "chir-rs-misc",
- "chrono",
- "eyre",
- "futures",
- "mime",
- "rusty_paseto",
- "sentry-tower",
- "tokio",
- "tokio-util",
- "tower-http",
- "tracing",
- "unicode-normalization",
-]
-
-[[package]]
-name = "chir-rs-http-api"
-version = "0.1.0"
-dependencies = [
- "axum-core",
- "b64-ct",
- "bincode 2.0.1",
- "bytes",
- "educe",
- "eyre",
- "http 1.3.1",
- "mime",
- "serde",
- "thiserror 2.0.12",
- "tracing",
-]
-
-[[package]]
-name = "chir-rs-misc"
-version = "0.1.0"
-dependencies = [
- "base64 0.22.1",
- "chrono",
- "rand 0.9.0",
 ]
 
 [[package]]
@@ -1500,6 +1428,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "curve25519-dalek"
+version = "4.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "97fb8b7c4503de7d6ae7b42ab72a5a59857b4c937ec27a3d4539dba95b5ab2be"
+dependencies = [
+ "cfg-if",
+ "cpufeatures",
+ "curve25519-dalek-derive",
+ "digest",
+ "fiat-crypto",
+ "rustc_version",
+ "subtle",
+ "zeroize",
+]
+
+[[package]]
+name = "curve25519-dalek-derive"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f46882e17999c6cc590af592290432be3bce0428cb0d5f8b6715e4dc7b383eb3"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.100",
+]
+
+[[package]]
 name = "dashmap"
 version = "6.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1598,6 +1553,30 @@ dependencies = [
  "elliptic-curve",
  "rfc6979",
  "signature 1.6.4",
+]
+
+[[package]]
+name = "ed25519"
+version = "2.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "115531babc129696a58c64a4fef0a8bf9e9698629fb97e9e40767d235cfbcd53"
+dependencies = [
+ "pkcs8 0.10.2",
+ "signature 2.2.0",
+]
+
+[[package]]
+name = "ed25519-dalek"
+version = "2.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4a3daa8e81a3963a60642bcc1f90a670680bd4a77535faa384e9d1c79d620871"
+dependencies = [
+ "curve25519-dalek",
+ "ed25519",
+ "serde",
+ "sha2",
+ "subtle",
+ "zeroize",
 ]
 
 [[package]]
@@ -1775,6 +1754,12 @@ dependencies = [
  "rand_core 0.6.4",
  "subtle",
 ]
+
+[[package]]
+name = "fiat-crypto"
+version = "0.2.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "28dea519a9695b9977216879a3ebfddf92f1c08c05d984f8996aecd6ecdc811d"
 
 [[package]]
 name = "filetime"
@@ -4208,6 +4193,7 @@ dependencies = [
  "blake2",
  "chacha20",
  "digest",
+ "ed25519-dalek",
  "erased-serde",
  "hex",
  "iso8601",
