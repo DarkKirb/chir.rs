@@ -124,7 +124,7 @@
                     mkdir $out
                     wasm-opt $src/lib/chir_rs_fe.wasm -o chir_rs_fe.wasm
                     wasm-bindgen chir_rs_fe.wasm --out-dir $out --target web
-                    cp ${./chir-rs-fe/index.html} $out/index.html
+                    cp ${./crates/chir-rs-fe/index.html} $out/index.html
                   '';
                 };
             };
