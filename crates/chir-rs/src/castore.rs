@@ -23,6 +23,7 @@ use tokio::{
     task::spawn_blocking,
 };
 use tracing::{error, info, instrument};
+use tokio::time::Duration;
 
 use crate::{
     config::ChirRs,
@@ -310,17 +311,22 @@ impl CaStore {
 
     /// Get all of the files stored
     async fn get_all_files(&self) -> Result<Vec<String>> {
-        let mut marker = None;
-        let files = Vec::new();
+        let mut marker: Option<String> = None;
+        let mut files = Vec::new();
         loop {
-            let objects = self
+            let mut objects = self
                 .client
                 .list_objects()
-                .bucket(&self.bucket)
-                .marker(marker)
-                .send()
+                .bucket(&*self.bucket);
+
+            if let Some(marker) = &marker {
+                objects = objects.marker(marker.clone());
+            };
+
+            let objects = objects.send()
                 .await?;
-            marker = objects.marker();
+
+            marker = objects.marker().map(|v| v.to_string());
             files.extend(
                 objects
                     .contents()
@@ -344,7 +350,7 @@ impl CaStore {
                 let hash = lexicographic_base64::decode(&file)?;
                 let mut hash2 = [0u8; 32];
                 if hash.len() == 32 {
-                    hash.copy_from_slice(&hash);
+                    hash2.copy_from_slice(&hash);
                     let hash = Hash::from_bytes(hash2);
                     File::is_used(db, hash).await.unwrap_or(true)
                 } else {
@@ -355,12 +361,13 @@ impl CaStore {
                 info!("Deleting unused file {file}");
                 self.client
                     .delete_object()
-                    .bucket(&self.bucket)
+                    .bucket(&*self.bucket)
                     .key(file)
                     .send()
                     .await?;
             }
         }
+        Ok(())
     }
 
     pub async fn clean_task(self, db: Database) {

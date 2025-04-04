@@ -105,9 +105,7 @@ fn main() -> Result<()> {
         .block_on(async move {
             let cfg = Arc::new(cfg);
             let db = db::open_database(&cfg.database.path).await?;
-            let db2 = db.clone();
             let castore = castore::CaStore::new(&cfg).await?;
-            let castore2 = castore.clone();
             let cfg1 = Arc::clone(&cfg);
             let cfg2 = Arc::clone(&cfg);
             let db1 = db.clone();
@@ -116,7 +114,7 @@ fn main() -> Result<()> {
             let castore2 = castore.clone();
             let jobs = [
                 tokio::spawn(db::session::expire_sessions_job(db.clone())),
-                tokio::spawn(castore2.clean_task(db2)),
+                tokio::spawn(castore.clone().clean_task(db.clone())),
                 tokio::spawn(async move {
                     if let Err(e) = http::main(cfg1, db1, castore1).await {
                         error!("Failing to start HTTP Server: {e:?}");
