@@ -1,37 +1,36 @@
+
 [package]
-name = "chir-rs-http"
+name = "chir-rs"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-argon2 = "0.5.3"
-axum = { version = "0.8.0", features = ["tracing"] }
-axum-prometheus = "0.8.0"
-b64-ct = "0.1.2"
-bincode = "2.0.0-rc.3"
 chir-rs-castore = { version = "0.1.0", path = "../chir-rs-castore" }
 chir-rs-config = { version = "0.1.0", path = "../chir-rs-config" }
 chir-rs-db = { version = "0.1.0", path = "../chir-rs-db" }
-chir-rs-http-api = { version = "0.1.0", path = "../chir-rs-http-api", features = [
-    "axum",
-] }
-chir-rs-misc = { version = "0.1.0", path = "../chir-rs-misc", features = [
-    "base64",
-] }
-chrono = "0.4.38"
+chir-rs-gemini = { version = "0.1.0", path = "../chir-rs-gemini" }
+chir-rs-http = { version = "0.1.0", path = "../chir-rs-http" }
+color-eyre = { version = "0.6.3", features = ["issue-url"] }
+dotenvy = "0.15.7"
 eyre = "0.6.12"
-futures = "0.3.31"
-mime = "0.3.17"
-rusty_paseto = { version = "0.7.1", default-features = false, features = [
-    "batteries_included",
-    "v4_local",
+sentry = { version = "0.37.0", default-features = false, features = [
+    "backtrace",
+    "contexts",
+    "debug-images",
+    "panic",
+    "reqwest",
+    "rustls",
 ] }
-sentry-tower = { version = "0.37.0", features = ["axum", "axum-matched-path"] }
-tokio = { version = "1.41.1", features = ["fs", "net"] }
-tokio-util = { version = "0.7.13", features = ["compat"] }
-tower-http = { version = "0.6.2", features = ["trace"] }
-tracing = "0.1.40"
-unicode-normalization = "0.1.24"
+sentry-eyre = { git = "https://github.com/auguwu/sentry-eyre" }
+sentry-tracing = { version = "0.37.0", features = ["backtrace"] }
+tokio = { version = "1.41.1", features = [
+    "macros",
+    "rt-multi-thread",
+    "signal",
+] }
+tracing = "0.1.41"
+tracing-error = "0.2.0"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter", "json"] }
 
 [lints.rust]
 deprecated-safe = "forbid"

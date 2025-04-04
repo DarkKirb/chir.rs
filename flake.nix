@@ -3,7 +3,7 @@
 
   inputs = {
     cargo2nix = {
-      url = "github:DarkKirb/cargo2nix/master";
+      url = "github:cargo2nix/cargo2nix/main";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.rust-overlay.follows = "rust-overlay";
@@ -56,26 +56,24 @@
             rustChannel = "nightly";
             rustVersion = "latest";
             packageOverrides = pkgs: pkgs.rustBuilder.overrides.all;
-            extraConfigToml = ''
-              [unstable]
-              bindeps = true
-            '';
           };
           rustPkgs-wasm32 = pkgs-wasm32.rustBuilder.makePackageSet {
-            packageFun = import ./Cargo.nix;
+            packageFun =
+              attrs:
+              import ./Cargo.nix (
+                attrs
+                // {
+                  hostPlatform = attrs.hostPlatform // {
+                    parsed = attrs.hostPlatform.parsed // {
+                      kernel.name = "unknown";
+                    };
+                  };
+                }
+              );
             rustChannel = "nightly";
             rustVersion = "latest";
             packageOverrides = pkgs: pkgs.rustBuilder.overrides.all;
             target = "wasm32-unknown-unknown";
-            hostPlatform = pkgs-wasm32.stdenv.hostPlatform // {
-              parsed = pkgs-wasm32.stdenv.hostPlatform.parsed // {
-                kernel.name = "unknown";
-              };
-            };
-            extraConfigToml = ''
-              [unstable]
-              bindeps = true
-            '';
           };
         in
         rec {

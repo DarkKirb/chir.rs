@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-axum = ["axum-core", "bytes", "mime"]
+axum = ["dep:axum-core", "dep:bytes", "dep:mime"]
 
 [dependencies]
 axum-core = { version = "0.5.0", optional = true }
