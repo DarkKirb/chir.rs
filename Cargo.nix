@@ -28,7 +28,7 @@ args@{
   cargoConfig ? { },
 }:
 let
-  nixifiedLockHash = "fdf6eb0101ee62344716e2e7a415d3c3234655b421c07a3ce0ecf598190c1e6d";
+  nixifiedLockHash = "423f238b86eac7291d3abfdc34428107b55b0978ce2f071bfd4a14b56529c95c";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -3375,6 +3375,7 @@ else
       src = fetchCrateLocal workspaceSrc;
       features = builtins.concatLists [
         [ "axum" ]
+        [ "id_generator" ]
       ];
       dependencies = {
         axum_core =
@@ -3454,6 +3455,10 @@ else
           ).out;
         eyre =
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".eyre."0.6.12" {
+            inherit profileName;
+          }).out;
+        getrandom =
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".getrandom."0.3.2" {
             inherit profileName;
           }).out;
         gloo_net =

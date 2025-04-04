@@ -1106,6 +1106,7 @@ dependencies = [
  "chir-rs-common",
  "console_error_panic_hook",
  "eyre",
+ "getrandom 0.3.2",
  "gloo-net 0.6.0",
  "gloo-storage 0.3.0",
  "tracing",

@@ -1,9 +1,9 @@
 //! Lexicographic base64 alphabet
 
 use base64::{
-    Engine,
     alphabet::Alphabet,
-    engine::{GeneralPurpose, general_purpose::NO_PAD},
+    engine::{general_purpose::NO_PAD, GeneralPurpose},
+    Engine,
 };
 
 /// A lexicographic URL-safe alphabet.
