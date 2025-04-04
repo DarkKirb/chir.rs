@@ -1,14 +1,54 @@
 [workspace]
 members = [
-    "chir-rs",
-    "chir-rs-castore",
-    "chir-rs-client",
-    "chir-rs-config",
-    "chir-rs-db",
-    "chir-rs-fe",
-    "chir-rs-gemini",
-    "chir-rs-http",
-    "chir-rs-http-api",
-    "chir-rs-misc",
+    "crates/*",
 ]
 resolver = "2"
+
+[workspace.lints.rust]
+deprecated-safe = "deny"
+elided_lifetimes_in_paths = "warn"
+explicit_outlives_requirements = "warn"
+impl-trait-overcaptures = "warn"
+keyword-idents-2024 = "deny"
+let-underscore-drop = "warn"
+macro-use-extern-crate = "deny"
+meta-variable-misuse = "deny"
+missing-abi = "deny"
+missing-copy-implementations = "warn"
+missing-debug-implementations = "deny"
+missing-docs = "warn"
+missing-unsafe-on-extern = "deny"
+non-local-definitions = "warn"
+redundant-lifetimes = "warn"
+single-use-lifetimes = "warn"
+trivial-casts = "warn"
+trivial-numeric-casts = "warn"
+unit-bindings = "deny"
+unnameable-types = "warn"
+unreachable-pub = "warn"
+unsafe-code = "deny"
+unused-crate-dependencies = "warn"
+unused-extern-crates = "warn"
+unused-import-braces = "warn"
+unused-lifetimes = "warn"
+unused-macro-rules = "warn"
+unused-qualifications = "warn"
+variant-size-differences = "warn"
+
+[workspace.lints.clippy]
+nursery = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+module-name-repetitions = "allow"
+alloc-instead-of-core = "warn"
+allow-attributes-without-reason = "deny"
+assertions-on-result-states = "deny"
+clone-on-ref-ptr = "warn"
+empty-drop = "warn"
+expect-used = "deny"
+inline-asm-x86-att-syntax = "deny"
+missing-docs-in-private-items = "warn"
+panic = "deny"
+panic-in-result-fn = "deny"
+rc-buffer = "warn"
+rc-mutex = "deny"
+unwrap-used = "deny"
