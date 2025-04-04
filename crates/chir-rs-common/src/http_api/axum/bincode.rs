@@ -6,7 +6,7 @@ use axum_core::{
 };
 use bincode::{Decode, Encode};
 use bytes::{BufMut as _, Bytes, BytesMut};
-use http::{HeaderValue, StatusCode, header::CONTENT_TYPE};
+use http::{header::CONTENT_TYPE, HeaderValue, StatusCode};
 use tracing::error;
 
 use crate::http_api::errors::APIError;

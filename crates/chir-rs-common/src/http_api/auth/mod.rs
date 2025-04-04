@@ -2,7 +2,7 @@
 use b64_ct::{FromBase64, ToBase64, URL_SAFE};
 use bincode::{Decode, Encode};
 use educe::Educe;
-use eyre::{Result, bail, eyre};
+use eyre::{bail, eyre, Result};
 use serde::{Deserialize, Serialize};
 use std::{
     collections::HashSet,
