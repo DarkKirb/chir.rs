@@ -13,6 +13,8 @@ use bytes::Bytes;
 use chir_rs_common::{id_generator, lexicographic_base64};
 use educe::Educe;
 use eyre::{Context as _, Result};
+use futures::Stream;
+use rand::Rng;
 use stretto::AsyncCache;
 use tokio::{
     fs::read_to_string,
@@ -20,9 +22,12 @@ use tokio::{
     sync::Mutex,
     task::spawn_blocking,
 };
-use tracing::{info, instrument};
+use tracing::{error, info, instrument};
 
-use crate::config::ChirRs;
+use crate::{
+    config::ChirRs,
+    db::{file::File, Database},
+};
 
 /// Loads the AWS SDK config from the configuration file
 async fn get_aws_config(config: &Arc<ChirRs>) -> Result<SdkConfig> {
@@ -301,5 +306,73 @@ impl CaStore {
     pub async fn download(&self, hash: Hash) -> Result<(Option<i64>, SdkBody)> {
         let (length, body) = self.download_bytestream(hash).await?;
         Ok((length, body.into_inner()))
+    }
+
+    /// Get all of the files stored
+    async fn get_all_files(&self) -> Result<Vec<String>> {
+        let mut marker = None;
+        let files = Vec::new();
+        loop {
+            let objects = self
+                .client
+                .list_objects()
+                .bucket(&self.bucket)
+                .marker(marker)
+                .send()
+                .await?;
+            marker = objects.marker();
+            files.extend(
+                objects
+                    .contents()
+                    .into_iter()
+                    .map(|o| o.key())
+                    .filter_map(|v| v)
+                    .map(ToOwned::to_owned),
+            );
+            if marker.is_none() {
+                break;
+            }
+        }
+        Ok(files)
+    }
+
+    async fn clean_once(&self, db: &Database) -> Result<()> {
+        for file in self.get_all_files().await? {
+            let should_delete = if file.contains('/') {
+                true
+            } else {
+                let hash = lexicographic_base64::decode(&file)?;
+                let mut hash2 = [0u8; 32];
+                if hash.len() == 32 {
+                    hash.copy_from_slice(&hash);
+                    let hash = Hash::from_bytes(hash2);
+                    File::is_used(db, hash).await.unwrap_or(true)
+                } else {
+                    true
+                }
+            };
+            if should_delete {
+                info!("Deleting unused file {file}");
+                self.client
+                    .delete_object()
+                    .bucket(&self.bucket)
+                    .key(file)
+                    .send()
+                    .await?;
+            }
+        }
+    }
+
+    pub async fn clean_task(self, db: Database) {
+        info!("Starting CA clean thread");
+        loop {
+            info!("Deleting unused objects");
+            if let Err(e) = self.clean_once(&db).await {
+                error!("Failed to delete unused files: {e:?}");
+            }
+            let secs_to_sleep = rand::rng().random_range(1800..=5400);
+            info!("Done. Sleeping for {secs_to_sleep}s");
+            tokio::time::sleep(Duration::from_secs(secs_to_sleep)).await;
+        }
     }
 }
