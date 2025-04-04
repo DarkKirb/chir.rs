@@ -16,6 +16,7 @@ use eyre::{Context as _, Result};
 use futures::Stream;
 use rand::Rng;
 use stretto::AsyncCache;
+use tokio::time::Duration;
 use tokio::{
     fs::read_to_string,
     io::{AsyncRead, AsyncReadExt},
@@ -23,7 +24,6 @@ use tokio::{
     task::spawn_blocking,
 };
 use tracing::{error, info, instrument};
-use tokio::time::Duration;
 
 use crate::{
     config::ChirRs,
@@ -314,19 +314,15 @@ impl CaStore {
         let mut marker: Option<String> = None;
         let mut files = Vec::new();
         loop {
-            let mut objects = self
-                .client
-                .list_objects()
-                .bucket(&*self.bucket);
+            let mut objects = self.client.list_objects().bucket(&*self.bucket);
 
             if let Some(marker) = &marker {
                 objects = objects.marker(marker.clone());
             };
 
-            let objects = objects.send()
-                .await?;
+            let objects = objects.send().await?;
 
-            marker = objects.marker().map(|v| v.to_string());
+            marker = objects.next_marker().map(|v| v.to_string());
             files.extend(
                 objects
                     .contents()
@@ -352,7 +348,7 @@ impl CaStore {
                 if hash.len() == 32 {
                     hash2.copy_from_slice(&hash);
                     let hash = Hash::from_bytes(hash2);
-                    File::is_used(db, hash).await.unwrap_or(true)
+                    !File::is_used(db, hash).await.unwrap_or(false)
                 } else {
                     true
                 }

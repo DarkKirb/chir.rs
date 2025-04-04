@@ -28,7 +28,7 @@ args@{
   cargoConfig ? { },
 }:
 let
-  nixifiedLockHash = "423f238b86eac7291d3abfdc34428107b55b0978ce2f071bfd4a14b56529c95c";
+  nixifiedLockHash = "3112c786158178e8566f7ad54892860ad9833cb344b912f14f60baf7ce1fe77c";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -929,7 +929,7 @@ else
                 profileName = "__noProfile";
               }).out;
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.17" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.18" {
                 profileName = "__noProfile";
               }).out;
             cmake =
@@ -2529,7 +2529,7 @@ else
           };
           buildDependencies = {
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.17" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.18" {
                 profileName = "__noProfile";
               }).out;
           };
@@ -2881,7 +2881,7 @@ else
           };
           buildDependencies = {
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.17" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.18" {
                 profileName = "__noProfile";
               }).out;
           };
@@ -3050,15 +3050,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".cc."1.2.17" =
+    "registry+https://github.com/rust-lang/crates.io-index".cc."1.2.18" =
       overridableMkRustCrate
         (profileName: rec {
           name = "cc";
-          version = "1.2.17";
+          version = "1.2.18";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "1fcb57c740ae1daf453ae85f16e37396f672b039e00d9d866e07ddb24e328e3a";
+            sha256 = "525046617d8376e3db1deffb079e91cef90a89fc3ca5c185bbf8c9ecdd15cd5c";
           };
           features = builtins.concatLists [
             [ "parallel" ]
@@ -3469,6 +3469,10 @@ else
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".gloo-storage."0.3.0" {
             inherit profileName;
           }).out;
+        serde =
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".serde."1.0.219" {
+            inherit profileName;
+          }).out;
         tracing =
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".tracing."0.1.41" {
             inherit profileName;
@@ -3778,7 +3782,7 @@ else
           };
           dependencies = {
             cc =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.17" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.18" {
                 inherit profileName;
               }).out;
           };
@@ -5329,7 +5333,7 @@ else
           };
           buildDependencies = {
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.17" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.18" {
                 profileName = "__noProfile";
               }).out;
           };
@@ -8164,7 +8168,7 @@ else
           };
           buildDependencies = {
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.17" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.18" {
                 profileName = "__noProfile";
               }).out;
           };
@@ -9078,7 +9082,7 @@ else
           ];
           buildDependencies = {
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.17" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.18" {
                 profileName = "__noProfile";
               }).out;
             pkg_config =
@@ -11685,7 +11689,7 @@ else
           };
           buildDependencies = {
             cc =
-              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.17" {
+              (buildRustPackages."registry+https://github.com/rust-lang/crates.io-index".cc."1.2.18" {
                 profileName = "__noProfile";
               }).out;
           };
