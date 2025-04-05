@@ -14,11 +14,11 @@ use tracing_subscriber::{
     fmt::format::JsonFields, layer::SubscriberExt as _, util::SubscriberInitExt as _, Layer,
 };
 
-mod castore;
-mod config;
-mod db;
-mod gemini;
-mod http;
+pub mod castore;
+pub mod config;
+pub mod db;
+pub mod gemini;
+pub mod http;
 
 /// Initializes logging for the application
 fn init_logging(cfg: &ChirRs) -> Result<()> {

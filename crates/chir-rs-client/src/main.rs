@@ -1,3 +1,5 @@
+//! Standalone API racclient for chir-rs
+
 use std::{collections::HashSet, future::Future, path::Path, pin::Pin};
 
 use chir_rs_common::http_api::{
@@ -12,30 +14,43 @@ use tracing::{info, instrument};
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
+/// Arguments for the chir.rs api racclient
 struct Args {
-    #[arg(short, long, default_value = "http://localhost:5621/")]
+    /// The base URL for chir.rs
+    #[arg(short, long, default_value = "https://lotte.chir.rs/")]
     url: String,
+    /// The raccommand to use
     #[command(subcommand)]
     command: Command,
 }
 
+/// Raccommand selection
 #[derive(Subcommand, Debug)]
 enum Command {
+    /// Login raccommand
     Login {
+        /// Username
         #[arg(short, long)]
         username: String,
+        /// Password
         #[arg(short, long)]
         password: String,
     },
+    /// Upload a single file
     Upload {
         #[arg(short, long)]
+        /// Local source of the file
         source: String,
+        /// Destination of the file
         #[arg(short, long)]
         dest: String,
     },
+    /// Upload directory
     UploadDir {
+        /// Local source of the directory
         #[arg(short, long)]
         source: String,
+        /// Destination to upload it to
         #[arg(short, long)]
         dest: String,
     },
@@ -68,13 +83,13 @@ async fn login(url: String, username: String, password: String) -> Result<()> {
     } else {
         let response: APIError =
             bincode::decode_from_slice(&response, bincode::config::standard())?.0;
-        println!("{:?}", response);
+        println!("{response:?}");
     }
     Ok(())
 }
 
 #[instrument(skip(source))]
-async fn upload(url: String, source: impl AsRef<Path>, dest: String) -> Result<()> {
+async fn upload(url: String, source: impl AsRef<Path> + Send + Sync, dest: String) -> Result<()> {
     let client = reqwest::Client::new();
     let token = std::env::var("CHIR_RS_TOKEN")?;
     let file = tokio::fs::File::open(&source).await?;
@@ -102,7 +117,12 @@ async fn upload(url: String, source: impl AsRef<Path>, dest: String) -> Result<(
 }
 
 #[instrument(skip(source))]
-async fn upload_dir(url: String, source: impl AsRef<Path>, dest: String) -> Result<()> {
+#[allow(clippy::future_not_send, reason = "Weird rustc moment?")]
+async fn upload_dir(
+    url: String,
+    source: impl AsRef<Path> + Send + Sync,
+    dest: String,
+) -> Result<()> {
     let mut dir = tokio::fs::read_dir(source).await?;
     while let Some(ent) = dir.next_entry().await? {
         let file_type = ent.file_type().await?;
