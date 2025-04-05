@@ -1,6 +1,6 @@
 //! Standalone API racclient for chir-rs
 
-use std::{collections::HashSet, future::Future, path::Path, pin::Pin};
+use std::{collections::HashSet, path::Path};
 
 use chir_rs_common::http_api::{
     auth::{LoginRequest, PasetoToken, Scope},
@@ -117,7 +117,6 @@ async fn upload(url: String, source: impl AsRef<Path> + Send + Sync, dest: Strin
 }
 
 #[instrument(skip(source))]
-#[allow(clippy::future_not_send, reason = "Weird rustc moment?")]
 async fn upload_dir(
     url: String,
     source: impl AsRef<Path> + Send + Sync,
@@ -136,9 +135,7 @@ async fn upload_dir(
             format!("{dest}/{file_name_str}")
         };
         if file_type.is_dir() {
-            let sub_fut: Pin<Box<dyn Future<Output = Result<()>>>> =
-                Box::pin(upload_dir(url.clone(), ent.path(), tgt));
-            sub_fut.await?;
+            Box::pin(upload_dir(url.clone(), ent.path(), tgt)).await?;
             continue;
         }
         if file_name_str == "index.html" {

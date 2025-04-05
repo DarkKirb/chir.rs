@@ -31,7 +31,7 @@ impl User {
     pub async fn get(db: &Database, username: &str) -> Result<Option<Self>> {
         #[allow(clippy::panic, reason = "sqlx moment")]
         let res = query!(r#"SELECT * FROM "user" WHERE username = $1"#, username)
-            .fetch_optional(&*db.0)
+            .fetch_optional(&db.0)
             .await
             .with_context(|| format!("Loading user information for {username}"))?;
 

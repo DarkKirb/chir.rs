@@ -149,7 +149,7 @@ impl File {
         query_as(r#"SELECT * FROM file_map WHERE "file_path" = $1 AND "mime" = $2"#)
             .bind(path)
             .bind(mime)
-            .fetch_optional(&*db.0)
+            .fetch_optional(&db.0)
             .await
             .with_context(|| format!("Loading file path {path} with mime type {mime}"))
     }
@@ -213,7 +213,7 @@ impl File {
     async fn get_by_path_inner(db: &Database, path: &str) -> Result<Vec<Self>> {
         query_as(r#"SELECT * FROM file_map WHERE "file_path" = $1"#)
             .bind(path)
-            .fetch_all(&*db.0)
+            .fetch_all(&db.0)
             .await
             .with_context(|| format!("Loading files with path {path}"))
     }
@@ -276,7 +276,7 @@ impl File {
         query_as(r#"SELECT * FROM file_map WHERE "id" > $1 LIMIT $2"#)
             .bind(after)
             .bind(limit)
-            .fetch_all(&*db.0)
+            .fetch_all(&db.0)
             .await
             .with_context(|| format!("Loading up to {limit} files after id {after}"))
     }
@@ -293,7 +293,7 @@ impl File {
         .bind(path)
         .bind(mime)
         .bind(hash.as_bytes().as_slice())
-        .fetch_one(&*db.0)
+        .fetch_one(&db.0)
         .await
         .with_context(|| format!("Inserting new file {path} with mime type {mime}"))
     }
@@ -306,7 +306,7 @@ impl File {
     pub async fn delete(self, db: &Database) -> Result<()> {
         let id: i64 = self.id.try_into()?;
         query!(r#"DELETE FROM file_map WHERE "id" = $1"#, id)
-            .execute(&*db.0)
+            .execute(&db.0)
             .await
             .with_context(|| {
                 format!(
@@ -338,7 +338,7 @@ impl File {
             b3hash,
             id
         )
-        .execute(&*db.0)
+        .execute(&db.0)
         .await
         .with_context(|| {
             format!(
@@ -359,7 +359,7 @@ impl File {
             r#"SELECT COUNT(*) as amount FROM file_map WHERE "b3hash" = $1"#,
             hash.as_bytes()
         )
-        .fetch_one(&*db.0)
+        .fetch_one(&db.0)
         .await
         .with_context(|| format!("Checking if {hash:?} is still used."))?;
 

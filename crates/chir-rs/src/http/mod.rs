@@ -17,7 +17,7 @@ use tokio::net::TcpListener;
 use tower_http::trace::TraceLayer;
 use tracing::{error, info, info_span};
 
-use crate::{castore::CaStore, config::ChirRs, db::Database};
+use crate::Global;
 
 pub mod auth;
 pub mod ca_server;
@@ -25,10 +25,8 @@ pub mod ca_server;
 /// Application state
 #[derive(Clone)]
 pub struct AppState {
-    /// Database handle
-    pub db: Database,
-    /// CA store handle
-    pub ca: CaStore,
+    /// Global state
+    pub global: Arc<Global>,
     /// PASETO private key
     pub paseto_key: Arc<PasetoSymmetricKey<V4, Local>>,
 }
@@ -45,9 +43,9 @@ impl Debug for AppState {
 /// This function returns an error if the startup of the server fails.
 ///
 /// Errors it encounters during runtime should be automatically handled.
-pub async fn main(cfg: Arc<ChirRs>, db: Database, castore: CaStore) -> Result<()> {
+pub async fn main(global: Arc<Global>) -> Result<()> {
     let paseto_symmetric_key =
-        tokio::fs::read_to_string(cfg.paseto_secret_key_file.clone()).await?;
+        tokio::fs::read_to_string(global.cfg.paseto_secret_key_file.clone()).await?;
     let paseto_symmetric_key = paseto_symmetric_key
         .from_base64()
         .map_err(|e| eyre!("{e:?}"))?;
@@ -62,7 +60,7 @@ pub async fn main(cfg: Arc<ChirRs>, db: Database, castore: CaStore) -> Result<()
         .route(
             "/.api/readyz",
             get(|State(state): State<AppState>| async move {
-                match state.db.ping().await {
+                match state.global.db.ping().await {
                     Ok(()) => (StatusCode::OK, Bincode(ReadyState::Ready)),
                     Err(e) => {
                         error!("Database is not responding: {e:?}");
@@ -81,8 +79,7 @@ pub async fn main(cfg: Arc<ChirRs>, db: Database, castore: CaStore) -> Result<()
         .route("/.api/auth/login", post(auth::password_login::login))
         .fallback(get(ca_server::serve_files).post(ca_server::create_files))
         .with_state(AppState {
-            db,
-            ca: castore,
+            global: Arc::clone(&global),
             paseto_key: Arc::new(paseto_symmetric_key),
         })
         .layer(
@@ -102,10 +99,10 @@ pub async fn main(cfg: Arc<ChirRs>, db: Database, castore: CaStore) -> Result<()
         .layer(prometheus_layer)
         .layer(sentry_tower::NewSentryLayer::<Request>::new_from_top())
         .layer(sentry_tower::SentryHttpLayer::with_transaction());
-    let listener = TcpListener::bind(&*cfg.http.listen)
+    let listener = TcpListener::bind(&*global.cfg.http.listen)
         .await
-        .with_context(|| format!("Binding to TCP {:?}", cfg.http.listen))?;
-    info!("Starting HTTP server on {:?}", cfg.http.listen);
+        .with_context(|| format!("Binding to TCP {:?}", global.cfg.http.listen))?;
+    info!("Starting HTTP server on {:?}", global.cfg.http.listen);
     axum::serve(listener, app)
         .await
         .context("Starting Axum Server")?;

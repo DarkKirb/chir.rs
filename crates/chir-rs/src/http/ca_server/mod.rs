@@ -52,7 +52,7 @@ pub async fn serve_files(
 ) -> Result<Response, Response> {
     let path = uri.path();
     debug!("Fetching information about {path}");
-    let files = File::get_by_path(&state.db, path)
+    let files = File::get_by_path(&state.global.db, path)
         .await
         .with_context(|| format!("Fetching path {path} from database"))
         .map_err(format_error)?;
@@ -134,7 +134,8 @@ pub async fn serve_files(
     // At this point we know that the client does not have the correct version of the path
 
     let (content_size, file_body) = state
-        .ca
+        .global
+        .castore
         .download(matched_file.b3hash)
         .await
         .with_context(|| format!("Downloading file for {path}"))
@@ -187,7 +188,7 @@ pub async fn create_files(
         TryStreamExt::map_err(req.into_body().into_data_stream(), std::io::Error::other)
             .into_async_read()
             .compat();
-    let result = state.ca.upload(&mut stream).await?;
-    File::new(&state.db, uri.path(), mime, &result).await?;
+    let result = state.global.castore.upload(&mut stream).await?;
+    File::new(&state.global.db, uri.path(), mime, &result).await?;
     Ok(*result.as_bytes())
 }

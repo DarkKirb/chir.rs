@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE jobs SET is_running = 'f', retries = retries + 1, updated_at = NULL WHERE is_running AND updated_at < $1\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Timestamptz"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "41c54def7a43820b600d8abe7cb50e8c20a34fd334af2ee38c093ebe5cfa22d3"
+}

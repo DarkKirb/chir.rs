@@ -1,6 +1,8 @@
 //! Session-related functionality
 
-use std::{collections::HashSet, time::Duration};
+use std::{collections::HashSet, sync::Arc, time::Duration};
+
+use crate::Global;
 
 use super::Database;
 use chir_rs_common::{http_api::auth::Scope, id_generator};
@@ -24,7 +26,7 @@ pub async fn expire(db: &Database) -> Result<()> {
         r#"DELETE FROM "sessions" WHERE id < $1"#,
         &oldest_acceptable_id
     )
-    .execute(&*db.0)
+    .execute(&db.0)
     .await?;
     Ok(())
 }
@@ -48,7 +50,7 @@ pub async fn fetch_session_info(
     "#,
         &session_id
     )
-    .fetch_optional(&*db.0)
+    .fetch_optional(&db.0)
     .await?
     else {
         return Ok(None);
@@ -60,7 +62,7 @@ pub async fn fetch_session_info(
         "SELECT scope FROM session_scopes WHERE session_id = $1",
         &session_id
     )
-    .fetch(&*db.0);
+    .fetch(&db.0);
 
     while let Some(scope_record) = scopes_records.next().await {
         scopes.insert(Scope::from_i64(scope_record?.scope)?);
@@ -73,11 +75,11 @@ pub async fn fetch_session_info(
 ///
 /// This is intended to be called on a dedicated job.
 #[instrument]
-pub async fn expire_sessions_job(db: Database) {
+pub async fn expire_sessions_job(global: Arc<Global>) {
     info!("Starting expire sessions job thread");
     loop {
         info!("Reaping expired sessions");
-        if let Err(e) = expire(&db).await {
+        if let Err(e) = expire(&global.db).await {
             error!("Failed to reap expired sessions: {e:?}");
         }
         let secs_to_sleep = rand::rng().random_range(1800..=5400);

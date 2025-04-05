@@ -1,6 +1,6 @@
 //! Chir.rs database models
 
-use std::{sync::Arc, time::Duration};
+use std::time::Duration;
 
 use eyre::{eyre, Context, Result};
 use sqlx::{migrate, query, PgPool};
@@ -13,7 +13,7 @@ pub mod user;
 /// Opaque database handle
 #[derive(Clone, Debug)]
 #[repr(transparent)]
-pub struct Database(Arc<PgPool>);
+pub struct Database(pub PgPool);
 
 impl Database {
     /// This function verifies an active connection to the database.
@@ -23,7 +23,7 @@ impl Database {
     #[instrument]
     pub async fn ping(&self) -> Result<()> {
         let fut = async {
-            match query!("SELECT 1 as running").fetch_one(&*self.0).await {
+            match query!("SELECT 1 as running").fetch_one(&self.0).await {
                 Ok(v) if v.running == Some(1) => Ok::<_, eyre::Report>(()),
                 Err(e) => Err(e).context("Checking for readiness"),
                 r => Err(eyre!("Unknown database response: {r:#?}")),
@@ -51,5 +51,5 @@ pub async fn open_database(path: &str) -> Result<Database> {
         .await
         .with_context(|| format!("Opening database {path}"))?;
     migrate!().run(&pool).await?;
-    Ok(Database(Arc::new(pool)))
+    Ok(Database(pool))
 }

@@ -14,31 +14,24 @@ use tokio_rustls::TlsAcceptor;
 use tracing::{error, info, instrument};
 use url::Url;
 
-use crate::{
-    castore::CaStore,
-    config::ChirRs,
-    db::{file::File, Database},
-};
+use crate::{db::file::File, Global};
 
 #[instrument(skip(stream))]
-async fn handle_request<W>(
-    cfg: &Arc<ChirRs>,
-    req: Url,
-    mut stream: W,
-    db: &Database,
-    ca: &CaStore,
-) -> Result<()>
+async fn handle_request<W>(req: Url, mut stream: W, global: Arc<Global>) -> Result<()>
 where
     W: AsyncWriteExt + Unpin + Send,
 {
-    if req.host_str() != Some(&cfg.gemini.host) {
+    if req.host_str() != Some(&global.cfg.gemini.host) {
         stream.write_all(b"53\r\n").await?;
         return Ok(());
     }
 
-    let mut chosen_file = File::get_by_path_mime(db, req.path(), "text/gemini").await?;
+    let mut chosen_file = File::get_by_path_mime(&global.db, req.path(), "text/gemini").await?;
     if chosen_file.is_none() {
-        chosen_file = File::get_by_path(db, req.path()).await?.first().cloned();
+        chosen_file = File::get_by_path(&global.db, req.path())
+            .await?
+            .first()
+            .cloned();
     }
 
     let Some(chosen_file) = chosen_file else {
@@ -52,7 +45,10 @@ where
         .await?;
     stream.write_all(b"\r\n").await?;
 
-    let (_, body) = ca.download_bytestream(chosen_file.b3hash).await?;
+    let (_, body) = global
+        .castore
+        .download_bytestream(chosen_file.b3hash)
+        .await?;
     let mut body = body.into_async_read();
 
     let mut buf = BytesMut::with_capacity(16 * 1024 * 1024);
@@ -92,10 +88,10 @@ fn parse_request(request: &[u8]) -> Result<Url> {
 /// # Errors
 ///
 /// This function returns an error if starting the gemini server fails
-pub async fn main(cfg: Arc<ChirRs>, db: Database, ca: CaStore) -> Result<()> {
-    let certs =
-        CertificateDer::pem_file_iter(&cfg.gemini.certificate)?.collect::<Result<Vec<_>, _>>()?;
-    let key = PrivateKeyDer::from_pem_file(&cfg.gemini.private_key)?;
+pub async fn main(global: Arc<Global>) -> Result<()> {
+    let certs = CertificateDer::pem_file_iter(&global.cfg.gemini.certificate)?
+        .collect::<Result<Vec<_>, _>>()?;
+    let key = PrivateKeyDer::from_pem_file(&global.cfg.gemini.private_key)?;
     let config = rustls::ServerConfig::builder_with_provider(Arc::new(
         rustls::crypto::aws_lc_rs::default_provider(),
     ))
@@ -103,14 +99,12 @@ pub async fn main(cfg: Arc<ChirRs>, db: Database, ca: CaStore) -> Result<()> {
     .with_no_client_auth()
     .with_single_cert(certs, key)?;
     let acceptor = TlsAcceptor::from(Arc::new(config));
-    let listener = TcpListener::bind(&*cfg.gemini.listen).await?;
-    info!("Starting Gemini server on {:?}", cfg.gemini.listen);
+    let listener = TcpListener::bind(&*global.cfg.gemini.listen).await?;
+    info!("Starting Gemini server on {:?}", global.cfg.gemini.listen);
     loop {
         let (stream, _peer_addr) = listener.accept().await?;
         let acceptor = acceptor.clone();
-        let cfg2 = Arc::clone(&cfg);
-        let db2 = db.clone();
-        let ca2 = ca.clone();
+        let global2 = Arc::clone(&global);
         let fut = async move {
             let mut stream = acceptor.accept(stream).await?;
             let mut request = BytesMut::with_capacity(4096);
@@ -125,9 +119,7 @@ pub async fn main(cfg: Arc<ChirRs>, db: Database, ca: CaStore) -> Result<()> {
                 }
             };
 
-            let cfg = cfg2;
-
-            handle_request(&cfg, req, &mut stream, &db2, &ca2).await?;
+            handle_request(req, &mut stream, global2).await?;
 
             stream.shutdown().await?;
             Ok::<_, eyre::Report>(())

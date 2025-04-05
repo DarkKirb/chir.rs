@@ -28,7 +28,7 @@ pub async fn login(
     State(state): State<AppState>,
     Bincode(login_request): Bincode<LoginRequest>,
 ) -> Result<Bincode<PasetoToken>, APIError> {
-    let Some(user_info) = User::get(&state.db, &login_request.username)
+    let Some(user_info) = User::get(&state.global.db, &login_request.username)
         .await
         .with_context(|| format!("Fetching user info for {}", login_request.username))
         .map_err(|e| APIError::DatabaseError(format!("{e:?}")))?
@@ -55,7 +55,7 @@ pub async fn login(
     .map_err(|_| APIError::InvalidPassword(login_request.username.clone()))?;
 
     let session_id = user_info
-        .new_session(&state.db, login_request.scopes)
+        .new_session(&state.global.db, login_request.scopes)
         .await
         .with_context(|| format!("Creating context for {}", login_request.username))
         .map_err(|e| APIError::DatabaseError(format!("{e:?}")))?
