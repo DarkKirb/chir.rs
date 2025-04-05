@@ -39,7 +39,7 @@ sentry-eyre = { git = "https://github.com/auguwu/sentry-eyre" }
 sentry-tower = { version = "0.37.0", features = ["axum", "axum-matched-path"] }
 sentry-tracing = { version = "0.37.0", features = ["backtrace"] }
 serde = { version = "1.0.219", features = ["derive"] }
-sqlx = { version = "0.8.3", default-features = false, features = ["runtime-tokio", "derive", "macros", "migrate", "postgres", "sqlite"] }
+sqlx = { version = "0.8.3", default-features = false, features = ["runtime-tokio", "derive", "macros", "migrate", "postgres", "sqlite", "chrono"] }
 stretto = { version = "0.8.4", features = ["async"] }
 tokio = { version = "1.41.1", features = ["fs", "macros", "net", "rt", "rt-multi-thread", "signal", "sync", "time"] }
 tokio-rustls = "0.26.2"

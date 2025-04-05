@@ -80,7 +80,7 @@ impl FromRequestParts<AppState> for AuthHeader {
                 APIError::Unknown(format!("Invalid issued token: {e:?}"))
             })?;
 
-        let session_info = fetch_session_info(&state.db, session_id)
+        let session_info = fetch_session_info(&state.global.db, session_id)
             .await
             .with_context(|| format!("Verifying session {session_id}"))
             .map_err(|e| {

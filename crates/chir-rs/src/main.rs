@@ -3,8 +3,11 @@
 use core::str::FromStr;
 use std::sync::Arc;
 
+use castore::CaStore;
 use config::ChirRs;
+use db::Database;
 use eyre::{Context, Result};
+use queue::Queue;
 // implicitly used
 use sentry_eyre as _;
 use tokio::signal;
@@ -19,6 +22,20 @@ pub mod config;
 pub mod db;
 pub mod gemini;
 pub mod http;
+pub mod queue;
+
+/// Global raccomponents
+#[derive(Debug)]
+pub struct Global {
+    /// Racconfiguration file
+    pub cfg: ChirRs,
+    /// Database
+    pub db: Database,
+    /// Raccontent-addressed store
+    pub castore: CaStore,
+    /// Queue
+    pub queue: Queue,
+}
 
 /// Initializes logging for the application
 fn init_logging(cfg: &ChirRs) -> Result<()> {
@@ -103,29 +120,44 @@ fn main() -> Result<()> {
         .build()
         .context("Building thread pool for tokio")?
         .block_on(async move {
-            let cfg = Arc::new(cfg);
             let db = db::open_database(&cfg.database.path).await?;
-            let castore = castore::CaStore::new(&cfg).await?;
-            let cfg1 = Arc::clone(&cfg);
-            let cfg2 = Arc::clone(&cfg);
-            let db1 = db.clone();
-            let db2 = db.clone();
-            let castore1 = castore.clone();
-            let castore2 = castore.clone();
-            let jobs = [
-                tokio::spawn(db::session::expire_sessions_job(db.clone())),
-                tokio::spawn(castore.clone().clean_task(db.clone())),
+            let castore = CaStore::new(&cfg).await?;
+            let global = Arc::new_cyclic(|global| Global {
+                cfg,
+                db,
+                castore,
+                queue: Queue::new(global),
+            });
+            let global2 = Arc::clone(&global);
+            let global3 = Arc::clone(&global);
+            let global4 = Arc::clone(&global);
+            let mut jobs = vec![
+                tokio::spawn(db::session::expire_sessions_job(Arc::clone(&global))),
+                tokio::spawn(CaStore::clean_task(Arc::clone(&global))),
+                tokio::spawn(Queue::cleanup_task(Arc::clone(&global))),
                 tokio::spawn(async move {
-                    if let Err(e) = http::main(cfg1, db1, castore1).await {
+                    if let Err(e) = Queue::db_event_listener(global3).await {
+                        error!("Failed to register event listener: {e:?}");
+                    }
+                }),
+                tokio::spawn(async move {
+                    if let Err(e) = http::main(global2).await {
                         error!("Failing to start HTTP Server: {e:?}");
                     }
                 }),
                 tokio::spawn(async move {
-                    if let Err(e) = gemini::main(cfg2, db2, castore2).await {
+                    if let Err(e) = gemini::main(global4).await {
                         error!("Failing to start Gemini Server: {e:?}");
                     }
                 }),
             ];
+
+            for _ in 0..std::thread::available_parallelism()
+                .map(usize::from)
+                .unwrap_or(4)
+            {
+                jobs.push(tokio::spawn(Queue::run(Arc::clone(&global))));
+            }
 
             signal::ctrl_c()
                 .await

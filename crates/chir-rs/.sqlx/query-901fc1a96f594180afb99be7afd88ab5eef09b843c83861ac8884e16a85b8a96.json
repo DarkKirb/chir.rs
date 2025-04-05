@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "NOTIFY \"jobs\", 'Completing job'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "901fc1a96f594180afb99be7afd88ab5eef09b843c83861ac8884e16a85b8a96"
+}

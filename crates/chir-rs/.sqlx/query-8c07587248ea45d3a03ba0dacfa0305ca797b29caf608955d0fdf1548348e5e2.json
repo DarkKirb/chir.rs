@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "NOTIFY \"jobs\", 'Reaped stuck jobs'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "8c07587248ea45d3a03ba0dacfa0305ca797b29caf608955d0fdf1548348e5e2"
+}

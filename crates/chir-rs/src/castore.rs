@@ -27,10 +27,11 @@ use tracing::{error, info, instrument};
 use crate::{
     config::ChirRs,
     db::{file::File, Database},
+    Global,
 };
 
 /// Loads the AWS SDK config from the configuration file
-async fn get_aws_config(config: &Arc<ChirRs>) -> Result<SdkConfig> {
+async fn get_aws_config(config: &ChirRs) -> Result<SdkConfig> {
     let access_key_id = read_to_string(&config.s3.access_key_id_file).await?;
     let secret_access_key = read_to_string(&config.s3.secret_access_key_file).await?;
 
@@ -55,9 +56,9 @@ async fn get_aws_config(config: &Arc<ChirRs>) -> Result<SdkConfig> {
 pub struct CaStore {
     /// Inner client
     #[educe(Debug(ignore))]
-    client: Arc<Client>,
+    client: Client,
     /// Bucket
-    bucket: Arc<str>,
+    bucket: String,
     /// CA Value Cache
     #[educe(Debug(ignore))]
     cache: AsyncCache<Hash, Bytes>,
@@ -69,11 +70,11 @@ impl CaStore {
     /// # Errors
     ///
     /// This function returns an error if the access or secret access key cannot be read.
-    pub async fn new(config: &Arc<ChirRs>) -> Result<Self> {
+    pub async fn new(config: &ChirRs) -> Result<Self> {
         let sdk_config = get_aws_config(config).await?;
         Ok(Self {
-            client: Arc::new(Client::new(&sdk_config)),
-            bucket: Arc::from(config.s3.bucket.as_ref()),
+            client: Client::new(&sdk_config),
+            bucket: config.s3.bucket.clone(),
             cache: AsyncCache::new(
                 (config.cache_max_size / 1_000)
                     .try_into()
@@ -369,11 +370,11 @@ impl CaStore {
     }
 
     /// Run the periodic CA store raccleanup task
-    pub async fn clean_task(self, db: Database) {
+    pub async fn clean_task(global: Arc<Global>) {
         info!("Starting CA clean thread");
         loop {
             info!("Deleting unused objects");
-            if let Err(e) = self.clean_once(&db).await {
+            if let Err(e) = global.castore.clean_once(&global.db).await {
                 error!("Failed to delete unused files: {e:?}");
             }
             let secs_to_sleep = rand::rng().random_range(1800..=5400);
