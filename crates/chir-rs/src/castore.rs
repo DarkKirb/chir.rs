@@ -13,7 +13,6 @@ use bytes::Bytes;
 use chir_rs_common::{id_generator, lexicographic_base64};
 use educe::Educe;
 use eyre::{Context as _, Result};
-use futures::Stream;
 use rand::Rng;
 use stretto::AsyncCache;
 use tokio::time::Duration;
@@ -318,17 +317,16 @@ impl CaStore {
 
             if let Some(marker) = &marker {
                 objects = objects.marker(marker.clone());
-            };
+            }
 
             let objects = objects.send().await?;
 
-            marker = objects.next_marker().map(|v| v.to_string());
+            marker = objects.next_marker().map(ToString::to_string);
             files.extend(
                 objects
                     .contents()
-                    .into_iter()
-                    .map(|o| o.key())
-                    .filter_map(|v| v)
+                    .iter()
+                    .filter_map(|o| o.key())
                     .map(ToOwned::to_owned),
             );
             if marker.is_none() {
@@ -338,6 +336,10 @@ impl CaStore {
         Ok(files)
     }
 
+    /// Run a single clean cycle
+    ///
+    /// # Errors
+    /// This function returns an error if cleaning the content addressed store fails
     async fn clean_once(&self, db: &Database) -> Result<()> {
         for file in self.get_all_files().await? {
             let should_delete = if file.contains('/') {
@@ -366,6 +368,7 @@ impl CaStore {
         Ok(())
     }
 
+    /// Run the periodic CA store raccleanup task
     pub async fn clean_task(self, db: Database) {
         info!("Starting CA clean thread");
         loop {

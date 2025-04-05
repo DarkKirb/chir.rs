@@ -23,6 +23,9 @@ pub fn encode(bytes: impl AsRef<[u8]>) -> String {
 }
 
 /// Decodes bytes using the lexicographic base64 alphabet
+///
+/// # Errors
+/// This function returns an error if the message is not valid base64
 pub fn decode(bytes: &str) -> Result<Vec<u8>> {
     Ok(GeneralPurpose::new(&LEXICOGRAPHIC, NO_PAD).decode(bytes)?)
 }

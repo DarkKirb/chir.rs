@@ -21,7 +21,7 @@ use crate::{spawn, Route};
 /// Login view
 #[function_component]
 pub fn Login() -> Html {
-    let navigator = use_navigator().unwrap();
+    let navigator = use_navigator();
     let username_handle = use_state(String::default);
     let username = username_handle.clone();
     let password_handle = use_state(String::default);
@@ -82,7 +82,9 @@ pub fn Login() -> Html {
                         .0;
                 SessionStorage::set("api", token.to_paseto())?;
             }
-            navigator.replace(&Route::Home);
+            if let Some(navigator) = navigator {
+                navigator.replace(&Route::Home);
+            }
             Ok(())
         });
 
