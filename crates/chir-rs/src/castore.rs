@@ -348,7 +348,7 @@ impl CaStore {
                 if hash.len() == 32 {
                     hash2.copy_from_slice(&hash);
                     let hash = Hash::from_bytes(hash2);
-                    !File::is_used(db, hash).await.unwrap_or(false)
+                    !File::is_used(db, hash).await.unwrap_or(true)
                 } else {
                     true
                 }
