@@ -28,7 +28,7 @@ args@{
   cargoConfig ? { },
 }:
 let
-  nixifiedLockHash = "575ad245c468a1d918c8fed29bfa12d100f73eb7f0863ec32db3297f31594c9f";
+  nixifiedLockHash = "e4ffe0e6a450fecfe283e79b5fbc7828ce17fec565bd5e852aa6761287a80153";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -3277,10 +3277,6 @@ else
           }).out;
         tokio_rustls =
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".tokio-rustls."0.26.2" {
-            inherit profileName;
-          }).out;
-        tokio_util =
-          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".tokio-util."0.7.14" {
             inherit profileName;
           }).out;
         toml =
@@ -15373,9 +15369,7 @@ else
           };
           features = builtins.concatLists [
             [ "codec" ]
-            [ "compat" ]
             [ "default" ]
-            [ "futures-io" ]
             [ "io" ]
           ];
           dependencies = {
@@ -15385,10 +15379,6 @@ else
               }).out;
             futures_core =
               (rustPackages."registry+https://github.com/rust-lang/crates.io-index".futures-core."0.3.31" {
-                inherit profileName;
-              }).out;
-            futures_io =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".futures-io."0.3.31" {
                 inherit profileName;
               }).out;
             futures_sink =

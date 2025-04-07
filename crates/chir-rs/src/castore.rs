@@ -10,23 +10,19 @@ use aws_sdk_s3::{
 };
 use blake3::{Hash, Hasher};
 use bytes::Bytes;
-use chir_rs_common::{id_generator, lexicographic_base64};
+use chir_rs_common::lexicographic_base64;
 use educe::Educe;
 use eyre::{Context as _, Result};
 use rand::Rng;
 use stretto::AsyncCache;
+use tokio::fs::read_to_string;
 use tokio::time::Duration;
-use tokio::{
-    fs::read_to_string,
-    io::{AsyncRead, AsyncReadExt},
-    sync::Mutex,
-    task::spawn_blocking,
-};
 use tracing::{error, info, instrument};
 
 use crate::{
     config::ChirRs,
     db::{file::File, Database},
+    queue::QueueActionResult,
     Global,
 };
 
@@ -93,138 +89,23 @@ impl CaStore {
     /// # Errors
     ///
     /// This function returns an error if reading the source stream fails, uploading the source stream fails, or moving the file to its correct content-addressed position fails.
-    #[instrument(skip(reader))]
-    async fn upload_inner<R>(&self, reader: R, id: u128) -> Result<Hash>
-    where
-        R: AsyncRead + AsyncReadExt + Send,
-    {
-        let mut reader = Box::pin(reader);
-        let string_id = lexicographic_base64::encode(id.to_be_bytes());
-        let source_fname = format!("temp/{string_id}");
+    #[instrument(skip(data))]
+    pub async fn upload(&self, data: Vec<u8>) -> Result<Hash> {
+        let mut hasher = Hasher::new();
+        hasher.update_rayon(&data);
+        let hash = hasher.finalize();
+        let target_fname = lexicographic_base64::encode(hash.as_bytes());
 
-        /*info!("Starting multipart upload {id}");
-        let multipart_result = self
-            .client
-            .create_multipart_upload()
-            .bucket(&*self.bucket)
-            .key(&source_fname)
-            .send()
-            .await
-            .with_context(|| format!("Creating multipart request for Request ID{id}"))?;
-
-        let mut buf = BytesMut::with_capacity(16 * 1024 * 1024); // 16MiB byte buffer for the file
-        let hasher = Arc::new(Mutex::new(Hasher::new()));
-
-        let mut i = 1;
-        let mut completed_multipart_upload_builder = CompletedMultipartUpload::builder();
-
-        loop {
-            buf.clear();
-            reader.read_buf(&mut buf).await.context("Reading chunk")?;
-            if buf.is_empty() {
-                break;
-            }
-
-            debug!("Uploading part {i} for multipart upload {id}");
-
-            let buf2 = buf.clone();
-            let hasher = Arc::clone(&hasher);
-            let hasher_job = spawn_blocking(move || {
-                hasher.blocking_lock().update_rayon(&buf2);
-            });
-
-            let part_upload_fut = self
-                .client
-                .upload_part()
-                .bucket(&*self.bucket)
-                .key(&source_fname)
-                .set_upload_id(multipart_result.upload_id.clone())
-                .body(ByteStream::from(buf.to_vec()))
-                .part_number(i)
-                .send();
-
-            let ((), part_upload_result) = try_join!(
-                async { hasher_job.await.context("Awaiting hasher job") },
-                async { part_upload_fut.await.context("Awaiting uploader job") }
-            )
-            .context("Awaiting job for chunk")?;
-            completed_multipart_upload_builder = completed_multipart_upload_builder.parts(
-                CompletedPart::builder()
-                    .e_tag(part_upload_result.e_tag.unwrap_or_default())
-                    .part_number(i)
-                    .build(),
-            );
-            i += 1;
-        }
-
-        debug!("Finalizing Multipart Upload {id}");
-
-        let hash = hasher.lock().await.finalize();
-        self.client
-            .complete_multipart_upload()
-            .bucket(&*self.bucket)
-            .key(&source_fname)
-            .multipart_upload(completed_multipart_upload_builder.build())
-            .set_upload_id(multipart_result.upload_id)
-            .send()
-            .await
-            .context("Completing multipart upload")?;*/
-
-        let hasher = Arc::new(Mutex::new(Hasher::new()));
-        let mut buf = Vec::new();
-        reader.read_to_end(&mut buf).await?;
-        let buf = Bytes::from(buf);
-        let buf2 = buf.clone();
-        let hasher2 = Arc::clone(&hasher);
-        spawn_blocking(move || {
-            hasher2.blocking_lock().update_rayon(&buf2);
-        })
-        .await?;
         self.client
             .put_object()
             .bucket(&*self.bucket)
-            .key(&source_fname)
-            .body(ByteStream::from(buf.to_vec()))
+            .key(&target_fname)
+            .body(ByteStream::from(data))
             .send()
             .await
             .context("Uploading file")?;
 
-        let hash = hasher.lock().await.finalize();
-
-        let target_fname = lexicographic_base64::encode(hash.as_bytes());
-
-        self.client
-            .copy_object()
-            .bucket(&*self.bucket)
-            .copy_source(format!("{}/{source_fname}", self.bucket))
-            .key(target_fname)
-            .send()
-            .await
-            .context("Renaming temporary file")?;
-
-        self.client
-            .delete_object()
-            .bucket(&*self.bucket)
-            .key(source_fname)
-            .send()
-            .await
-            .context("Deleting temporary file")?;
-
         Ok(hash)
-    }
-
-    /// Uploads a file to the CA store backend and returns its hash
-    ///
-    /// # Errors
-    ///
-    /// This function returns an error if reading the source stream fails, uploading the source stream fails, or moving the file to its correct content-addressed position fails.
-    pub async fn upload<R>(&self, reader: R) -> Result<Hash>
-    where
-        R: AsyncRead + AsyncReadExt + Send,
-    {
-        let id = id_generator::generate();
-
-        self.upload_inner(reader, id).await
     }
 
     /// Deletes a file from the CA store backend with its hash
@@ -382,4 +263,14 @@ impl CaStore {
             tokio::time::sleep(Duration::from_secs(secs_to_sleep)).await;
         }
     }
+}
+
+/// Queue action for uploading a CA path
+///
+/// # Errors
+/// This function returns an error if uploading fails
+#[instrument(skip(global))]
+pub async fn upload_ca(data: &[u8], global: &Arc<Global>) -> Result<QueueActionResult> {
+    let hash = global.castore.upload(data.to_vec()).await?;
+    Ok(QueueActionResult::CAPath(*hash.as_bytes()))
 }

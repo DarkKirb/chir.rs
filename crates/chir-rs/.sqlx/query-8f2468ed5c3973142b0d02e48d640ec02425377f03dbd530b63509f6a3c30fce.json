@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                DELETE FROM jobs WHERE jobs.is_finished AND NOT EXISTS (SELECT 1 FROM job_deps WHERE job_deps.dependency_job_id = jobs.id LIMIT 1)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "8f2468ed5c3973142b0d02e48d640ec02425377f03dbd530b63509f6a3c30fce"
+}

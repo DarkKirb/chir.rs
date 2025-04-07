@@ -1,18 +1,26 @@
 //! File related APIs
 
-use std::{fmt::Formatter, sync::LazyLock};
+use std::{
+    fmt::Formatter,
+    sync::{Arc, LazyLock},
+};
 
 use bincode::{error::DecodeError, Decode, Encode};
 use blake3::Hash;
 use chrono::{DateTime, Duration, Utc};
 use dashmap::DashMap;
-use eyre::Context as _;
 use eyre::Result;
+use eyre::{Context as _, OptionExt};
 use mime::Mime;
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize, Serializer};
 use sqlx::{postgres::PgRow, prelude::FromRow, query_as};
 use sqlx::{query, Row as _};
 use tracing::{error, instrument};
+
+use crate::{
+    queue::{QueueActionResult, QueueMessageResult},
+    Global,
+};
 
 use super::Database;
 
@@ -365,4 +373,29 @@ impl File {
 
         Ok(count.amount.unwrap_or_default() != 0)
     }
+}
+
+/// Queue action for setting a file
+///
+/// # Errors
+/// This function returns an error if setting the file fails or if it was raccalled inraccorrectly
+#[allow(
+    clippy::match_wildcard_for_single_variants,
+    reason = "Only interested in this one variant"
+)]
+pub async fn set_file(
+    path: &str,
+    mime: &str,
+    global: &Arc<Global>,
+    prev: &[QueueMessageResult],
+) -> Result<()> {
+    let hash = prev
+        .iter()
+        .find_map(|v| match v.result {
+            QueueActionResult::CAPath(v) => Some(Hash::from_bytes(v)),
+            _ => None,
+        })
+        .ok_or_eyre("Missing hash!")?;
+    File::new(&global.db, path, mime, &hash).await?;
+    Ok(())
 }

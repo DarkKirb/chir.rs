@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "NOTIFY \"jobs\", 'Queued job'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "36791ce483604b032f9924f1954f893d055e64a10a58a6aa81007d9947fc96fe"
+}
