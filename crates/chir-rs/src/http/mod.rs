@@ -5,7 +5,7 @@ use std::{fmt::Debug, sync::Arc};
 use axum::{
     extract::{MatchedPath, Request, State},
     http::StatusCode,
-    routing::{get, post},
+    routing::{delete, get, post},
     Router,
 };
 use axum_prometheus::PrometheusMetricLayer;
@@ -78,7 +78,14 @@ pub async fn main(global: Arc<Global>) -> Result<()> {
             get(|| async move { metric_handle.render() }),
         )
         .route("/.api/auth/login", post(auth::password_login::login))
-        .route("/.api/robots", post(robots::create_entry))
+        .route(
+            "/.api/robots",
+            post(robots::create_entry).get(robots::list_entries),
+        )
+        .route(
+            "/.api/robots/{rule_id}",
+            get(robots::get_entry).delete(robots::delete_entry),
+        )
         .fallback(get(ca_server::serve_files).post(ca_server::create_files))
         .with_state(AppState {
             global: Arc::clone(&global),

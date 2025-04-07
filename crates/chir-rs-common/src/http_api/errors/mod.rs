@@ -63,6 +63,9 @@ pub enum APIError {
     /// Missing scope
     #[error("Missing required scope for request: {0}")]
     MissingScope(Scope),
+    /// Missing rule ID
+    #[error("Missing robots rule id: {0}")]
+    MissingRobotsRule(i32),
 }
 
 impl From<eyre::Report> for APIError {
