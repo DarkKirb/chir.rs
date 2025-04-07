@@ -23,6 +23,7 @@ pub mod db;
 pub mod gemini;
 pub mod http;
 pub mod queue;
+pub mod robots;
 
 /// Global raccomponents
 #[derive(Debug)]

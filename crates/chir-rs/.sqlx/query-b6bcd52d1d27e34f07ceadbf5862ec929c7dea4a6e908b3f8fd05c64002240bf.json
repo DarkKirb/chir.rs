@@ -1,0 +1,24 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO robots (user_agent, robot_path, allow) VALUES ($1, $2, $3) RETURNING robot_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "robot_id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Bool"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "b6bcd52d1d27e34f07ceadbf5862ec929c7dea4a6e908b3f8fd05c64002240bf"
+}

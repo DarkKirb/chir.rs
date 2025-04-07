@@ -5,3 +5,4 @@ pub mod auth;
 pub mod axum;
 pub mod errors;
 pub mod readiness;
+pub mod robots;
