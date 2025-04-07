@@ -5,6 +5,7 @@ use std::{collections::HashSet, path::Path};
 use chir_rs_common::http_api::{
     auth::{LoginRequest, PasetoToken, Scope},
     errors::APIError,
+    robots::RobotsRule,
 };
 use clap::{arg, Parser, Subcommand};
 use eyre::{eyre, Context as _, Result};
@@ -43,6 +44,7 @@ enum Command {
         source: String,
         /// Destination of the file
         #[arg(short, long)]
+        ///
         dest: String,
     },
     /// Upload directory
@@ -53,6 +55,18 @@ enum Command {
         /// Destination to upload it to
         #[arg(short, long)]
         dest: String,
+    },
+    /// Add robots.txt line
+    AddRobots {
+        /// Bot useragent name
+        #[arg(short, long)]
+        bot: String,
+        /// Path to manage
+        #[arg(short, long)]
+        path: String,
+        /// Whether to allow or deny
+        #[arg(short, long, action)]
+        allow: bool,
     },
 }
 
@@ -149,6 +163,41 @@ async fn upload_dir(
     Ok(())
 }
 
+#[instrument]
+async fn add_robots(url: String, bot: String, path: String, allow: bool) -> Result<()> {
+    let client = reqwest::Client::new();
+    let token = std::env::var("CHIR_RS_TOKEN")?;
+    let request = RobotsRule {
+        id: 0,
+        user_agent: bot,
+        path,
+        allow,
+    };
+    let request = bincode::encode_to_vec(request, bincode::config::standard())?;
+    let res = client
+        .post(format!("{url}.api/robots"))
+        .header("Content-Type", "application/x+bincode")
+        .header("Accept", "application/x+bincode")
+        .header("Authorization", format!("Bearer {token}"))
+        .body(request)
+        .send()
+        .await?;
+    let status = res.status();
+
+    let response = res.bytes().await?;
+
+    if status.is_success() {
+        let response: RobotsRule =
+            bincode::decode_from_slice(&response, bincode::config::standard())?.0;
+        println!("{response:?}");
+    } else {
+        let response: APIError =
+            bincode::decode_from_slice(&response, bincode::config::standard())?.0;
+        println!("{response:?}");
+    }
+    Ok(())
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
     color_eyre::install().ok();
@@ -160,6 +209,9 @@ async fn main() -> Result<()> {
         Command::Login { username, password } => login(matches.url, username, password).await?,
         Command::Upload { source, dest } => upload(matches.url, source, dest).await?,
         Command::UploadDir { source, dest } => upload_dir(matches.url, source, dest).await?,
+        Command::AddRobots { bot, path, allow } => {
+            add_robots(matches.url, bot, path, allow).await?;
+        }
     }
 
     Ok(())

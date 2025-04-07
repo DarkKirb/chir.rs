@@ -21,6 +21,7 @@ use crate::Global;
 
 pub mod auth;
 pub mod ca_server;
+pub mod robots;
 
 /// Application state
 #[derive(Clone)]
@@ -77,6 +78,7 @@ pub async fn main(global: Arc<Global>) -> Result<()> {
             get(|| async move { metric_handle.render() }),
         )
         .route("/.api/auth/login", post(auth::password_login::login))
+        .route("/.api/robots", post(robots::create_entry))
         .fallback(get(ca_server::serve_files).post(ca_server::create_files))
         .with_state(AppState {
             global: Arc::clone(&global),

@@ -16,6 +16,8 @@ pub enum Scope {
     Full,
     /// The ability to create or update files.
     CreateUpdateFile,
+    /// The ability to modify robots.txt
+    Robots,
 }
 
 impl Display for Scope {
@@ -23,6 +25,7 @@ impl Display for Scope {
         match *self {
             Self::Full => write!(f, "Full permissions"),
             Self::CreateUpdateFile => write!(f, "Create and update files"),
+            Self::Robots => write!(f, "Modify robots.txt"),
         }
     }
 }
@@ -34,6 +37,7 @@ impl Scope {
         match self {
             Self::Full => 0,
             Self::CreateUpdateFile => 1,
+            Self::Robots => 2,
         }
     }
 
@@ -45,6 +49,7 @@ impl Scope {
         match id {
             0 => Ok(Self::Full),
             1 => Ok(Self::CreateUpdateFile),
+            2 => Ok(Self::Robots),
             _ => bail!("Invalid scope ID {id}"),
         }
     }

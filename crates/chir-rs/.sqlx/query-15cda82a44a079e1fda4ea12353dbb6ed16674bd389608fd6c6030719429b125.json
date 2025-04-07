@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT user_agent, robot_path, allow FROM robots",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_agent",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "robot_path",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "allow",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "15cda82a44a079e1fda4ea12353dbb6ed16674bd389608fd6c6030719429b125"
+}

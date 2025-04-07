@@ -14,7 +14,7 @@ use tracing::{debug, error, info};
 use crate::{db, Global};
 
 /// Current queue message version, increase when changing stuff
-const CURRENT_VERSION: i32 = 1;
+const CURRENT_VERSION: i32 = 2;
 
 /// The queue task
 #[derive(Clone, Debug, Encode, Decode)]
@@ -25,6 +25,8 @@ pub enum QueueAction {
     UploadCA(Vec<u8>),
     /// Raccreates File
     RaccreateFile(String, String),
+    /// Updates robots.txt
+    UpdateRobots,
 }
 
 impl QueueAction {
@@ -119,6 +121,13 @@ impl QueueMessage {
             })),
             QueueAction::RaccreateFile(ref file, ref mime) => {
                 db::file::set_file(file, mime, &entry.global, &entry.msg.previous).await?;
+                Ok(QueueRunResult::Complete(QueueMessageResult {
+                    message: self.clone(),
+                    result: QueueActionResult::Nothing,
+                }))
+            }
+            QueueAction::UpdateRobots => {
+                crate::robots::update_robots(&entry.global).await?;
                 Ok(QueueRunResult::Complete(QueueMessageResult {
                     message: self.clone(),
                     result: QueueActionResult::Nothing,
