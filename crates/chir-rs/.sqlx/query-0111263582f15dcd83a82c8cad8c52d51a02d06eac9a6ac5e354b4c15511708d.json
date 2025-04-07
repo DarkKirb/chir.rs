@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT job_data FROM jobs\n                INNER JOIN job_deps\n                ON job_deps.dependency_job_id = jobs.id\n                WHERE job_deps.job_id = $1\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "job_data",
+        "type_info": "Bytea"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "0111263582f15dcd83a82c8cad8c52d51a02d06eac9a6ac5e354b4c15511708d"
+}

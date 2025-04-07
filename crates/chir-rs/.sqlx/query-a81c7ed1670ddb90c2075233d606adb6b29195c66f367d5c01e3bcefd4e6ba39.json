@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE jobs SET is_running = 'f', is_finished = 't', job_data = $1 WHERE id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Bytea",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a81c7ed1670ddb90c2075233d606adb6b29195c66f367d5c01e3bcefd4e6ba39"
+}

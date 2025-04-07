@@ -1,0 +1,70 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE jobs\n                SET is_running = 't',\n                    updated_at = NOW()\n                WHERE id IN (\n                    SELECT id FROM jobs\n                    WHERE is_running = 'f'\n                    AND is_finished = 'f'\n                    AND run_after <= NOW()\n                    AND version <= $1\n                    AND NOT EXISTS (\n                        SELECT 1\n                            FROM job_deps\n                            INNER JOIN jobs jobs2\n                            ON job_deps.dependency_job_id = jobs2.id\n                            WHERE jobs.id = job_deps.job_id\n                            AND NOT jobs2.is_finished\n                    )\n                    ORDER BY priority DESC, run_after ASC\n                    LIMIT 1\n                    FOR UPDATE OF jobs\n                )\n                RETURNING *\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "is_running",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 2,
+        "name": "retries",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "run_after",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "job_data",
+        "type_info": "Bytea"
+      },
+      {
+        "ordinal": 5,
+        "name": "priority",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 6,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "version",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 8,
+        "name": "is_finished",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "6042c941f318400a9233cd88cbeb1d482be42714ecd0cf6252d3507db84c800d"
+}

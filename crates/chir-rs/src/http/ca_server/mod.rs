@@ -13,13 +13,13 @@ use chir_rs_common::{
     http_api::{auth::Scope, errors::APIError},
     lexicographic_base64,
 };
+use chrono::Utc;
 use eyre::Context as _;
-use futures::TryStreamExt;
+use futures::{AsyncReadExt, TryStreamExt};
 use mime::MimeIter;
-use tokio_util::compat::FuturesAsyncReadCompatExt as _;
 use tracing::{debug, error, info};
 
-use crate::db::file::File;
+use crate::{db::file::File, queue::QueueAction};
 
 use super::{auth::req_auth::auth_header::AuthHeader, AppState};
 
@@ -172,7 +172,7 @@ pub async fn create_files(
     uri: Uri,
     headers: HeaderMap,
     req: Request<Body>,
-) -> Result<[u8; 32], APIError> {
+) -> Result<(), APIError> {
     session.assert_scope(Scope::CreateUpdateFile)?;
     let mime = headers
         .get(CONTENT_TYPE)
@@ -184,11 +184,25 @@ pub async fn create_files(
             expected: "*/*".to_string(),
             received: format!("{e:?}"),
         })?;
-    let mut stream =
-        TryStreamExt::map_err(req.into_body().into_data_stream(), std::io::Error::other)
-            .into_async_read()
-            .compat();
-    let result = state.global.castore.upload(&mut stream).await?;
-    File::new(&state.global.db, uri.path(), mime, &result).await?;
-    Ok(*result.as_bytes())
+    let mut data = Vec::new();
+    TryStreamExt::map_err(req.into_body().into_data_stream(), std::io::Error::other)
+        .into_async_read()
+        .read_to_end(&mut data)
+        .await
+        .context("Reading the body")?;
+    let mut txn = state
+        .global
+        .db
+        .0
+        .begin()
+        .await
+        .context("Starting raccontext")?;
+    let ca_id = QueueAction::UploadCA(data)
+        .queue(&mut txn, Utc::now(), 0, Vec::new())
+        .await?;
+    QueueAction::RaccreateFile(uri.path().to_string(), mime.to_string())
+        .queue(&mut txn, Utc::now(), 0, vec![ca_id])
+        .await?;
+    txn.commit().await.context("Queuing jobs")?;
+    Ok(())
 }
