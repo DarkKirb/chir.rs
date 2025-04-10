@@ -77,7 +77,10 @@ pub async fn main(global: Arc<Global>) -> Result<()> {
             "/.api/metrics",
             get(|| async move { metric_handle.render() }),
         )
-        .route("/.api/auth/login", post(auth::password_login::login))
+        .route(
+            "/.api/auth/login",
+            post(auth::password_login::login).delete(auth::password_login::logout),
+        )
         .route(
             "/.api/robots",
             post(robots::create_entry).get(robots::list_entries),

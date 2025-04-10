@@ -1,12 +1,13 @@
 use std::sync::Arc;
 
+use chir_rs_common::queue::QueueAction;
 use chrono::Utc;
 use eyre::Result;
 use futures::StreamExt;
 use sqlx::query;
 use std::fmt::Write;
 
-use crate::{queue::QueueAction, Global};
+use crate::{queue, Global};
 
 /// Updates the robots.txt file
 ///
@@ -30,12 +31,22 @@ pub async fn update_robots(global: &Arc<Global>) -> Result<()> {
 
     robots_txt.push_str("Sitemap: https://lotte.chir.rs/sitemap.xml\n");
     let mut txn = global.db.0.begin().await?;
-    let ca_id = QueueAction::UploadCA(robots_txt.into_bytes())
-        .queue(&mut txn, Utc::now(), 0, Vec::new())
-        .await?;
-    QueueAction::RaccreateFile("/robots.txt".to_string(), "text/plain".to_string())
-        .queue(&mut txn, Utc::now(), 0, vec![ca_id])
-        .await?;
+    let ca_id = queue::queue(
+        QueueAction::UploadCA(robots_txt.into_bytes()),
+        &mut txn,
+        Utc::now(),
+        0,
+        Vec::new(),
+    )
+    .await?;
+    queue::queue(
+        QueueAction::RaccreateFile("/robots.txt".to_string(), "text/plain".to_string()),
+        &mut txn,
+        Utc::now(),
+        0,
+        vec![ca_id],
+    )
+    .await?;
     txn.commit().await?;
     Ok(())
 }

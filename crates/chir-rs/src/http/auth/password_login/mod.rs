@@ -8,7 +8,7 @@ use chir_rs_common::http_api::{
     errors::APIError,
 };
 use chrono::{Days, Utc};
-use eyre::{Context as _, OptionExt};
+use eyre::{Context as _, OptionExt, Result};
 use rusty_paseto::{
     core::{Local, V4},
     prelude::{
@@ -16,11 +16,14 @@ use rusty_paseto::{
         TokenIdentifierClaim,
     },
 };
+use sqlx::query;
 use tokio::task::spawn_blocking;
 use tracing::instrument;
 use unicode_normalization::UnicodeNormalization;
 
 use crate::{db::user::User, http::AppState};
+
+use super::req_auth::auth_header::AuthHeader;
 
 /// Logs in using username and password
 #[instrument]
@@ -84,4 +87,15 @@ pub async fn login(
     Ok(Bincode(
         PasetoToken::from_paseto(&token).map_err(|e| APIError::Unknown(format!("{e:?}")))?,
     ))
+}
+
+/// Logs off
+#[instrument]
+pub async fn logout(State(state): State<AppState>, session: AuthHeader) -> Result<(), APIError> {
+    let session_id = session.2.to_be_bytes();
+    query!("DELETE FROM sessions WHERE id = $1", &session_id)
+        .execute(&state.global.db.0)
+        .await
+        .context("Logging out")?;
+    Ok(())
 }

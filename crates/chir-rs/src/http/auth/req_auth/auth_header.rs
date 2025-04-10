@@ -16,7 +16,7 @@ use crate::{db::session::fetch_session_info, http::AppState};
 
 /// Read Authorization from the bearer token.
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub struct AuthHeader(pub String, pub HashSet<Scope>);
+pub struct AuthHeader(pub String, pub HashSet<Scope>, pub u128);
 
 impl AuthHeader {
     /// Checks whether or not a scope is granted for the session
@@ -92,6 +92,6 @@ impl FromRequestParts<AppState> for AuthHeader {
                 info!("User Error validating session {e:?}");
                 APIError::InvalidSession
             })?;
-        Ok(Self(session_info.0, session_info.1))
+        Ok(Self(session_info.0, session_info.1, session_id))
     }
 }

@@ -3,6 +3,7 @@
 use std::sync::{Arc, Weak};
 
 use bincode::{Decode, Encode};
+use chir_rs_common::queue::{QueueAction, QueueActionResult, QueueMessage, QueueMessageResult};
 use chrono::{DateTime, Duration, Utc};
 use eyre::{OptionExt, Result};
 use futures::StreamExt;
@@ -16,33 +17,19 @@ use crate::{db, Global};
 /// Current queue message version, increase when changing stuff
 const CURRENT_VERSION: i32 = 2;
 
-/// The queue task
-#[derive(Clone, Debug, Encode, Decode)]
-pub enum QueueAction {
-    /// This task does nothing, successfully.
-    Nop,
-    /// Uploads specific data to the CA store
-    UploadCA(Vec<u8>),
-    /// Raccreates File
-    RaccreateFile(String, String),
-    /// Updates robots.txt
-    UpdateRobots,
-}
-
-impl QueueAction {
-    /// Queues the queue action for execution
-    ///
-    /// # Errors
-    /// This function returns an error if there was an error scheduling it
-    pub async fn queue(
-        &self,
-        txn: &mut Transaction<'_, Postgres>,
-        run_after: DateTime<Utc>,
-        priority: i64,
-        deps: Vec<i64>,
-    ) -> Result<i64> {
-        let job_data = bincode::encode_to_vec(self, bincode::config::standard())?;
-        let result = query!(
+/// Queues the queue action for execution
+///
+/// # Errors
+/// This function returns an error if there was an error scheduling it
+pub async fn queue(
+    action: QueueAction,
+    txn: &mut Transaction<'_, Postgres>,
+    run_after: DateTime<Utc>,
+    priority: i64,
+    deps: Vec<i64>,
+) -> Result<i64> {
+    let job_data = bincode::encode_to_vec(action, bincode::config::standard())?;
+    let result = query!(
             "INSERT INTO jobs (is_finished, run_after, job_data, priority, version) VALUES ('f', $1, $2, $3, $4) RETURNING id",
             run_after,
             job_data,
@@ -51,47 +38,19 @@ impl QueueAction {
         )
         .fetch_one(&mut **txn)
         .await?;
-        for dep in deps {
-            query!(
-                "INSERT INTO job_deps (job_id, dependency_job_id) VALUES ($1, $2)",
-                result.id,
-                dep
-            )
-            .execute(&mut **txn)
-            .await?;
-        }
-        query!("NOTIFY \"jobs\", 'Queued job'")
-            .execute(&mut **txn)
-            .await?;
-        Ok(result.id)
+    for dep in deps {
+        query!(
+            "INSERT INTO job_deps (job_id, dependency_job_id) VALUES ($1, $2)",
+            result.id,
+            dep
+        )
+        .execute(&mut **txn)
+        .await?;
     }
-}
-
-/// The queue task result
-#[derive(Copy, Clone, Debug, Encode, Decode)]
-pub enum QueueActionResult {
-    /// Void result
-    Nothing,
-    /// CA Store result
-    CAPath([u8; 32]),
-}
-
-/// Result of a queue action
-#[derive(Clone, Debug, Encode, Decode)]
-pub struct QueueMessageResult {
-    /// Message that caused this
-    message: QueueMessage,
-    /// The result of said task
-    pub result: QueueActionResult,
-}
-
-/// A single queue message
-#[derive(Clone, Debug, Encode, Decode)]
-pub struct QueueMessage {
-    /// Racction to take
-    action: QueueAction,
-    /// Previous Racctions that triggered this
-    previous: Vec<QueueMessageResult>,
+    query!("NOTIFY \"jobs\", 'Queued job'")
+        .execute(&mut **txn)
+        .await?;
+    Ok(result.id)
 }
 
 /// Result of a queue run attempt
@@ -103,36 +62,34 @@ pub enum QueueRunResult {
     Complete(QueueMessageResult),
 }
 
-impl QueueMessage {
-    #[allow(clippy::unused_async, reason = "Stubbed")]
-    /// Runs a queue message
-    ///
-    /// # Errors
-    /// This function returns an error if the queue message couldn’t be handled
-    async fn run(&self, entry: &QueueEntry) -> Result<QueueRunResult> {
-        match entry.msg.action {
-            QueueAction::Nop => Ok(QueueRunResult::Complete(QueueMessageResult {
-                message: self.clone(),
+#[allow(clippy::unused_async, reason = "Stubbed")]
+/// Runs a queue message
+///
+/// # Errors
+/// This function returns an error if the queue message couldn’t be handled
+async fn run(entry: &QueueEntry) -> Result<QueueRunResult> {
+    match entry.msg.action {
+        QueueAction::Nop => Ok(QueueRunResult::Complete(QueueMessageResult {
+            message: entry.msg.clone(),
+            result: QueueActionResult::Nothing,
+        })),
+        QueueAction::UploadCA(ref data) => Ok(QueueRunResult::Complete(QueueMessageResult {
+            message: entry.msg.clone(),
+            result: crate::castore::upload_ca(data, &entry.global).await?,
+        })),
+        QueueAction::RaccreateFile(ref file, ref mime) => {
+            db::file::set_file(file, mime, &entry.global, &entry.msg.previous).await?;
+            Ok(QueueRunResult::Complete(QueueMessageResult {
+                message: entry.msg.clone(),
                 result: QueueActionResult::Nothing,
-            })),
-            QueueAction::UploadCA(ref data) => Ok(QueueRunResult::Complete(QueueMessageResult {
-                message: self.clone(),
-                result: crate::castore::upload_ca(data, &entry.global).await?,
-            })),
-            QueueAction::RaccreateFile(ref file, ref mime) => {
-                db::file::set_file(file, mime, &entry.global, &entry.msg.previous).await?;
-                Ok(QueueRunResult::Complete(QueueMessageResult {
-                    message: self.clone(),
-                    result: QueueActionResult::Nothing,
-                }))
-            }
-            QueueAction::UpdateRobots => {
-                crate::robots::update_robots(&entry.global).await?;
-                Ok(QueueRunResult::Complete(QueueMessageResult {
-                    message: self.clone(),
-                    result: QueueActionResult::Nothing,
-                }))
-            }
+            }))
+        }
+        QueueAction::UpdateRobots => {
+            crate::robots::update_robots(&entry.global).await?;
+            Ok(QueueRunResult::Complete(QueueMessageResult {
+                message: entry.msg.clone(),
+                result: QueueActionResult::Nothing,
+            }))
         }
     }
 }
@@ -245,7 +202,7 @@ impl Queue {
             info!("Finished with tasks, sleeping…");
             return Ok(false);
         };
-        let res = task.msg.run(&task).await;
+        let res = run(&task).await;
         let retry = res.as_ref().unwrap_or(&QueueRunResult::Retry);
         match retry {
             QueueRunResult::Retry => self.complete(task, None).await?,

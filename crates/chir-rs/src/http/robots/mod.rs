@@ -1,15 +1,16 @@
 //! robots.txt management
 
 use axum::extract::{Path, State};
-use chir_rs_common::http_api::{
-    auth::Scope, axum::bincode::Bincode, errors::APIError, robots::RobotsRule,
+use chir_rs_common::{
+    http_api::{auth::Scope, axum::bincode::Bincode, errors::APIError, robots::RobotsRule},
+    queue::QueueAction,
 };
 use chrono::Utc;
 use eyre::Context;
 use futures::StreamExt;
 use sqlx::query;
 
-use crate::queue::QueueAction;
+use crate::queue;
 
 use super::{auth::req_auth::auth_header::AuthHeader, AppState};
 
@@ -42,9 +43,14 @@ pub async fn create_entry(
     .context("Inserting new robots entry")?
     .robot_id;
 
-    QueueAction::UpdateRobots
-        .queue(&mut txn, Utc::now(), 0, Vec::new())
-        .await?;
+    queue::queue(
+        QueueAction::UpdateRobots,
+        &mut txn,
+        Utc::now(),
+        0,
+        Vec::new(),
+    )
+    .await?;
 
     txn.commit().await.context("Completing transaction")?;
 
@@ -110,9 +116,14 @@ pub async fn delete_entry(
         .await
         .context("Deleting robots entry")?;
 
-    QueueAction::UpdateRobots
-        .queue(&mut txn, Utc::now(), 0, Vec::new())
-        .await?;
+    queue::queue(
+        QueueAction::UpdateRobots,
+        &mut txn,
+        Utc::now(),
+        0,
+        Vec::new(),
+    )
+    .await?;
 
     txn.commit().await.context("Completing transaction")?;
 

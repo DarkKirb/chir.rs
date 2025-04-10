@@ -12,6 +12,7 @@ use axum::{
 use chir_rs_common::{
     http_api::{auth::Scope, errors::APIError},
     lexicographic_base64,
+    queue::QueueAction,
 };
 use chrono::Utc;
 use eyre::Context as _;
@@ -19,7 +20,7 @@ use futures::{AsyncReadExt, TryStreamExt};
 use mime::MimeIter;
 use tracing::{debug, error, info};
 
-use crate::{db::file::File, queue::QueueAction};
+use crate::{db::file::File, queue};
 
 use super::{auth::req_auth::auth_header::AuthHeader, AppState};
 
@@ -197,12 +198,22 @@ pub async fn create_files(
         .begin()
         .await
         .context("Starting raccontext")?;
-    let ca_id = QueueAction::UploadCA(data)
-        .queue(&mut txn, Utc::now(), 0, Vec::new())
-        .await?;
-    QueueAction::RaccreateFile(uri.path().to_string(), mime.to_string())
-        .queue(&mut txn, Utc::now(), 0, vec![ca_id])
-        .await?;
+    let ca_id = queue::queue(
+        QueueAction::UploadCA(data),
+        &mut txn,
+        Utc::now(),
+        0,
+        Vec::new(),
+    )
+    .await?;
+    queue::queue(
+        QueueAction::RaccreateFile(uri.path().to_string(), mime.to_string()),
+        &mut txn,
+        Utc::now(),
+        0,
+        vec![ca_id],
+    )
+    .await?;
     txn.commit().await.context("Queuing jobs")?;
     Ok(())
 }

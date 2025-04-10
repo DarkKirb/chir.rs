@@ -10,7 +10,7 @@ use aws_sdk_s3::{
 };
 use blake3::{Hash, Hasher};
 use bytes::Bytes;
-use chir_rs_common::lexicographic_base64;
+use chir_rs_common::{lexicographic_base64, queue::QueueActionResult};
 use educe::Educe;
 use eyre::{Context as _, Result};
 use rand::Rng;
@@ -22,7 +22,6 @@ use tracing::{error, info, instrument};
 use crate::{
     config::ChirRs,
     db::{file::File, Database},
-    queue::QueueActionResult,
     Global,
 };
 
