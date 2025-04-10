@@ -15,7 +15,7 @@ use tracing::{debug, error, info};
 use crate::{db, Global};
 
 /// Current queue message version, increase when changing stuff
-const CURRENT_VERSION: i32 = 2;
+const CURRENT_VERSION: i32 = 3;
 
 /// Queues the queue action for execution
 ///

@@ -23,7 +23,7 @@ pub async fn update_robots(global: &Arc<Global>) -> Result<()> {
         if robots_record.allow {
             writeln!(&mut robots_txt, "Allow: {}", robots_record.robot_path)?;
         } else {
-            writeln!(&mut robots_txt, "Deny: {}", robots_record.robot_path)?;
+            writeln!(&mut robots_txt, "Disallow: {}", robots_record.robot_path)?;
         }
 
         robots_txt.push('\n');
