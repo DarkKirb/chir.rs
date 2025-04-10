@@ -7,6 +7,7 @@ use std::{
 
 use bincode::{error::DecodeError, Decode, Encode};
 use blake3::Hash;
+use chir_rs_common::queue::{QueueActionResult, QueueMessageResult};
 use chrono::{DateTime, Duration, Utc};
 use dashmap::DashMap;
 use eyre::Result;
@@ -17,10 +18,7 @@ use sqlx::{postgres::PgRow, prelude::FromRow, query_as};
 use sqlx::{query, Row as _};
 use tracing::{error, instrument};
 
-use crate::{
-    queue::{QueueActionResult, QueueMessageResult},
-    Global,
-};
+use crate::Global;
 
 use super::Database;
 
@@ -171,7 +169,12 @@ impl File {
         static CACHE: LazyLock<DashMap<(String, String), CacheValue>> = LazyLock::new(DashMap::new);
         let path = path.to_string();
         let mime = mime.to_string();
-        if let Some(value) = CACHE.get(&(path.clone(), mime.clone())) {
+        // Disarm the file map on debug builds
+        #[cfg(not(debug_assertions))]
+        let key = (path.clone(), mime.clone());
+        #[cfg(debug_assertions)]
+        let key = (String::new(), String::new());
+        if let Some(value) = CACHE.get(&key) {
             let file = value.file.clone();
             if value.last_checked < (Utc::now() - Duration::minutes(1)) {
                 let db2 = db.clone();

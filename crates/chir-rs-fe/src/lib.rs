@@ -11,6 +11,7 @@ use yew_router::prelude::*;
 
 pub mod home;
 pub mod login;
+pub mod robots;
 
 /// Spans a future asynchronously
 #[instrument(skip(fut))]
@@ -34,15 +35,23 @@ enum Route {
     /// Login page
     #[at("/login")]
     Login,
+    /// Robots page
+    #[at("/robots")]
+    Robots,
 }
 
 /// Render the main site content
 #[allow(clippy::needless_pass_by_value, reason = "API reasons")]
 fn switch(routes: Route) -> Html {
     match routes {
-        Route::Home => home::home_page(),
+        Route::Home => html! {
+            <home::HomePage />
+        },
         Route::Login => html! {
             <login::Login />
+        },
+        Route::Robots => html! {
+            <robots::Robots />
         },
     }
 }

@@ -93,6 +93,7 @@ impl APIError {
             | Self::Unauthorized
             | Self::InvalidSession
             | Self::MissingScope(_) => StatusCode::UNAUTHORIZED,
+            Self::MissingRobotsRule(_) => StatusCode::NOT_FOUND,
             Self::Unknown(_) | Self::DatabaseError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
