@@ -28,7 +28,7 @@ args@{
   cargoConfig ? { },
 }:
 let
-  nixifiedLockHash = "cffbd3d2f702904db578ce0bf838a7e026af4075471d3b416393adc666bce69c";
+  nixifiedLockHash = "cd2a617f18204858b35ef770a78fdee492ab385a2ba7f2029dd31c78fa488c1c";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -3228,7 +3228,7 @@ else
             inherit profileName;
           }).out;
         rand =
-          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".rand."0.9.0" {
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".rand."0.9.1" {
             inherit profileName;
           }).out;
         rustls =
@@ -3415,7 +3415,7 @@ else
             inherit profileName;
           }).out;
         rand =
-          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".rand."0.9.0" {
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".rand."0.9.1" {
             inherit profileName;
           }).out;
         serde =
@@ -11109,7 +11109,7 @@ else
                 inherit profileName;
               }).out;
             rand =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".rand."0.9.0" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".rand."0.9.1" {
                 inherit profileName;
               }).out;
             ring =
@@ -11263,15 +11263,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".rand."0.9.0" =
+    "registry+https://github.com/rust-lang/crates.io-index".rand."0.9.1" =
       overridableMkRustCrate
         (profileName: rec {
           name = "rand";
-          version = "0.9.0";
+          version = "0.9.1";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "3779b94aeb87e8bd4e834cee3650289ee9e0d5677f976ecdb6d219e5f4f6cd94";
+            sha256 = "9fbfd9d094a40bf3ae768db9361049ace4c0e04a4fd6b359518bd7b73a73dd97";
           };
           features = builtins.concatLists [
             [ "alloc" ]
@@ -11289,10 +11289,6 @@ else
               }).out;
             rand_core =
               (rustPackages."registry+https://github.com/rust-lang/crates.io-index".rand_core."0.9.3" {
-                inherit profileName;
-              }).out;
-            zerocopy =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".zerocopy."0.8.24" {
                 inherit profileName;
               }).out;
           };
