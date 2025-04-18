@@ -1,0 +1,30 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "",
+  "private": true,
+  "scripts": {
+    "build:css": "postcss css/style.scss -o dist/style.css",
+    "build:js": "esbuild --bundle --minify js/theme-picker.ts --outfile=dist/js/theme-picker.js --sourcemap",
+    "build": "mkdir -p dist && yarn run build:css && yarn run build:js"
+  },
+  "devDependencies": {
+    "@csstools/postcss-sass": "^5.1.1",
+    "cssnano": "^7.0.6",
+    "cssnano-preset-advanced": "^7.0.6",
+    "esbuild": "^0.25.2",
+    "esbuild-plugin-tsc": "^0.5.0",
+    "postcss": "^8.5.3",
+    "postcss-cli": "^11.0.1",
+    "postcss-load-config": "^6.0.1",
+    "postcss-scss": "^4.0.9"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead"
+  ],
+  "dependencies": {
+    "@picocss/pico": "^2.1.1"
+  }
+}
