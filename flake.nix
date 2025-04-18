@@ -99,6 +99,9 @@
                 trunk
                 (rustPkgs."registry+https://github.com/rust-lang/crates.io-index".wasm-bindgen-cli."0.2.100" { })
                 binaryen
+                yarn
+                yarn2nix
+                nodejs
               ];
             };
           packages =
@@ -111,20 +114,31 @@
                     rustPkgs."registry+https://github.com/rust-lang/crates.io-index".wasm-bindgen-cli."0.2.100"
                       { };
                 in
-                pkgs.stdenvNoCC.mkDerivation {
+                pkgs.mkYarnPackage {
                   inherit (chir-rs-fe) name version;
-                  src = chir-rs-fe.out;
-                  dontUnpack = true;
-                  dontBuild = true;
+                  chir_rs_fe = chir-rs-fe.out;
+                  src = ./web;
+                  packageJSON = ./web/package.json;
+                  yarnLock = ./web/yarn.lock;
+                  yarnNix = ./web/yarn.nix;
                   nativeBuildInputs = [
                     wasm-bindgen-cli
                     pkgs.binaryen
                   ];
+                  configurePhase = ''
+                    ln -s $node_modules node_modules
+                  '';
+                  buildPhase = ''
+                    export HOME=$(mktemp -d)
+                    yarn --offline build
+                  '';
+                  doDist = false;
                   installPhase = ''
-                    mkdir $out
-                    wasm-opt $src/lib/chir_rs_fe.wasm -o chir_rs_fe.wasm
-                    wasm-bindgen chir_rs_fe.wasm --out-dir $out --target web
-                    cp ${./crates/chir-rs-fe/index.html} $out/index.html
+                    mkdir -p $out/admin
+                    cp -rv dist/* $out
+                    wasm-opt $chir_rs_fe/lib/chir_rs_fe.wasm -o chir_rs_fe.wasm
+                    wasm-bindgen chir_rs_fe.wasm --out-dir $out/admin --target web
+                    cp ${./crates/chir-rs-fe/index.html} $out/admin/index.html
                   '';
                 };
             };

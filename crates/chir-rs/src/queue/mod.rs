@@ -62,7 +62,6 @@ pub enum QueueRunResult {
     Complete(QueueMessageResult),
 }
 
-#[allow(clippy::unused_async, reason = "Stubbed")]
 /// Runs a queue message
 ///
 /// # Errors
