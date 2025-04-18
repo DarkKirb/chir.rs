@@ -5,7 +5,7 @@
   "license": "",
   "private": true,
   "scripts": {
-    "build:css": "postcss css/style.scss -o dist/style.css",
+    "build:css": "postcss css/style.scss -o dist/css/style.css",
     "build:js": "esbuild --bundle --minify js/theme-picker.ts --outfile=dist/js/theme-picker.js --sourcemap",
     "build": "mkdir -p dist && yarn run build:css && yarn run build:js"
   },
