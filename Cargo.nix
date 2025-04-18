@@ -28,7 +28,7 @@ args@{
   cargoConfig ? { },
 }:
 let
-  nixifiedLockHash = "9a7e96f72b396914ec95fd1d95a531f551a2aef887326a84d2a4556f28193da6";
+  nixifiedLockHash = "89b4f0a275d00aaeb7e6cfdb890d0bf5e0a0a52723d44f92207f3f6e3a9cf0da";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -3330,7 +3330,7 @@ else
           }).out;
         chir_rs_common = (rustPackages."unknown".chir-rs-common."0.1.0" { inherit profileName; }).out;
         clap =
-          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap."4.5.36" {
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap."4.5.37" {
             inherit profileName;
           }).out;
         color_eyre =
@@ -3667,15 +3667,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".clap."4.5.36" =
+    "registry+https://github.com/rust-lang/crates.io-index".clap."4.5.37" =
       overridableMkRustCrate
         (profileName: rec {
           name = "clap";
-          version = "4.5.36";
+          version = "4.5.37";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "2df961d8c8a0d08aa9945718ccf584145eee3f3aa06cddbeac12933781102e04";
+            sha256 = "eccb054f56cbd38340b380d4a8e69ef1f02f1af43db2f0cc817a4774d80ae071";
           };
           features = builtins.concatLists [
             [ "color" ]
@@ -3689,7 +3689,7 @@ else
           ];
           dependencies = {
             clap_builder =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap_builder."4.5.36" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap_builder."4.5.37" {
                 inherit profileName;
               }).out;
             clap_derive =
@@ -3699,15 +3699,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".clap_builder."4.5.36" =
+    "registry+https://github.com/rust-lang/crates.io-index".clap_builder."4.5.37" =
       overridableMkRustCrate
         (profileName: rec {
           name = "clap_builder";
-          version = "4.5.36";
+          version = "4.5.37";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "132dbda40fb6753878316a489d5a1242a8ef2f0d9e47ba01c951ea8aa7d013a5";
+            sha256 = "efd9466fac8543255d3b1fcad4762c5e116ffe808c8a3043d4263cd4fd4862a2";
           };
           features = builtins.concatLists [
             [ "color" ]
@@ -16897,7 +16897,7 @@ else
                 inherit profileName;
               }).out;
             clap =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap."4.5.36" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".clap."4.5.37" {
                 inherit profileName;
               }).out;
             env_logger =
