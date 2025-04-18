@@ -220,6 +220,8 @@ pub struct ChirRs {
     pub cache_max_size: u64,
     /// Paseto secret key file
     pub paseto_secret_key_file: String,
+    /// Path to the static directory
+    pub static_dir: PathBuf,
 }
 
 impl ChirRs {

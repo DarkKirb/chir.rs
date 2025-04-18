@@ -1,5 +1,7 @@
 //! Module that serves CA files
 
+use std::path::{Path, PathBuf};
+
 use axum::{
     body::Body,
     extract::State,
@@ -18,6 +20,9 @@ use chrono::Utc;
 use eyre::Context as _;
 use futures::{AsyncReadExt, TryStreamExt};
 use mime::MimeIter;
+use mime_guess::guess_mime_type;
+use tokio::fs;
+use tokio_util::io::ReaderStream;
 use tracing::{debug, error, info};
 
 use crate::{db::file::File, queue};
@@ -37,6 +42,47 @@ fn format_error(report: eyre::Report) -> Response {
         .expect("Valid response body")
 }
 
+/// Serves a local path
+async fn serve_local_file(path: &Path, headers: &HeaderMap) -> eyre::Result<Response> {
+    if !fs::metadata(path).await?.is_file() {
+        eyre::bail!("Not a file: {path:?}");
+    }
+    // The etag is simply the raccanonical path of this.
+    let etags = headers
+        .get(IF_NONE_MATCH)
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or_default();
+    let expected_etag = path.canonicalize()?.to_string_lossy().to_string();
+    for etag in etags.split(',') {
+        let etag = etag.trim().trim_start_matches("W/").trim_matches('"');
+        if etag == expected_etag {
+            return Response::builder()
+                .status(StatusCode::NOT_MODIFIED)
+                .header(ETAG, format!("\"{expected_etag}\""))
+                .body(Body::empty())
+                .with_context(|| format!("Creating not modified response for {}", path.display()));
+        }
+    }
+    let mime = mime_guess::from_path(path).first_or_octet_stream();
+    let file = fs::File::open(path)
+        .await
+        .with_context(|| format!("Opening static file {}", path.display()))?;
+
+    let reader_stream = ReaderStream::new(file);
+
+    Response::builder()
+        .status(StatusCode::OK)
+        .header(CONTENT_TYPE, mime.to_string())
+        .header(ETAG, format!("\"{expected_etag}\""))
+        // Since this is a static file, the contents are public…
+        .header(
+            CACHE_CONTROL,
+            "max-age=86400, s-max-age=31556926, must-revalidate, public",
+        )
+        .body(Body::from_stream(reader_stream))
+        .context("Constructing response body")
+}
+
 /// Serve static files
 ///
 /// # Errors
@@ -46,31 +92,24 @@ fn format_error(report: eyre::Report) -> Response {
 /// # Panics
 ///
 /// This function panics if the error handling function panics
-pub async fn serve_files(
-    State(state): State<AppState>,
-    uri: Uri,
-    headers: HeaderMap,
-) -> Result<Response, Response> {
+async fn serve_files_2(state: AppState, uri: Uri, headers: HeaderMap) -> eyre::Result<Response> {
     let path = uri.path();
     debug!("Fetching information about {path}");
     let files = File::get_by_path(&state.global.db, path)
         .await
-        .with_context(|| format!("Fetching path {path} from database"))
-        .map_err(format_error)?;
+        .with_context(|| format!("Fetching path {path} from database"))?;
     if files.is_empty() {
         info!("Unknown file {path} requested.");
-        return Err(Response::builder()
+        return Response::builder()
             .status(StatusCode::NOT_FOUND)
             .body(Body::empty())
-            .with_context(|| format!("Constructing 404 response for {path}"))
-            .map_err(format_error)?);
+            .with_context(|| format!("Constructing 404 response for {path}"));
     }
 
     let accept_media_type = match headers.get(ACCEPT) {
         Some(v) => v
             .to_str()
-            .with_context(|| format!("Parsing accept header in request for {path}"))
-            .map_err(format_error)?,
+            .with_context(|| format!("Parsing accept header in request for {path}"))?,
         None => "*/*",
     };
 
@@ -105,13 +144,11 @@ pub async fn serve_files(
             .collect::<Vec<_>>();
         let accepted_mimes_resp =
             bincode::encode_to_vec(accepted_mimes, bincode::config::standard())
-                .with_context(|| format!("Creating mismatched content type response for {path}"))
-                .map_err(format_error)?;
-        return Err(Response::builder()
+                .with_context(|| format!("Creating mismatched content type response for {path}"))?;
+        return Response::builder()
             .status(StatusCode::NOT_ACCEPTABLE)
             .body(Body::from(accepted_mimes_resp))
-            .with_context(|| format!("Creating mismatched content type response for {path}"))
-            .map_err(format_error)?);
+            .with_context(|| format!("Creating mismatched content type response for {path}"));
     };
 
     let etags = headers
@@ -127,8 +164,7 @@ pub async fn serve_files(
                 .status(StatusCode::NOT_MODIFIED)
                 .header(ETAG, format!("\"{expected_etag}\""))
                 .body(Body::empty())
-                .with_context(|| format!("Creating not modified response for {path}"))
-                .map_err(format_error);
+                .with_context(|| format!("Creating not modified response for {path}"));
         }
     }
 
@@ -139,8 +175,7 @@ pub async fn serve_files(
         .castore
         .download(matched_file.b3hash)
         .await
-        .with_context(|| format!("Downloading file for {path}"))
-        .map_err(format_error)?;
+        .with_context(|| format!("Downloading file for {path}"))?;
 
     let mut response_builder = Response::builder()
         .status(StatusCode::OK)
@@ -159,7 +194,34 @@ pub async fn serve_files(
     response_builder
         .body(Body::new(file_body))
         .with_context(|| format!("Serving file for {path}"))
-        .map_err(format_error)
+}
+
+pub async fn serve_files(
+    State(state): State<AppState>,
+    uri: Uri,
+    headers: HeaderMap,
+) -> Result<Response, Response> {
+    let mut path = state.global.cfg.static_dir.clone();
+
+    for segment in uri.path().split('/').filter(|s| *s != "..") {
+        path.push(segment);
+    }
+
+    if !path.starts_with(&state.global.cfg.static_dir) {
+        Err(eyre::eyre!(
+            "Path {path:?} is not in static dir {:?}",
+            state.global.cfg.static_dir
+        ))
+        .map_err(format_error)?;
+    }
+
+    match serve_local_file(&path, &headers).await {
+        Ok(r) => Ok(r),
+        Err(e) => serve_files_2(state, uri, headers)
+            .await
+            .context(e)
+            .map_err(format_error),
+    }
 }
 
 /// Creates a static file

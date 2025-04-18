@@ -28,7 +28,7 @@ args@{
   cargoConfig ? { },
 }:
 let
-  nixifiedLockHash = "cd2a617f18204858b35ef770a78fdee492ab385a2ba7f2029dd31c78fa488c1c";
+  nixifiedLockHash = "9a7e96f72b396914ec95fd1d95a531f551a2aef887326a84d2a4556f28193da6";
   workspaceSrc = if args.workspaceSrc == null then ./. else args.workspaceSrc;
   currentLockHash = builtins.hashFile "sha256" (workspaceSrc + /Cargo.lock);
   lockHashIgnored =
@@ -2917,15 +2917,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".brotli-decompressor."4.0.2" =
+    "registry+https://github.com/rust-lang/crates.io-index".brotli-decompressor."4.0.3" =
       overridableMkRustCrate
         (profileName: rec {
           name = "brotli-decompressor";
-          version = "4.0.2";
+          version = "4.0.3";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "74fa05ad7d803d413eb8380983b092cbbaf9a85f151b871360e7b00cd7060b37";
+            sha256 = "a334ef7c9e23abf0ce748e8cd309037da93e606ad52eb372e4ce327a0dcfbdfd";
           };
           features = builtins.concatLists [
             [ "alloc-stdlib" ]
@@ -3227,6 +3227,10 @@ else
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".mime."0.3.17" {
             inherit profileName;
           }).out;
+        mime_guess =
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".mime_guess."2.0.5" {
+            inherit profileName;
+          }).out;
         rand =
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".rand."0.9.1" {
             inherit profileName;
@@ -3277,6 +3281,10 @@ else
           }).out;
         tokio_rustls =
           (rustPackages."registry+https://github.com/rust-lang/crates.io-index".tokio-rustls."0.26.2" {
+            inherit profileName;
+          }).out;
+        tokio_util =
+          (rustPackages."registry+https://github.com/rust-lang/crates.io-index".tokio-util."0.7.14" {
             inherit profileName;
           }).out;
         toml =
@@ -4514,15 +4522,15 @@ else
           };
         });
 
-    "registry+https://github.com/rust-lang/crates.io-index".der."0.7.9" =
+    "registry+https://github.com/rust-lang/crates.io-index".der."0.7.10" =
       overridableMkRustCrate
         (profileName: rec {
           name = "der";
-          version = "0.7.9";
+          version = "0.7.10";
           registry = "registry+https://github.com/rust-lang/crates.io-index";
           src = fetchCratesIo {
             inherit name version;
-            sha256 = "f55bf8e7b65898637379c1b74eb1551107c8294ed26d855ceb9fd1a09cfc9bc0";
+            sha256 = "e7c1832837b905bbfb5101e07cc24c8deddf52f93225eee6ead5f4d63d53ddcb";
           };
           features = builtins.concatLists [
             [ "alloc" ]
@@ -10548,7 +10556,7 @@ else
           ];
           dependencies = {
             der =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".der."0.7.9" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".der."0.7.10" {
                 inherit profileName;
               }).out;
             pkcs8 =
@@ -10604,7 +10612,7 @@ else
           ];
           dependencies = {
             der =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".der."0.7.9" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".der."0.7.10" {
                 inherit profileName;
               }).out;
             spki =
@@ -14118,7 +14126,7 @@ else
                 inherit profileName;
               }).out;
             der =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".der."0.7.9" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".der."0.7.10" {
                 inherit profileName;
               }).out;
           };
@@ -15657,7 +15665,9 @@ else
           };
           features = builtins.concatLists [
             [ "codec" ]
+            [ "compat" ]
             [ "default" ]
+            [ "futures-io" ]
             [ "io" ]
           ];
           dependencies = {
@@ -15667,6 +15677,10 @@ else
               }).out;
             futures_core =
               (rustPackages."registry+https://github.com/rust-lang/crates.io-index".futures-core."0.3.31" {
+                inherit profileName;
+              }).out;
+            futures_io =
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".futures-io."0.3.31" {
                 inherit profileName;
               }).out;
             futures_sink =
@@ -16428,7 +16442,7 @@ else
                 inherit profileName;
               }).out;
             brotli_decompressor =
-              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".brotli-decompressor."4.0.2" {
+              (rustPackages."registry+https://github.com/rust-lang/crates.io-index".brotli-decompressor."4.0.3" {
                 inherit profileName;
               }).out;
             flate2 =
